@@ -1,0 +1,1 @@
+F:"/UEEngine/"UE5_1/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe -projectfiles -project="%~dp0MMORPG.uproject"
