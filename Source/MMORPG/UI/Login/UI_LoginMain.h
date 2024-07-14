@@ -7,6 +7,9 @@
 #include "SimpleNetChannelType.h"
 #include "UI_LoginMain.generated.h"
 
+class FSimpleChannel;
+class UTextBlock;
+class UUI_Login;
 /**
  * 
  */
@@ -18,11 +21,24 @@ class MMORPG_API UUI_LoginMain : public UUI_Base
 	UPROPERTY(meta = (BindWidget))
 	UUserWidget* UI_LinkWidget;			//显示连接服务器状态信息
 
+	UPROPERTY(meta = (BindWidget))
+	UUI_Login* UI_Login;				//登录界面
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MsgLog;					//Log
+
 public:
 	//构造
 	virtual void NativeConstruct();
 	//析构
 	virtual void NativeDestruct();
+
+public:
+	void SignIn(const FString& InAccount, const FString& InPassword);
+
+	void Register();
+
+	void PrintLog(const FString& InMsg);
 
 protected:
 	/// <summary>
@@ -41,6 +57,8 @@ protected:
 	/// <param name="InMsg"></param>
 	UFUNCTION()
 	void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
+
+
 
 private:
 	//接收代理

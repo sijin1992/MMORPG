@@ -5,10 +5,14 @@
 #include "ThreadManage.h"
 #include "UObject/SimpleController.h"
 #include "../../MMORPGGameInstance.h"
+#include "UI_Login.h"
+#include "Components/TextBlock.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
+	UI_Login->SetParents(this);
 
 	//创建客户端
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
@@ -38,6 +42,23 @@ void UUI_LoginMain::NativeDestruct()
 			InGameInstance->GetClient()->GetController()->RecvDelegate.Remove(RecvDelegate);
 		}
 	}
+}
+
+void UUI_LoginMain::SignIn(const FString& InAccount, const FString& InPassword)
+{
+
+}
+
+void UUI_LoginMain::Register()
+{
+
+}
+
+void UUI_LoginMain::PrintLog(const FString& InMsg)
+{
+	//播放动画
+
+	MsgLog->SetText(FText::FromString(InMsg));
 }
 
 void UUI_LoginMain::BindClientRcv()

@@ -39,6 +39,17 @@ protected:
 		return GetWorld() != nullptr ? GetWorld()->GetGameInstance<T>() : nullptr;
 	}
 
+public:
+	void SetParents(UWidget* InWidget) { ParentWidget = InWidget; }
+
+	//获取父级组件的模板函数
+	template<class T>
+	T* GetParents()
+	{
+		return Cast<T>(ParentWidget);
+	}
+
+
 protected:
 	/// <summary>
 	/// 与服务器通信的协议函数
@@ -46,4 +57,8 @@ protected:
 	/// <param name="ProtocolNumber">协议号</param>
 	/// <param name="Channel">通道</param>
 	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) {}
+
+protected:
+	UPROPERTY()
+	UWidget* ParentWidget;
 };
