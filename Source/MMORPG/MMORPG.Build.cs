@@ -19,6 +19,7 @@ public class MMORPG : ModuleRules
         //自定义插件
         PublicDependencyModuleNames.AddRange(new string[] {
             "SimpleNetChannel",
+			"SimpleThread",
          });
     }
 }
