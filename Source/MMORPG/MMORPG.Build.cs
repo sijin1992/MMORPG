@@ -7,7 +7,18 @@ public class MMORPG : ModuleRules
 	public MMORPG(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		//系统模块
+		PublicDependencyModuleNames.AddRange(new string[] { 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"EnhancedInput",
+		 });
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput" });
-	}
+        //自定义插件
+        PublicDependencyModuleNames.AddRange(new string[] {
+            "SimpleNetChannel",
+         });
+    }
 }
