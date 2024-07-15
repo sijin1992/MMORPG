@@ -4,9 +4,10 @@
 #include "UI_LoginMain.h"
 #include "ThreadManage.h"
 #include "UObject/SimpleController.h"
-#include "../../MMORPGGameInstance.h"
 #include "UI_Login.h"
 #include "Components/TextBlock.h"
+#include "Protocol/LoginProtocol.h"
+#include "../../MMORPGMacroType.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
@@ -44,9 +45,10 @@ void UUI_LoginMain::NativeDestruct()
 	}
 }
 
-void UUI_LoginMain::SignIn(const FString& InAccount, const FString& InPassword)
+void UUI_LoginMain::SignIn(FString& InAccount, FString& InPassword)
 {
-
+	//通过宏发送协议
+	SEND_DATA(SP_LoginRequests, InAccount, InPassword);
 }
 
 void UUI_LoginMain::Register()
@@ -94,7 +96,11 @@ void UUI_LoginMain::BindClientRcv()
 
 void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 {
-	
+	switch (ProtocolNumber)
+	{
+	case SP_LoginRequests:
+		break;
+	}
 }
 
 void UUI_LoginMain::LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg)
