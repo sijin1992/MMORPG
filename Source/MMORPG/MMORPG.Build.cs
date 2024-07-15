@@ -20,6 +20,7 @@ public class MMORPG : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] {
             "SimpleNetChannel",
 			"SimpleThread",
+			"MMORPGCommon",
          });
     }
 }
