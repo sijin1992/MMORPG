@@ -8,6 +8,7 @@
 #include "Components/TextBlock.h"
 #include "Protocol/LoginProtocol.h"
 #include "../../MMORPGMacroType.h"
+#include "MMORPGType.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
@@ -98,7 +99,27 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 {
 	switch (ProtocolNumber)
 	{
-	case SP_LoginRequests:
+	case SP_LoginResponses:
+		FString String;
+		ELoginType Type = ELoginType::LOGIN_DB_SERVER_ERROR;
+		//接收数据
+		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginResponses, Type, String);
+
+		switch (Type)
+		{
+		case LOGIN_DB_SERVER_ERROR:
+			PrintLog(TEXT("Server error."));
+			break;
+		case LOGIN_SUCCESS:
+			PrintLog(TEXT("Login Success."));
+			break;
+		case LOGIN_ACCOUNT_WRONG:
+			PrintLog(TEXT("Account does not exist."));
+			break;
+		case LOGIN_WRONG_PASSWORD:
+			PrintLog(TEXT("Password verification failed."));
+			break;
+		}
 		break;
 	}
 }
