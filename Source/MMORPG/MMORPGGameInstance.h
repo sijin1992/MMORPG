@@ -33,8 +33,9 @@ public:
 
 	FSimpleNetManage* GetClient();
 	FMMORPGUserData& GetUserData();
-
+	FMMORPGGateStatus& GetGateStatus();
 private:
-	FSimpleNetManage* Client;//当前客户端实例
-	FMMORPGUserData UserData;
+	FSimpleNetManage* Client;		//当前客户端实例
+	FMMORPGUserData UserData;		//用户信息
+	FMMORPGGateStatus GateStatus;	//网关状态信息
 };

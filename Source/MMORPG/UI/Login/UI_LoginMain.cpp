@@ -8,6 +8,7 @@
 #include "Protocol/LoginProtocol.h"
 #include "../../MMORPGMacroType.h"
 #include "../Common/UI_Print.h"
+#include "Kismet/GameplayStatics.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
@@ -114,6 +115,7 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 	{
 	case SP_LoginResponses:
 		FString String;
+		FMMORPGGateStatus GateStatus;
 		ELoginType Type = ELoginType::LOGIN_DB_SERVER_ERROR;
 		//接收数据
 		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginResponses, Type, String, GateStatus);
@@ -128,19 +130,41 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 			{
 				NetDataAnalysis::StringToUserData(String, InGameInstance->GetUserData());
-			}
 
-			if (!UI_Login->EncryptionToLocal(FPaths::ProjectDir() / TEXT("User")))
-			{
-				PrintLog(TEXT("Password storage failed."));
-			}
-			else
-			{
-				PrintLog(TEXT("Login Success."));
-			}
+				if (GateStatus.GateConnetionNum == INDEX_NONE)//如果当前网关人数是-1，有可能服务器满了
+				{
+					//等待提示
 
-			PlayWidgetAnim(TEXT("LoginOut"));
+					PrintLog(TEXT("At present, the number of servers is full, and we weill try to link again."));
+				}
+				else
+				{
+					InGameInstance->GetGateStatus() = GateStatus;
 
+					if (!UI_Login->EncryptionToLocal(FPaths::ProjectDir() / TEXT("User")))
+					{
+						PrintLog(TEXT("Password storage failed."));
+					}
+					else
+					{
+						PrintLog(TEXT("Login Success."));
+					}
+
+					PlayWidgetAnim(TEXT("LoginOut"));
+
+					///切换网关
+					//先关闭登录服务器LoginServer
+					if (InGameInstance->GetClient() && InGameInstance->GetClient()->GetChannel())
+					{
+						InGameInstance->GetClient()->GetChannel()->DestroySelf();
+					}
+					//协程,2S后跳转关卡
+					GThread::Get()->GetCoroutines().BindLambda(2.0f, [&]()
+						{
+							UGameplayStatics::OpenLevel(GetWorld(), TEXT("HallMap"));
+						});
+				}
+			}
 			break;
 		case LOGIN_ACCOUNT_WRONG:
 			PrintLog(TEXT("Account does not exist."));

@@ -63,3 +63,8 @@ FMMORPGUserData& UMMORPGGameInstance::GetUserData()
 {
 	return UserData;
 }
+
+FMMORPGGateStatus& UMMORPGGameInstance::GetGateStatus()
+{
+	return GateStatus;
+}

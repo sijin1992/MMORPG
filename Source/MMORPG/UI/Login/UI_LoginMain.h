@@ -65,6 +65,4 @@ protected:
 private:
 	//接收代理
 	FDelegateHandle RecvDelegate;
-	//网关状态信息
-	FMMORPGGateStatus GateStatus;
 };
