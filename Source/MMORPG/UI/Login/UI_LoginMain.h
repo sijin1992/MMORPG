@@ -40,6 +40,7 @@ public:
 	void Register();
 
 	void PrintLog(const FString& InMsg);
+	void PrintLog(const FText& InMsg);
 
 protected:
 	/// <summary>

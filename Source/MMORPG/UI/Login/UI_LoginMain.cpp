@@ -30,6 +30,12 @@ void UUI_LoginMain::NativeConstruct()
 			BindClientRcv();
 		}
 	}
+
+	//读取账户并解密
+	if (!UI_Login->DecryptionFromLocal(FPaths::ProjectDir() / TEXT("User")))
+	{
+		PrintLog(TEXT("No account detected."));
+	}
 }
 
 void UUI_LoginMain::NativeDestruct()
@@ -58,9 +64,14 @@ void UUI_LoginMain::Register()
 
 void UUI_LoginMain::PrintLog(const FString& InMsg)
 {
+	PrintLog(FText::FromString(InMsg));
+}
+
+void UUI_LoginMain::PrintLog(const FText& InMsg)
+{
 	//播放动画
 
-	MsgLog->SetText(FText::FromString(InMsg));
+	MsgLog->SetText(InMsg);
 }
 
 void UUI_LoginMain::BindClientRcv()
@@ -110,11 +121,19 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			PrintLog(TEXT("Server error."));
 			break;
 		case LOGIN_SUCCESS:
-			PrintLog(TEXT("Login Success."));
 			//解析用户数据
 			if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 			{
 				NetDataAnalysis::StringToUserData(String, InGameInstance->GetUserData());
+			}
+
+			if (!UI_Login->EncryptionToLocal(FPaths::ProjectDir() / TEXT("User")))
+			{
+				PrintLog(TEXT("Password storage failed."));
+			}
+			else
+			{
+				PrintLog(TEXT("Login Success."));
 			}
 			break;
 		case LOGIN_ACCOUNT_WRONG:

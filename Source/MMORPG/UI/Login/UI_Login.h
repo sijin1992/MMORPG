@@ -33,6 +33,11 @@ public:
 
 	virtual void NativeDestruct();
 
+	//加密
+	bool EncryptionToLocal(const FString& InPaths);
+	//解密
+	bool DecryptionFromLocal(const FString& InPaths);
+
 protected:
 	UFUNCTION()
 	void SignIn();
