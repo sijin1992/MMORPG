@@ -58,3 +58,8 @@ FSimpleNetManage* UMMORPGGameInstance::GetClient()
 {
 	return Client;
 }
+
+FMMORPGUserData& UMMORPGGameInstance::GetUserData()
+{
+	return UserData;
+}

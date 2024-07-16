@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "SimpleNetManage.h"
+#include "MMORPGType.h"
 #include "MMORPGGameInstance.generated.h"
 
 /**
@@ -31,7 +32,9 @@ public:
 	void LinkServer();//连接服务器
 
 	FSimpleNetManage* GetClient();
+	FMMORPGUserData& GetUserData();
 
 private:
 	FSimpleNetManage* Client;//当前客户端实例
+	FMMORPGUserData UserData;
 };
