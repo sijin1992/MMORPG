@@ -58,6 +58,19 @@ protected:
 	/// <param name="Channel">通道</param>
 	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) {}
 
+	/// <summary>
+	/// 获取动画组件
+	/// </summary>
+	/// <param name="InWidgetAnimName"></param>
+	/// <returns></returns>
+	UWidgetAnimation* GetNameWidgetAnimation(const FString& InWidgetAnimName);
+
+	/// <summary>
+	/// 通过名字播放动画
+	/// </summary>
+	/// <param name="InWidgetAnimName"></param>
+	void PlayWidgetAnim(const FString& InWidgetAnimName);
+
 protected:
 	UPROPERTY()
 	UWidget* ParentWidget;

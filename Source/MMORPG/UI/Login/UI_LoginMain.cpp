@@ -5,13 +5,15 @@
 #include "ThreadManage.h"
 #include "UObject/SimpleController.h"
 #include "UI_Login.h"
-#include "Components/TextBlock.h"
 #include "Protocol/LoginProtocol.h"
 #include "../../MMORPGMacroType.h"
+#include "../Common/UI_Print.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	PlayWidgetAnim(TEXT("LoginIn"));
 	
 	UI_Login->SetParents(this);
 
@@ -69,9 +71,10 @@ void UUI_LoginMain::PrintLog(const FString& InMsg)
 
 void UUI_LoginMain::PrintLog(const FText& InMsg)
 {
-	//播放动画
+	//播放Log动画
+	UI_Print->PlayTextAnim();
 
-	MsgLog->SetText(InMsg);
+	UI_Print->SetText(InMsg);
 }
 
 void UUI_LoginMain::BindClientRcv()
@@ -135,6 +138,9 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			{
 				PrintLog(TEXT("Login Success."));
 			}
+
+			PlayWidgetAnim(TEXT("LoginOut"));
+
 			break;
 		case LOGIN_ACCOUNT_WRONG:
 			PrintLog(TEXT("Account does not exist."));

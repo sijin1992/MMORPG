@@ -9,8 +9,8 @@
 #include "UI_LoginMain.generated.h"
 
 class FSimpleChannel;
-class UTextBlock;
 class UUI_Login;
+class UUI_Print;
 /**
  * 
  */
@@ -26,7 +26,7 @@ class MMORPG_API UUI_LoginMain : public UUI_Base
 	UUI_Login* UI_Login;				//登录界面
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* MsgLog;					//Log
+	UUI_Print* UI_Print;				//Log界面
 
 public:
 	//构造
