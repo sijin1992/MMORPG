@@ -8,7 +8,6 @@
 #include "Components/TextBlock.h"
 #include "Protocol/LoginProtocol.h"
 #include "../../MMORPGMacroType.h"
-#include "MMORPGType.h"
 
 void UUI_LoginMain::NativeConstruct()
 {
@@ -103,7 +102,7 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 		FString String;
 		ELoginType Type = ELoginType::LOGIN_DB_SERVER_ERROR;
 		//接收数据
-		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginResponses, Type, String);
+		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginResponses, Type, String, GateStatus);
 
 		switch (Type)
 		{
@@ -112,6 +111,11 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			break;
 		case LOGIN_SUCCESS:
 			PrintLog(TEXT("Login Success."));
+			//解析用户数据
+			if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+			{
+				NetDataAnalysis::StringToUserData(String, InGameInstance->GetUserData());
+			}
 			break;
 		case LOGIN_ACCOUNT_WRONG:
 			PrintLog(TEXT("Account does not exist."));
@@ -120,6 +124,7 @@ void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			PrintLog(TEXT("Password verification failed."));
 			break;
 		}
+		
 		break;
 	}
 }

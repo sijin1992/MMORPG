@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Core/UI_Base.h"
 #include "SimpleNetChannelType.h"
+#include "MMORPGType.h"
 #include "UI_LoginMain.generated.h"
 
 class FSimpleChannel;
@@ -63,4 +64,6 @@ protected:
 private:
 	//接收代理
 	FDelegateHandle RecvDelegate;
+	//网关状态信息
+	FMMORPGGateStatus GateStatus;
 };
