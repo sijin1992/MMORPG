@@ -10,6 +10,7 @@ class UButton;
 class UImage;
 class UVerticalBox;
 class UTextBlock;
+class ACharacterStage;
 /**
  * 
  */
@@ -35,6 +36,12 @@ class MMORPG_API UUI_CharacterButton : public UUI_Base
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Date;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<ACharacterStage> CharacterStageClass;	//角色舞台类
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	FVector SpawnPoint;									//角色生成点
 public:
 	void NativeConstruct() override;
 
