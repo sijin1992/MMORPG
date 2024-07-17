@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "HallPawn.generated.h"
 
+class ACharacterStage;
+
 UCLASS()
 class MMORPG_API AHallPawn : public APawn
 {
@@ -19,11 +21,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY()
+	ACharacterStage* CharacterStage;
 
 };

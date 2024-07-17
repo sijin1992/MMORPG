@@ -7,6 +7,7 @@
 #include "Components/VerticalBox.h"
 #include "Components/TextBlock.h"
 #include "../../../Core/Hall/Character/CharacterStage.h"
+#include "../../../Core/Hall/HallPawn.h"
 
 void UUI_CharacterButton::NativeConstruct()
 {
@@ -28,9 +29,18 @@ void UUI_CharacterButton::ClickedCharacter()
 {
 	if (CharacterStageClass)
 	{
-		if (ACharacterStage* InCharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator))
+		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
 		{
+			if (InPawn->CharacterStage)
+			{
+				InPawn->CharacterStage->Destroy();
+			}
 
+			InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
+			if (InPawn->CharacterStage)
+			{
+
+			}
 		}
 	}
 }

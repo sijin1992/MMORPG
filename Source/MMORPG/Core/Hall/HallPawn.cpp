@@ -2,6 +2,7 @@
 
 
 #include "HallPawn.h"
+#include "Character/CharacterStage.h"
 
 // Sets default values
 AHallPawn::AHallPawn()
@@ -9,6 +10,7 @@ AHallPawn::AHallPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CharacterStage = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -32,3 +34,12 @@ void AHallPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AHallPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (CharacterStage)
+	{
+		CharacterStage->Destroy();
+	}
+}
