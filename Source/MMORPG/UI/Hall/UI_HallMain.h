@@ -9,6 +9,7 @@
 
 class FSimpleChannel;
 class UUI_Print;
+class UUI_CharacterCreatePanel;
 /**
  * 
  */
@@ -18,7 +19,10 @@ class MMORPG_API UUI_HallMain : public UUI_Base
 	GENERATED_BODY()
 
 	UPROPERTY(meta = (BindWidget))
-	UUI_Print* UI_Print;				//Log界面
+	UUI_Print* UI_Print;									//Log界面
+
+	UPROPERTY(meta = (BindWidget))
+	UUI_CharacterCreatePanel* UI_CharacterCreatePanel;		//创建角色界面
 
 public:
 	virtual void NativeConstruct() override;

@@ -7,11 +7,12 @@
 #include "UObject/SimpleController.h"
 #include "../../MMORPGMacroType.h"
 #include "Kismet/GameplayStatics.h"
+#include "Element/UI_CharacterCreatePanel.h"
 
 void UUI_HallMain::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	//创建客户端
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 	{
