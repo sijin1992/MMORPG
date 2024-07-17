@@ -65,6 +65,7 @@ protected:
 	/// <returns></returns>
 	UWidgetAnimation* GetNameWidgetAnimation(const FString& InWidgetAnimName);
 
+public:
 	/// <summary>
 	/// 通过名字播放动画
 	/// </summary>

@@ -10,6 +10,7 @@
 class FSimpleChannel;
 class UUI_Print;
 class UUI_CharacterCreatePanel;
+class UUI_RenameCreate;
 /**
  * 
  */
@@ -24,6 +25,9 @@ class MMORPG_API UUI_HallMain : public UUI_Base
 	UPROPERTY(meta = (BindWidget))
 	UUI_CharacterCreatePanel* UI_CharacterCreatePanel;		//创建角色界面
 
+	UPROPERTY(meta = (BindWidget))
+	UUI_RenameCreate* UI_RenameCreate;						//命名界面
+
 public:
 	virtual void NativeConstruct() override;
 
@@ -32,6 +36,11 @@ public:
 public:
 	void PrintLog(const FString& InMsg);
 	void PrintLog(const FText& InMsg);
+
+	void PlayRenameIn();								//播放角色命名界面渐入动画
+	void PlayRenameOut();								//播放角色命名界面渐出动画
+
+	void ResetCharacterCreatePanel();					//还原创角界面
 
 protected:
 	//循环绑定

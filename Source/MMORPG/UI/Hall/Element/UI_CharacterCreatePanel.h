@@ -9,6 +9,7 @@
 class UTextBlock;
 class UScrollBox;
 class UUI_CharacterButton;
+class UUI_KneadFace;
 /**
  * 
  */
@@ -25,10 +26,17 @@ class MMORPG_API UUI_CharacterCreatePanel : public UUI_Base
 
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUI_CharacterButton> UI_CharacterButtonClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUI_KneadFace> UI_KneadFaceClass;
 public:
 	void NativeConstruct() override;
 
 	void NativeDestruct() override;
-
+	//创建捏脸界面
+	void CreateKneadFace();
+	//创建角色界面的按钮
+	void CreateCharacterButtons();
+protected:
 	void InitCharacterButton(const int32 InNumber);
 };

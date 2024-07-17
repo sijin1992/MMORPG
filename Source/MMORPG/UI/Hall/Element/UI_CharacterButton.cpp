@@ -8,6 +8,8 @@
 #include "Components/TextBlock.h"
 #include "../../../Core/Hall/Character/CharacterStage.h"
 #include "../../../Core/Hall/HallPawn.h"
+#include "UI_CharacterCreatePanel.h"
+#include "../UI_HallMain.h"
 
 void UUI_CharacterButton::NativeConstruct()
 {
@@ -27,19 +29,32 @@ void UUI_CharacterButton::NativeDestruct()
 
 void UUI_CharacterButton::ClickedCharacter()
 {
-	if (CharacterStageClass)
+	if (1)
 	{
-		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+		if (CharacterStageClass)
 		{
-			if (InPawn->CharacterStage)
+			if (AHallPawn* InPawn = GetPawn<AHallPawn>())
 			{
-				InPawn->CharacterStage->Destroy();
+				if (InPawn->CharacterStage)
+				{
+					InPawn->CharacterStage->Destroy();
+				}
+
+				InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
+				if (InPawn->CharacterStage)
+				{
+
+				}
 			}
+		}
 
-			InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
-			if (InPawn->CharacterStage)
+		if (UUI_CharacterCreatePanel* UI_CharacterCreatePanel = GetParents<UUI_CharacterCreatePanel>())
+		{
+			UI_CharacterCreatePanel->CreateKneadFace();
+
+			if (UUI_HallMain* UI_HallMain = UI_CharacterCreatePanel->GetParents<UUI_HallMain>())
 			{
-
+				UI_HallMain->PlayRenameIn();
 			}
 		}
 	}

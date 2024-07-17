@@ -8,11 +8,15 @@
 #include "../../MMORPGMacroType.h"
 #include "Kismet/GameplayStatics.h"
 #include "Element/UI_CharacterCreatePanel.h"
+#include "Element/UI_RenameCreate.h"
 
 void UUI_HallMain::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	UI_CharacterCreatePanel->SetParents(this);
+	UI_RenameCreate->SetParents(this);
+
 	//创建客户端
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 	{
@@ -51,6 +55,21 @@ void UUI_HallMain::PrintLog(const FText& InMsg)
 	UI_Print->PlayTextAnim();
 
 	UI_Print->SetText(InMsg);
+}
+
+void UUI_HallMain::PlayRenameIn()
+{
+	UI_RenameCreate->PlayWidgetAnim(TEXT("RenameIn"));
+}
+
+void UUI_HallMain::PlayRenameOut()
+{
+	UI_RenameCreate->PlayWidgetAnim(TEXT("RenameOut"));
+}
+
+void UUI_HallMain::ResetCharacterCreatePanel()
+{
+	UI_CharacterCreatePanel->CreateCharacterButtons();
 }
 
 void UUI_HallMain::BindClientRcv()
