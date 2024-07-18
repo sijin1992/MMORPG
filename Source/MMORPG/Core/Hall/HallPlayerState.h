@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "MMORPGType.h"
 #include "HallPlayerState.generated.h"
 
 /**
@@ -13,5 +14,9 @@ UCLASS()
 class MMORPG_API AHallPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-	
+
+public:
+	FCharacterAppearacnce& GetCharacterAppearance();
+private:
+	FCharacterAppearacnce CharacterAppearances;
 };

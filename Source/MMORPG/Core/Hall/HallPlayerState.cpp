@@ -3,3 +3,7 @@
 
 #include "HallPlayerState.h"
 
+FCharacterAppearacnce& AHallPlayerState::GetCharacterAppearance()
+{
+	return CharacterAppearances;
+}

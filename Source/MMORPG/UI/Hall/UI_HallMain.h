@@ -49,6 +49,14 @@ protected:
 	//通信协议的代理函数
 	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) override;
 
+	/// <summary>
+	/// 连接服务器信息
+	/// </summary>
+	/// <param name="InType">连接错误状态类型</param>
+	/// <param name="InMsg"></param>
+	UFUNCTION()
+	void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
+
 private:
 	//接收代理
 	FDelegateHandle RecvDelegate;

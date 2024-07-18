@@ -39,6 +39,15 @@ protected:
 		return GetWorld() != nullptr ? GetWorld()->GetGameInstance<T>() : nullptr;
 	}
 
+	//获取PlayerState的模板函数
+	template<class T>
+	T* GetPlayerState()
+	{
+		return GetWorld() != nullptr ?
+			(GetWorld()->GetFirstPlayerController() != nullptr ? GetWorld()->GetFirstPlayerController()->GetPlayerState<T>() : nullptr)
+			: nullptr;
+	}
+
 public:
 	void SetParents(UWidget* InWidget) { ParentWidget = InWidget; }
 

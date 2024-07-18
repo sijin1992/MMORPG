@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Element/UI_CharacterCreatePanel.h"
 #include "Element/UI_RenameCreate.h"
+#include "Protocol/HallProtocol.h"
+#include "../../Core/Hall/HallPlayerState.h"
 
 void UUI_HallMain::NativeConstruct()
 {
@@ -22,6 +24,8 @@ void UUI_HallMain::NativeConstruct()
 	{
 		if (InGameInstance->GetClient())
 		{
+			//握手时绑定消息代理
+			InGameInstance->GetClient()->NetManageMsgDelegate.BindUObject(this, &UUI_HallMain::LinkServerInfo);
 			//通过网关信息初始化
 			InGameInstance->GetClient()->Init(InGameInstance->GetGateStatus().GateServerAddrInfo.Addr);
 			//开始循环绑定代理
@@ -105,5 +109,33 @@ void UUI_HallMain::BindClientRcv()
 
 void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 {
-	
+	switch (ProtocolNumber)
+	{
+	case SP_CharacterAppearanceResponses:
+		//接收角色数据
+		FString CharacterJson;
+		SIMPLE_PROTOCOLS_RECEIVE(SP_CharacterAppearanceResponses, CharacterJson);
+		if (!CharacterJson.IsEmpty())
+		{
+			if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+			{
+				//解析角色数据
+				NetDataAnalysis::StringToFCharacterAppearacnce(CharacterJson, InPlayerState->GetCharacterAppearance());
+			}
+		}
+
+		break;
+	}
+}
+
+void UUI_HallMain::LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg)
+{
+	if (InType == ESimpleNetErrorType::HAND_SHAKE_SUCCESS)//如果握手成功
+	{
+		if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+		{
+			//发送获取角色信息请求
+			SEND_DATA(SP_CharacterAppearanceRequests, InGameInstance->GetUserData().ID);
+		}
+	}
 }
