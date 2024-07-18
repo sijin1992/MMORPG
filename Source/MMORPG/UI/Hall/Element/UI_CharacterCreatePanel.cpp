@@ -3,7 +3,6 @@
 
 #include "UI_CharacterCreatePanel.h"
 #include "Components/TextBlock.h"
-#include "Components/ScrollBox.h"
 #include "UI_CharacterButton.h"
 #include "Components/ScrollBoxSlot.h"
 #include "UI_KneadFace.h"
@@ -78,24 +77,33 @@ void UUI_CharacterCreatePanel::InitCharacterButtons(FCharacterAppearacnce& InCAs
 	}
 }
 
+ACharacterStage* UUI_CharacterCreatePanel::CreateCharacter()
+{
+	if (CharacterStageClass)
+	{
+		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+		{
+			if (InPawn->CharacterStage)
+			{
+				InPawn->CharacterStage->Destroy();
+			}
+
+			InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
+
+			return InPawn->CharacterStage;
+		}
+	}
+	return nullptr;
+}
+
 void UUI_CharacterCreatePanel::SpawnCharacter(const FMMORPGCharacterAppearance* InCAData)
 {
 	if (InCAData)
 	{
 		if (CharacterStageClass)
 		{
-			if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+			if (ACharacterStage* InCharacterStage = CreateCharacter())
 			{
-				if (InPawn->CharacterStage)
-				{
-					InPawn->CharacterStage->Destroy();
-				}
-
-				InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
-				if (InPawn->CharacterStage)
-				{
-
-				}
 			}
 		}
 	}
@@ -120,4 +128,22 @@ void UUI_CharacterCreatePanel::SpawnCharacter()
 void UUI_CharacterCreatePanel::SetCurrentSlotPosition(const int32 InNewPos)
 {
 	SlotPosition = InNewPos;
+
+	//HighlightSelection(SlotPosition);
+}
+
+void UUI_CharacterCreatePanel::HighlightSelection(int32 InSlotPos)
+{
+	FindByPredicateInScrollList<UUI_CharacterButton>([InSlotPos](UUI_CharacterButton* InButton)->bool
+		{
+			if (InSlotPos == InButton->GetSlotPosition())
+			{
+				InButton->SetHighlight(true);
+			}
+			else
+			{
+				InButton->SetHighlight(false);
+			}
+			return false;
+		});
 }

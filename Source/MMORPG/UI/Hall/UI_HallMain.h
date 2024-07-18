@@ -44,6 +44,8 @@ public:
 
 	void SpawnRecentCharacter();						//生成最近游玩的角色
 
+	void HighlightDefaultSelection();					//高亮显示默认角色
+
 protected:
 	//循环绑定
 	void BindClientRcv();

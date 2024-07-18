@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../../Core/UI_Base.h"
 #include "MMORPGType.h"
+#include "Components/ScrollBox.h"
 #include "UI_CharacterCreatePanel.generated.h"
 
 class UTextBlock;
@@ -48,11 +49,35 @@ public:
 
 	void InitCharacterButtons(FCharacterAppearacnce& InCAs);
 
+	ACharacterStage* CreateCharacter();						//创建新的角色舞台实例
 	void SpawnCharacter(const FMMORPGCharacterAppearance* InCAData);	//生成角色舞台实例
 	void SpawnCharacter(const int32 InSlotPos);					
 	void SpawnCharacter();
 
 	void SetCurrentSlotPosition(const int32 InNewPos);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="Func"></param>
+	/// <param name="bool">是否继续循环</param>
+	template<class T>
+	void FindByPredicateInScrollList(TFunction<bool(T*)> Func) 
+	{
+		for (auto& Temp : ScrollList->GetAllChildren())
+		{
+			if (T* InButton = Cast<T>(Temp))
+			{
+				if (Func(InButton))
+				{
+					break;
+				}
+			}
+		}
+	}
+
+	void HighlightSelection(int32 InSlotPos);
 
 protected:
 	int32 SlotPosition;											//记录当前选择的角色插槽下标

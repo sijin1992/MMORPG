@@ -14,6 +14,8 @@ public class MMORPG : ModuleRules
 			"Engine", 
 			"InputCore", 
 			"EnhancedInput",
+			"Slate",
+			"SlateCore",
 		 });
 
         //自定义插件

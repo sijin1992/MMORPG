@@ -21,6 +21,8 @@ void UUI_CharacterButton::NativeConstruct()
 
 	CreateShowIcon->SetVisibility(ESlateVisibility::Visible);
 	CharacterInfo->SetVisibility(ESlateVisibility::Collapsed);
+
+	DefaultColor = CharacterButton->WidgetStyle.Normal.TintColor.GetSpecifiedColor();
 }
 
 void UUI_CharacterButton::NativeDestruct()
@@ -45,6 +47,20 @@ void UUI_CharacterButton::InitCharacterButton(const FMMORPGCharacterAppearance& 
 	}
 }
 
+void UUI_CharacterButton::SetHighlight(bool bHigh)
+{
+	if (bHigh)
+	{
+		CharacterButton->WidgetStyle.Normal.TintColor = HighlightColor;
+		CharacterButton->SetStyle(CharacterButton->WidgetStyle);
+	}
+	else 
+	{
+		CharacterButton->WidgetStyle.Normal.TintColor = DefaultColor;
+		CharacterButton->SetStyle(CharacterButton->WidgetStyle);
+	}
+}
+
 void UUI_CharacterButton::ClickedCharacter()
 {
 	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
@@ -53,7 +69,7 @@ void UUI_CharacterButton::ClickedCharacter()
 		{
 			if (!InPlayerState->IsCharacterExistInSlot(SlotPosition))//如果当前插槽没有角色,就创建新的角色
 			{
-				UI_CharacterCreatePanel->SpawnCharacter(SlotPosition);
+				UI_CharacterCreatePanel->CreateCharacter();
 
 				UI_CharacterCreatePanel->CreateKneadFace();
 

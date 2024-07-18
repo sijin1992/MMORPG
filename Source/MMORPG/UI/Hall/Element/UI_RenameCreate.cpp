@@ -38,15 +38,6 @@ void UUI_RenameCreate::ClickedCancel()
 	{
 		InHall->PlayRenameOut();
 		InHall->ResetCharacterCreatePanel();
-
-		//销毁角色舞台实例
-		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
-		{
-			if (InPawn->CharacterStage)
-			{
-				InPawn->CharacterStage->Destroy();
-			}
-		}
 	}
 }
 

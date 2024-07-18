@@ -74,6 +74,11 @@ void UUI_HallMain::PlayRenameOut()
 void UUI_HallMain::ResetCharacterCreatePanel()
 {
 	UI_CharacterCreatePanel->CreateCharacterButtons();
+	//高亮Button
+	HighlightDefaultSelection();
+
+	//生成最新的对象
+	SpawnRecentCharacter();
 }
 
 void UUI_HallMain::SpawnRecentCharacter()
@@ -83,6 +88,17 @@ void UUI_HallMain::SpawnRecentCharacter()
 		if (FMMORPGCharacterAppearance* InCAData = InPlayerState->GetRecentCharacter())
 		{
 			UI_CharacterCreatePanel->SpawnCharacter(InCAData);
+		}
+	}
+}
+
+void UUI_HallMain::HighlightDefaultSelection()
+{
+	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+	{
+		if (FMMORPGCharacterAppearance* InCAData = InPlayerState->GetRecentCharacter())
+		{
+			UI_CharacterCreatePanel->HighlightSelection(InCAData->SlotPosition);
 		}
 	}
 }
@@ -137,6 +153,9 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 
 				//生成最近使用的角色
 				SpawnRecentCharacter();
+
+				//让角色按钮高亮
+				HighlightDefaultSelection();
 			}
 		}
 

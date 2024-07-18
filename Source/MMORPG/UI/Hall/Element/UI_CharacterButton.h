@@ -36,18 +36,26 @@ class MMORPG_API UUI_CharacterButton : public UUI_Base
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Date;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	FLinearColor HighlightColor;
 public:
 	void NativeConstruct() override;
 
 	void NativeDestruct() override;
 
+	FORCEINLINE int32 GetSlotPosition() { return SlotPosition; }
+
 	void SetSlotPosition(const int32 InNewPos);
 
 	void InitCharacterButton(const FMMORPGCharacterAppearance& InCA);
+
+	void SetHighlight(bool bHigh);
 protected:
 	UFUNCTION()
 	void ClickedCharacter();
 
 protected:
 	int32 SlotPosition;									//角色插槽
+	FLinearColor DefaultColor;							//按钮默认的Color
 };
