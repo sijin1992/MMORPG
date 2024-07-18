@@ -6,10 +6,10 @@
 #include "Components/Image.h"
 #include "Components/VerticalBox.h"
 #include "Components/TextBlock.h"
-#include "../../../Core/Hall/Character/CharacterStage.h"
-#include "../../../Core/Hall/HallPawn.h"
 #include "UI_CharacterCreatePanel.h"
 #include "../UI_HallMain.h"
+#include "../../../Core/Hall/HallPlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 void UUI_CharacterButton::NativeConstruct()
 {
@@ -47,33 +47,28 @@ void UUI_CharacterButton::InitCharacterButton(const FMMORPGCharacterAppearance& 
 
 void UUI_CharacterButton::ClickedCharacter()
 {
-	if (1)
+	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 	{
-		if (CharacterStageClass)
-		{
-			if (AHallPawn* InPawn = GetPawn<AHallPawn>())
-			{
-				if (InPawn->CharacterStage)
-				{
-					InPawn->CharacterStage->Destroy();
-				}
-
-				InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
-				if (InPawn->CharacterStage)
-				{
-
-				}
-			}
-		}
-
 		if (UUI_CharacterCreatePanel* UI_CharacterCreatePanel = GetParents<UUI_CharacterCreatePanel>())
 		{
-			UI_CharacterCreatePanel->CreateKneadFace();
-
-			if (UUI_HallMain* UI_HallMain = UI_CharacterCreatePanel->GetParents<UUI_HallMain>())
+			if (!InPlayerState->IsCharacterExistInSlot(SlotPosition))//如果当前插槽没有角色,就创建新的角色
 			{
-				UI_HallMain->PlayRenameIn();
+				UI_CharacterCreatePanel->SpawnCharacter(SlotPosition);
+
+				UI_CharacterCreatePanel->CreateKneadFace();
+
+				if (UUI_HallMain* UI_HallMain = UI_CharacterCreatePanel->GetParents<UUI_HallMain>())
+				{
+					UI_HallMain->PlayRenameIn();
+				}
 			}
+			else
+			{
+				//如果当前插槽已经有角色了,就连接DS服务器，OpenLevel
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
+			}
+
+			UI_CharacterCreatePanel->SetCurrentSlotPosition(SlotPosition);
 		}
 	}
 }

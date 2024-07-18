@@ -8,11 +8,14 @@
 #include "Components/ScrollBoxSlot.h"
 #include "UI_KneadFace.h"
 #include "../../../Core/Hall/HallPlayerState.h"
+#include "../../../Core/Hall/Character/CharacterStage.h"
+#include "../../../Core/Hall/HallPawn.h"
 
 void UUI_CharacterCreatePanel::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	SlotPosition = 0;
 }
 
 void UUI_CharacterCreatePanel::NativeDestruct()
@@ -54,12 +57,13 @@ void UUI_CharacterCreatePanel::InitCharacterButtons(FCharacterAppearacnce& InCAs
 		{
 			if (UUI_CharacterButton* InCharacterButton = CreateWidget<UUI_CharacterButton>(GetWorld(), UI_CharacterButtonClass))
 			{
-				InCharacterButton->SetSlotPosition(i);
-				InCharacterButton->SetParents(this);
 				if (UScrollBoxSlot* InScrollBoxSlot = Cast<UScrollBoxSlot>(ScrollList->AddChild(InCharacterButton)))
 				{
 					InScrollBoxSlot->SetPadding(10.0f);
 				}
+
+				InCharacterButton->SetSlotPosition(i);
+				InCharacterButton->SetParents(this);
 
 				if (const FMMORPGCharacterAppearance* InCharacterAppearance = 
 					InCAs.FindByPredicate([&](const FMMORPGCharacterAppearance& InCA)
@@ -72,4 +76,48 @@ void UUI_CharacterCreatePanel::InitCharacterButtons(FCharacterAppearacnce& InCAs
 			}
 		}
 	}
+}
+
+void UUI_CharacterCreatePanel::SpawnCharacter(const FMMORPGCharacterAppearance* InCAData)
+{
+	if (InCAData)
+	{
+		if (CharacterStageClass)
+		{
+			if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+			{
+				if (InPawn->CharacterStage)
+				{
+					InPawn->CharacterStage->Destroy();
+				}
+
+				InPawn->CharacterStage = GetWorld()->SpawnActor<ACharacterStage>(CharacterStageClass, SpawnPoint, FRotator::ZeroRotator);
+				if (InPawn->CharacterStage)
+				{
+
+				}
+			}
+		}
+	}
+}
+
+void UUI_CharacterCreatePanel::SpawnCharacter(const int32 InSlotPos)
+{
+	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+	{
+		SpawnCharacter(InPlayerState->GetCharacterAppearance().FindByPredicate([&](const FMMORPGCharacterAppearance& InCA)
+			{
+				return InCA.SlotPosition == InSlotPos;
+			}));
+	}
+}
+
+void UUI_CharacterCreatePanel::SpawnCharacter()
+{
+	SpawnCharacter(SlotPosition);
+}
+
+void UUI_CharacterCreatePanel::SetCurrentSlotPosition(const int32 InNewPos)
+{
+	SlotPosition = InNewPos;
 }

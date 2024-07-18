@@ -42,6 +42,8 @@ public:
 
 	void ResetCharacterCreatePanel();					//还原创角界面
 
+	void SpawnRecentCharacter();						//生成最近游玩的角色
+
 protected:
 	//循环绑定
 	void BindClientRcv();

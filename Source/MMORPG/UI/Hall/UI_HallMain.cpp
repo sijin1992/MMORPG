@@ -76,6 +76,17 @@ void UUI_HallMain::ResetCharacterCreatePanel()
 	UI_CharacterCreatePanel->CreateCharacterButtons();
 }
 
+void UUI_HallMain::SpawnRecentCharacter()
+{
+	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+	{
+		if (FMMORPGCharacterAppearance* InCAData = InPlayerState->GetRecentCharacter())
+		{
+			UI_CharacterCreatePanel->SpawnCharacter(InCAData);
+		}
+	}
+}
+
 void UUI_HallMain::BindClientRcv()
 {
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
@@ -123,6 +134,9 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 				NetDataAnalysis::StringToFCharacterAppearacnce(CharacterJson, InPlayerState->GetCharacterAppearance());
 				
 				UI_CharacterCreatePanel->InitCharacterButtons(InPlayerState->GetCharacterAppearance());
+
+				//生成最近使用的角色
+				SpawnRecentCharacter();
 			}
 		}
 

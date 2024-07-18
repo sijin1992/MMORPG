@@ -17,6 +17,10 @@ class MMORPG_API AHallPlayerState : public APlayerState
 
 public:
 	FCharacterAppearacnce& GetCharacterAppearance();
+
+	bool IsCharacterExistInSlot(const int32 InPos);						//判断插槽里的角色是否存在
+
+	FMMORPGCharacterAppearance* GetRecentCharacter();					//获取用户最近使用的角色数据
 private:
 	FCharacterAppearacnce CharacterAppearances;
 };
