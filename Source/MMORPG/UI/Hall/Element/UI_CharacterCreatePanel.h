@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../Core/UI_Base.h"
+#include "MMORPGType.h"
 #include "UI_CharacterCreatePanel.generated.h"
 
 class UTextBlock;
@@ -37,6 +38,6 @@ public:
 	void CreateKneadFace();
 	//创建角色界面的按钮
 	void CreateCharacterButtons();
-protected:
-	void InitCharacterButton(const int32 InNumber);
+
+	void InitCharacterButtons(FCharacterAppearacnce& InCAs);
 };

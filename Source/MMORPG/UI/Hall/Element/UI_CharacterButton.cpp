@@ -14,6 +14,8 @@
 void UUI_CharacterButton::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	SlotPosition = INDEX_NONE;
 	
 	CharacterButton->OnReleased.AddDynamic(this, &UUI_CharacterButton::ClickedCharacter);
 
@@ -25,6 +27,22 @@ void UUI_CharacterButton::NativeDestruct()
 {
 	Super::NativeDestruct();
 
+}
+
+void UUI_CharacterButton::SetSlotPosition(const int32 InNewPos)
+{
+	SlotPosition = InNewPos;
+}
+
+void UUI_CharacterButton::InitCharacterButton(const FMMORPGCharacterAppearance& InCA)
+{
+	if (InCA.SlotPosition != INDEX_NONE)
+	{
+		CreateShowIcon->SetVisibility(ESlateVisibility::Collapsed);
+		CharacterInfo->SetVisibility(ESlateVisibility::Visible);
+		CharacterName->SetText(FText::FromString(InCA.Name));
+		Date->SetText(FText::FromString(InCA.Date));
+	}
 }
 
 void UUI_CharacterButton::ClickedCharacter()

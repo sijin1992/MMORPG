@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../Core/UI_Base.h"
+#include "MMORPGType.h"
 #include "UI_CharacterButton.generated.h"
 
 class UButton;
@@ -47,8 +48,13 @@ public:
 
 	void NativeDestruct() override;
 
+	void SetSlotPosition(const int32 InNewPos);
+
+	void InitCharacterButton(const FMMORPGCharacterAppearance& InCA);
 protected:
 	UFUNCTION()
 	void ClickedCharacter();
 
+protected:
+	int32 SlotPosition;									//角色插槽
 };

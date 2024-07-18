@@ -7,12 +7,12 @@
 #include "UI_CharacterButton.h"
 #include "Components/ScrollBoxSlot.h"
 #include "UI_KneadFace.h"
+#include "../../../Core/Hall/HallPlayerState.h"
 
 void UUI_CharacterCreatePanel::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	InitCharacterButton(4);
 }
 
 void UUI_CharacterCreatePanel::NativeDestruct()
@@ -38,23 +38,36 @@ void UUI_CharacterCreatePanel::CreateKneadFace()
 
 void UUI_CharacterCreatePanel::CreateCharacterButtons()
 {
-	InitCharacterButton(4);
+	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+	{
+		InitCharacterButtons(InPlayerState->GetCharacterAppearance());
+	}
 }
 
-void UUI_CharacterCreatePanel::InitCharacterButton(const int32 InNumber)
+void UUI_CharacterCreatePanel::InitCharacterButtons(FCharacterAppearacnce& InCAs)
 {
 	ScrollList->ClearChildren();
 
 	if (UI_CharacterButtonClass)
 	{
-		for (int32 i = 0; i < InNumber; i++)
+		for (int32 i = 0; i < 4; i++)
 		{
 			if (UUI_CharacterButton* InCharacterButton = CreateWidget<UUI_CharacterButton>(GetWorld(), UI_CharacterButtonClass))
 			{
+				InCharacterButton->SetSlotPosition(i);
 				InCharacterButton->SetParents(this);
 				if (UScrollBoxSlot* InScrollBoxSlot = Cast<UScrollBoxSlot>(ScrollList->AddChild(InCharacterButton)))
 				{
 					InScrollBoxSlot->SetPadding(10.0f);
+				}
+
+				if (const FMMORPGCharacterAppearance* InCharacterAppearance = 
+					InCAs.FindByPredicate([&](const FMMORPGCharacterAppearance& InCA)
+						{
+							return InCA.SlotPosition == i;
+						}))
+				{
+					InCharacterButton->InitCharacterButton(*InCharacterAppearance);
 				}
 			}
 		}

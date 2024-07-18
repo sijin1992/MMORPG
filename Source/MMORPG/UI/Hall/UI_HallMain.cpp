@@ -121,6 +121,8 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			{
 				//解析角色数据
 				NetDataAnalysis::StringToFCharacterAppearacnce(CharacterJson, InPlayerState->GetCharacterAppearance());
+				
+				UI_CharacterCreatePanel->InitCharacterButtons(InPlayerState->GetCharacterAppearance());
 			}
 		}
 
