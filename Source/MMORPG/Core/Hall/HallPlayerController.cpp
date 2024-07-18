@@ -5,5 +5,7 @@
 
 AHallPlayerController::AHallPlayerController()
 {
-	bShowMouseCursor = true;
+	bShowMouseCursor = true;			//显示鼠标
+	bEnableClickEvents = true;			//开启敲击事件
+	bEnableTouchEvents = true;			//开启触摸事件
 }
