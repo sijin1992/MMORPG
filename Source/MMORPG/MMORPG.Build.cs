@@ -23,6 +23,7 @@ public class MMORPG : ModuleRules
             "SimpleNetChannel",
 			"SimpleThread",
 			"MMORPGCommon",
+            "SimpleActorBrowsing",
          });
     }
 }

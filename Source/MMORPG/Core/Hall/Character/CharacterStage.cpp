@@ -3,6 +3,7 @@
 
 #include "CharacterStage.h"
 #include "Components/CapsuleComponent.h"
+#include "../HallPlayerController.h"
 
 // Sets default values
 ACharacterStage::ACharacterStage()
@@ -40,6 +41,10 @@ void ACharacterStage::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ACharacterStage::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-
+	if (AHallPlayerController* InPlayerController = GetWorld()->GetFirstPlayerController<AHallPlayerController>())
+	{
+		InPlayerController->ResetTarget(this);
+		InPlayerController->ExecutionRotateCharacter();
+	}
 }
 
