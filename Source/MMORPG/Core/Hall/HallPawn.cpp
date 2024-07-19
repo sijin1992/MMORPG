@@ -11,6 +11,9 @@ AHallPawn::AHallPawn()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CharacterStage = nullptr;
+
+	//如果是蓝图不需要这步
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
 
 // Called when the game starts or when spawned

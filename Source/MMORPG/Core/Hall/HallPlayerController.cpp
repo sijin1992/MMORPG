@@ -15,12 +15,21 @@ void AHallPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	SimpleBrowse.Register(this, NULL);
+	SimpleZoom.Register(GetPawn(), 400.0f);
 }
 
 void AHallPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+}
+
+void AHallPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	InputComponent->BindAction("MouseClick", IE_Released, this, &AHallPlayerController::StopRotateCharacter);
+	InputComponent->BindAxis("Zoom", this, &AHallPlayerController::Zoom);
 }
 
 void AHallPlayerController::ExecutionRotateCharacter()
@@ -38,9 +47,14 @@ void AHallPlayerController::ResetTarget(AActor* InTarget)
 	SimpleBrowse.ResetTarget(InTarget);
 }
 
-void AHallPlayerController::SetupInputComponent()
+void AHallPlayerController::Zoom(float InDeltaTime)
 {
-	Super::SetupInputComponent();
-
-	InputComponent->BindAction("MouseClick", IE_Released, this, &AHallPlayerController::StopRotateCharacter);
+	if (InDeltaTime > 0)
+	{
+		SimpleZoom.ZoomPositive(InDeltaTime * 10.0f);
+	}
+	else if (InDeltaTime < 0)
+	{
+		SimpleZoom.ZoomNegative(InDeltaTime * 10.0f);
+	}
 }
