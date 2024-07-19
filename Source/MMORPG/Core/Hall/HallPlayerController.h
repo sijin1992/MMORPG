@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Core/SimpleBrowse.h"
 #include "Core/SimpleZoom.h"
+#include "Core/SimplePanelMove.h"
 #include "HallPlayerController.generated.h"
 
 /**
@@ -33,7 +34,12 @@ public:
 	//缩放
 	void Zoom(float InDeltaTime);
 
+	//移动
+	void BeginMove();
+	void EndMove();
+
 private:
-	SimpleActorAction::FSimpleBrowse SimpleBrowse;
-	SimpleActorAction::FSimpleZoom SimpleZoom;
+	SimpleActorAction::FSimpleBrowse SimpleBrowse;			//旋转实例
+	SimpleActorAction::FSimpleZoom SimpleZoom;				//缩放实例
+	SimpleActorAction::FSimplePanelMove SimplePanelMove;	//上下移动实例
 };
