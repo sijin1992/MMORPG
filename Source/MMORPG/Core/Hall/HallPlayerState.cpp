@@ -57,3 +57,8 @@ FMMORPGCharacterAppearance* AHallPlayerState::AddCharacterCA(const int32 InPos)
 	}
 	return InCAInstance;
 }
+
+int32 AHallPlayerState::AddCharacterCA(const FMMORPGCharacterAppearance& InCA)
+{
+	return CharacterAppearances.Add(InCA);
+}

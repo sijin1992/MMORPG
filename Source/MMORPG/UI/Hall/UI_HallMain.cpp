@@ -206,13 +206,21 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 		//收到创建角色回调
 		ECheckNameType CheckNameType = ECheckNameType::UNKNOWN_ERROR;
 		bool bCreateCharacter = false;//是否创角成功
-		SIMPLE_PROTOCOLS_RECEIVE(SP_CreateCharacterResponses, CheckNameType, bCreateCharacter);
+		FString JsonString;
+		SIMPLE_PROTOCOLS_RECEIVE(SP_CreateCharacterResponses, CheckNameType, bCreateCharacter, JsonString);
 		if (bCreateCharacter)
 		{
 			//创角成功
 			PrintLog(LOCTEXT("CREATECHARACTERRESPONSES_SUCCESSFULLY", "created successfully."));
-			PlayRenameOut();
-			ResetCharacterCreatePanel(false);
+
+			FMMORPGCharacterAppearance InCA;
+			NetDataAnalysis::StringToFCharacterAppearacnce(JsonString, InCA);
+			if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+			{
+				InPlayerState->AddCharacterCA(InCA);
+				PlayRenameOut();
+				ResetCharacterCreatePanel(false);
+			}
 		}
 		else
 		{

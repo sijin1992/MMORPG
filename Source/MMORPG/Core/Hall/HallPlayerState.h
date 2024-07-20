@@ -24,7 +24,9 @@ public:
 
 	FMMORPGCharacterAppearance* GetCharacterCA(const int32 InPos);		//根据插槽下标获取角色数据
 
-	FMMORPGCharacterAppearance* AddCharacterCA(const int32 InPos);		//根据插槽下标获取角色数据
+	FMMORPGCharacterAppearance* AddCharacterCA(const int32 InPos);		//根据插槽下标增加角色数据
+
+	int32 AddCharacterCA(const FMMORPGCharacterAppearance& InCA);		//增加角色数据
 private:
 	FCharacterAppearacnce CharacterAppearances;
 };

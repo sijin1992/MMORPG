@@ -37,19 +37,19 @@ void UUI_RenameCreate::ClickedCreate()
 	{
 		if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 		{
-			if (FMMORPGCharacterAppearance* InCA = InPlayerState->AddCharacterCA(SlotPosition))
+			FMMORPGCharacterAppearance InCA;
+			InCA.Name = EditableName->GetText().ToString();
+			InCA.Date = FDateTime::Now().ToString();
+			InCA.Lv = 1;
+			InCA.SlotPosition = SlotPosition;
+
+			if (InCA.Name.IsEmpty())
 			{
-				InCA->Name = EditableName->GetText().ToString();
-				InCA->Date = FDateTime::Now().ToString();
-				InCA->Lv = 1;
-				if (InCA->Name.IsEmpty())
-				{
-					InHall->PrintLog(TEXT("Name cannot be empty."));
-				}
-				else
-				{
-					InHall->CreateCharacter(*InCA);
-				}
+				InHall->PrintLog(TEXT("Name cannot be empty."));
+			}
+			else
+			{
+				InHall->CreateCharacter(InCA);
 			}
 		}
 	}
@@ -59,6 +59,15 @@ void UUI_RenameCreate::ClickedCancel()
 {
 	if (UUI_HallMain* InHall = GetParents<UUI_HallMain>())
 	{
+		//删除刚刚的角色形象
+		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+		{
+			if (InPawn->CharacterStage)
+			{
+				InPawn->CharacterStage->Destroy();
+				InPawn->CharacterStage = nullptr;
+			}
+		}
 		InHall->PlayRenameOut();
 		InHall->ResetCharacterCreatePanel();
 	}
