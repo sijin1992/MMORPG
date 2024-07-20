@@ -76,6 +76,7 @@ void UUI_CharacterButton::ClickedCharacter()
 				if (UUI_HallMain* UI_HallMain = UI_CharacterCreatePanel->GetParents<UUI_HallMain>())
 				{
 					UI_HallMain->PlayRenameIn();
+					UI_HallMain->SetSlotPosition(SlotPosition);
 				}
 			}
 			else

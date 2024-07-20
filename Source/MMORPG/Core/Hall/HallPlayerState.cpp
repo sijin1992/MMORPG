@@ -10,7 +10,7 @@ FCharacterAppearacnce& AHallPlayerState::GetCharacterAppearance()
 
 bool AHallPlayerState::IsCharacterExistInSlot(const int32 InPos)
 {
-	return CharacterAppearances.FindByPredicate([InPos](const FMMORPGCharacterAppearance& InCA) {return InPos == InCA.SlotPosition; }) != nullptr;
+	return GetCharacterCA(InPos) != nullptr;
 }
 
 FMMORPGCharacterAppearance* AHallPlayerState::GetRecentCharacter()
@@ -34,4 +34,26 @@ FMMORPGCharacterAppearance* AHallPlayerState::GetRecentCharacter()
 	}
 
 	return &CharacterAppearances[Index];
+}
+
+FMMORPGCharacterAppearance* AHallPlayerState::GetCharacterCA(const int32 InPos)
+{
+	return CharacterAppearances.FindByPredicate([InPos](const FMMORPGCharacterAppearance& InCA) {return InPos == InCA.SlotPosition; });
+}
+
+FMMORPGCharacterAppearance* AHallPlayerState::AddCharacterCA(const int32 InPos)
+{
+	FMMORPGCharacterAppearance* InCAInstance = nullptr;
+	if (FMMORPGCharacterAppearance* InCA = GetCharacterCA(InPos))
+	{
+		InCAInstance = InCA;
+	}
+	else
+	{
+		CharacterAppearances.Add(FMMORPGCharacterAppearance());
+		FMMORPGCharacterAppearance& InCARef = CharacterAppearances.Last();
+		InCARef.SlotPosition = InPos;
+		InCAInstance = &InCARef;
+	}
+	return InCAInstance;
 }

@@ -12,6 +12,8 @@
 #include "Protocol/HallProtocol.h"
 #include "../../Core/Hall/HallPlayerState.h"
 
+#define LOCTEXT_NAMESPACE "UUI_HallMain"
+
 void UUI_HallMain::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -71,14 +73,17 @@ void UUI_HallMain::PlayRenameOut()
 	UI_RenameCreate->PlayWidgetAnim(TEXT("RenameOut"));
 }
 
-void UUI_HallMain::ResetCharacterCreatePanel()
+void UUI_HallMain::ResetCharacterCreatePanel(bool bSpawnCharacter)
 {
 	UI_CharacterCreatePanel->CreateCharacterButtons();
 	//高亮Button
 	HighlightDefaultSelection();
 
-	//生成最新的对象
-	SpawnRecentCharacter();
+	if (bSpawnCharacter)
+	{
+		//生成最新的对象
+		SpawnRecentCharacter();
+	}
 }
 
 void UUI_HallMain::SpawnRecentCharacter()
@@ -101,6 +106,31 @@ void UUI_HallMain::HighlightDefaultSelection()
 			UI_CharacterCreatePanel->HighlightSelection(InCAData->SlotPosition);
 		}
 	}
+}
+
+void UUI_HallMain::CheckReName(FString& InCharacterName)
+{
+	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+	{
+		//发送检查角色名字请求
+		SEND_DATA(SP_CheckCharacterNameRequests, InGameInstance->GetUserData().ID, InCharacterName);
+	}
+}
+
+void UUI_HallMain::CreateCharacter(const FMMORPGCharacterAppearance& InCA)
+{
+	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+	{
+		//发送创建角色请求
+		FString CAJson;
+		NetDataAnalysis::CharacterAppearacnceToString(InCA, CAJson);
+		SEND_DATA(SP_CreateCharacterRequests, InGameInstance->GetUserData().ID, CAJson);
+	}
+}
+
+void UUI_HallMain::SetSlotPosition(const int32 InSlotPos)
+{
+	UI_RenameCreate->SetSlotPosition(InSlotPos);
 }
 
 void UUI_HallMain::BindClientRcv()
@@ -139,6 +169,7 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 	switch (ProtocolNumber)
 	{
 	case SP_CharacterAppearanceResponses:
+	{
 		//接收角色数据
 		FString CharacterJson;
 		SIMPLE_PROTOCOLS_RECEIVE(SP_CharacterAppearanceResponses, CharacterJson);
@@ -148,7 +179,7 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			{
 				//解析角色数据
 				NetDataAnalysis::StringToFCharacterAppearacnce(CharacterJson, InPlayerState->GetCharacterAppearance());
-				
+
 				UI_CharacterCreatePanel->InitCharacterButtons(InPlayerState->GetCharacterAppearance());
 
 				//生成最近使用的角色
@@ -160,6 +191,41 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 		}
 
 		break;
+	}
+	case SP_CheckCharacterNameResponses:
+	{
+		//收到检查角色名字回调
+		ECheckNameType CheckNameType = ECheckNameType::UNKNOWN_ERROR;
+		SIMPLE_PROTOCOLS_RECEIVE(SP_CheckCharacterNameResponses, CheckNameType);
+		//打印
+		PrintLogByCheckNameType(CheckNameType);
+		break;
+	}
+	case SP_CreateCharacterResponses:
+	{
+		//收到创建角色回调
+		ECheckNameType CheckNameType = ECheckNameType::UNKNOWN_ERROR;
+		bool bCreateCharacter = false;//是否创角成功
+		SIMPLE_PROTOCOLS_RECEIVE(SP_CreateCharacterResponses, CheckNameType, bCreateCharacter);
+		if (bCreateCharacter)
+		{
+			//创角成功
+			PrintLog(LOCTEXT("CREATECHARACTERRESPONSES_SUCCESSFULLY", "created successfully."));
+			PlayRenameOut();
+			ResetCharacterCreatePanel(false);
+		}
+		else
+		{
+			PrintLog(LOCTEXT("CREATECHARACTERRESPONSES_FAIL", "created fail."));
+			//延迟打印
+			GThread::Get()->GetCoroutines().BindLambda(1.5f, [=]()
+				{
+					PrintLogByCheckNameType(CheckNameType);
+				});
+		}
+
+		break;
+	}
 	}
 }
 
@@ -174,3 +240,24 @@ void UUI_HallMain::LinkServerInfo(ESimpleNetErrorType InType, const FString& InM
 		}
 	}
 }
+
+void UUI_HallMain::PrintLogByCheckNameType(ECheckNameType InCheckNameType)
+{
+	switch (InCheckNameType)
+	{
+	case UNKNOWN_ERROR:
+		PrintLog(LOCTEXT("CHECK_NAME_UNKNOWN_ERROR", "The server encountered an unknown error."));
+		break;
+	case NAME_NOT_EXIST:
+		PrintLog(LOCTEXT("CHECK_NAME_NAME_NOT_EXIST", "The name is valid."));
+		break;
+	case SERVER_NOT_EXIST:
+		PrintLog(LOCTEXT("CHECK_NAME_SERVER_NOT_EXIST", "Server error."));
+		break;
+	case NAME_EXIST:
+		PrintLog(LOCTEXT("CHECK_NAME_NAME_EXIST", "The name has been registered."));
+		break;
+	}
+}
+
+#undef LOCTEXT_NAMESPACE

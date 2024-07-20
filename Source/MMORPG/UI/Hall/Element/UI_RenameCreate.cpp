@@ -7,11 +7,14 @@
 #include "../UI_HallMain.h"
 #include "../../../Core/Hall/HallPawn.h"
 #include "../../../Core/Hall/Character/CharacterStage.h"
+#include "../../../Core/Hall/HallPlayerState.h"
 
 void UUI_RenameCreate::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	SlotPosition = INDEX_NONE;
+
 	FindNameButton->OnReleased.AddDynamic(this, &UUI_RenameCreate::ClickedFindName);
 	CreateButton->OnReleased.AddDynamic(this, &UUI_RenameCreate::ClickedCreate);
 	CancelButton->OnReleased.AddDynamic(this, &UUI_RenameCreate::ClickedCancel);
@@ -23,12 +26,32 @@ void UUI_RenameCreate::NativeDestruct()
 
 }
 
+void UUI_RenameCreate::SetSlotPosition(const int32 InSlotPos)
+{
+	SlotPosition = InSlotPos;
+}
+
 void UUI_RenameCreate::ClickedCreate()
 {
 	if (UUI_HallMain* InHall = GetParents<UUI_HallMain>())
 	{
-		InHall->PlayRenameOut();
-		InHall->ResetCharacterCreatePanel();
+		if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+		{
+			if (FMMORPGCharacterAppearance* InCA = InPlayerState->AddCharacterCA(SlotPosition))
+			{
+				InCA->Name = EditableName->GetText().ToString();
+				InCA->Date = FDateTime::Now().ToString();
+				InCA->Lv = 1;
+				if (InCA->Name.IsEmpty())
+				{
+					InHall->PrintLog(TEXT("Name cannot be empty."));
+				}
+				else
+				{
+					InHall->CreateCharacter(*InCA);
+				}
+			}
+		}
 	}
 }
 
@@ -43,5 +66,9 @@ void UUI_RenameCreate::ClickedCancel()
 
 void UUI_RenameCreate::ClickedFindName()
 {
-
+	if (UUI_HallMain* InHall = GetParents<UUI_HallMain>())
+	{
+		FString CharacterName = EditableName->GetText().ToString();
+		InHall->CheckReName(CharacterName);
+	}
 }

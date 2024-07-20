@@ -32,6 +32,8 @@ public:
 
 	virtual void NativeDestruct() override;
 
+	void SetSlotPosition(const int32 InSlotPos);
+
 protected:
 	UFUNCTION()
 	void ClickedCreate();
@@ -41,4 +43,7 @@ protected:
 
 	UFUNCTION()
 	void ClickedFindName();
+
+protected:
+	int32 SlotPosition;
 };

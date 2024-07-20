@@ -21,6 +21,10 @@ public:
 	bool IsCharacterExistInSlot(const int32 InPos);						//判断插槽里的角色是否存在
 
 	FMMORPGCharacterAppearance* GetRecentCharacter();					//获取用户最近使用的角色数据
+
+	FMMORPGCharacterAppearance* GetCharacterCA(const int32 InPos);		//根据插槽下标获取角色数据
+
+	FMMORPGCharacterAppearance* AddCharacterCA(const int32 InPos);		//根据插槽下标获取角色数据
 private:
 	FCharacterAppearacnce CharacterAppearances;
 };

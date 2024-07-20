@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Core/UI_Base.h"
 #include "SimpleNetChannelType.h"
+#include "MMORPGType.h"
 #include "UI_HallMain.generated.h"
 
 class FSimpleChannel;
@@ -40,11 +41,17 @@ public:
 	void PlayRenameIn();								//播放角色命名界面渐入动画
 	void PlayRenameOut();								//播放角色命名界面渐出动画
 
-	void ResetCharacterCreatePanel();					//还原创角界面
+	void ResetCharacterCreatePanel(bool bSpawnCharacter = true);//还原创角界面
 
 	void SpawnRecentCharacter();						//生成最近游玩的角色
 
 	void HighlightDefaultSelection();					//高亮显示默认角色
+
+	void CheckReName(FString& InCharacterName);			//重命名检查
+
+	void CreateCharacter(const FMMORPGCharacterAppearance& InCA);	//创建角色
+
+	void SetSlotPosition(const int32 InSlotPos);
 
 protected:
 	//循环绑定
@@ -60,6 +67,8 @@ protected:
 	/// <param name="InMsg"></param>
 	UFUNCTION()
 	void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
+
+	void PrintLogByCheckNameType(ECheckNameType InCheckNameType);
 
 private:
 	//接收代理
