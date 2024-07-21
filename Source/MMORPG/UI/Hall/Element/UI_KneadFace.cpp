@@ -2,4 +2,48 @@
 
 
 #include "UI_KneadFace.h"
+#include "Components/CheckBox.h"
+#include "Components/WidgetSwitcher.h"
 
+void UUI_KneadFace::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	Body->OnCheckStateChanged.AddDynamic(this, &UUI_KneadFace::OnClickedBody);
+	Appearance->OnCheckStateChanged.AddDynamic(this, &UUI_KneadFace::OnClickedAppearance);
+	Talent->OnCheckStateChanged.AddDynamic(this, &UUI_KneadFace::OnClickedTalent);
+
+	Body->SetCheckedState(ECheckBoxState::Checked);
+}
+
+void UUI_KneadFace::NativeDestruct()
+{
+	Super::NativeDestruct();
+}
+
+void UUI_KneadFace::OnClickedBody(bool bIsChecked)
+{
+	Body->SetCheckedState(ECheckBoxState::Checked);
+	Appearance->SetCheckedState(ECheckBoxState::Unchecked);
+	Talent->SetCheckedState(ECheckBoxState::Unchecked);
+
+	FacePanel->SetActiveWidgetIndex(0);
+}
+
+void UUI_KneadFace::OnClickedAppearance(bool bIsChecked)
+{
+	Body->SetCheckedState(ECheckBoxState::Unchecked);
+	Appearance->SetCheckedState(ECheckBoxState::Checked);
+	Talent->SetCheckedState(ECheckBoxState::Unchecked);
+
+	FacePanel->SetActiveWidgetIndex(1);
+}
+
+void UUI_KneadFace::OnClickedTalent(bool bIsChecked)
+{
+	Body->SetCheckedState(ECheckBoxState::Unchecked);
+	Appearance->SetCheckedState(ECheckBoxState::Unchecked);
+	Talent->SetCheckedState(ECheckBoxState::Checked);
+
+	FacePanel->SetActiveWidgetIndex(2);
+}

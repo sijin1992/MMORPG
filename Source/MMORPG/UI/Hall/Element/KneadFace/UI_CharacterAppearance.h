@@ -3,30 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../Core/UI_Base.h"
-#include "UI_KneadFace.generated.h"
+#include "../../../Core/UI_Base.h"
+#include "UI_CharacterAppearance.generated.h"
 
-class UCheckBox;
-class UWidgetSwitcher;
+class UComboBoxString;
+class UWrapBox;
 /**
  * 
  */
 UCLASS()
-class MMORPG_API UUI_KneadFace : public UUI_Base
+class MMORPG_API UUI_CharacterAppearance : public UUI_Base
 {
 	GENERATED_BODY()
 
 	UPROPERTY(meta = (BindWidget))
-	UCheckBox* Body;
-	
-	UPROPERTY(meta = (BindWidget))
-	UCheckBox* Appearance;
+	UComboBoxString* AppearanceType;
 
 	UPROPERTY(meta = (BindWidget))
-	UCheckBox* Talent;
+	UWrapBox* SkinWrap;
 
 	UPROPERTY(meta = (BindWidget))
-	UWidgetSwitcher* FacePanel;
+	UWrapBox* ClothWrap;
+
+	UPROPERTY(meta = (BindWidget))
+	UWrapBox* LegWrap;
 
 public:
 	virtual void NativeConstruct() override;
@@ -35,11 +35,5 @@ public:
 
 private:
 	UFUNCTION()
-	void OnClickedBody(bool bIsChecked);
-
-	UFUNCTION()
-	void OnClickedAppearance(bool bIsChecked);
-
-	UFUNCTION()
-	void OnClickedTalent(bool bIsChecked);
+	void SelectAppearanceType(FString SelectedItem, ESelectInfo::Type SelectionType);
 };
