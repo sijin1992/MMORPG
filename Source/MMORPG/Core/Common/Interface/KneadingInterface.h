@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "MMORPGType.h"
 #include "KneadingInterface.generated.h"
 
 // This class does not need to be modified.
@@ -23,6 +24,9 @@ class MMORPG_API IKneadingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	IKneadingInterface();
+
+	virtual void UpdateKneadingBody() = 0;
+	virtual void UpdateKneadingBody(const FMMORPGCharacterAppearance& InCA) = 0;
 
 	UFUNCTION(BlueprintCallable, Category = "Kneading")
 	virtual void SetLegSize(float InLegSize);
@@ -44,8 +48,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Kneading")
 	virtual void SetMeshPosition(USceneComponent* InMesh);
+
+	void InitKneadingLocation(const FVector& InLocation);
 protected:
 	float LegSize;
 	float WaistSize;
 	float ArmSize;
+
+	FVector Location;
 };

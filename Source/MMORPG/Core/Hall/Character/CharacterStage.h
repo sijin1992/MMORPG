@@ -16,6 +16,8 @@ public:
 	// Sets default values for this character's properties
 	ACharacterStage();
 
+	virtual void UpdateKneadingBody() override;
+	virtual void UpdateKneadingBody(const FMMORPGCharacterAppearance& InCA) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,4 +31,9 @@ public:
 
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+
+	void SetSlotID(int32 InID);
+	int32 GetSlotID() { return SlotID; }
+private:
+	int32 SlotID;//角色插槽下标
 };

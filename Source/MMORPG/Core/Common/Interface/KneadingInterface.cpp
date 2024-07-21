@@ -45,5 +45,16 @@ float IKneadingInterface::GetArmSize()
 
 void IKneadingInterface::SetMeshPosition(USceneComponent* InMesh)
 {
+	if (InMesh)
+	{
+		FVector ComponentLocation = Location;
+		ComponentLocation.Z += LegSize;
 
+		InMesh->SetWorldLocation(ComponentLocation);
+	}
+}
+
+void IKneadingInterface::InitKneadingLocation(const FVector& InLocation)
+{
+	Location = InLocation;
 }

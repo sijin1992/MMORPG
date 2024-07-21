@@ -104,6 +104,8 @@ void UUI_CharacterCreatePanel::SpawnCharacter(const FMMORPGCharacterAppearance* 
 		{
 			if (ACharacterStage* InCharacterStage = CreateCharacter())
 			{
+				InCharacterStage->SetSlotID(InCAData->SlotPosition);
+				InCharacterStage->UpdateKneadingBody();
 			}
 		}
 	}

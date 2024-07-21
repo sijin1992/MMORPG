@@ -10,6 +10,7 @@
 #include "../UI_HallMain.h"
 #include "../../../Core/Hall/HallPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../../Core/Hall/Character/CharacterStage.h"
 
 void UUI_CharacterButton::NativeConstruct()
 {
@@ -69,7 +70,16 @@ void UUI_CharacterButton::ClickedCharacter()
 		{
 			if (!InPlayerState->IsCharacterExistInSlot(SlotPosition))//如果当前插槽没有角色,就创建新的角色
 			{
-				UI_CharacterCreatePanel->CreateCharacter();
+				if (ACharacterStage* InCharacterStage = UI_CharacterCreatePanel->CreateCharacter())
+				{
+					if (InPlayerState->GetCurrentTmpCreateCharacter())
+					{
+						InPlayerState->GetCurrentTmpCreateCharacter()->Reset();
+						InPlayerState->GetCurrentTmpCreateCharacter()->SlotPosition = SlotPosition;
+					}
+					InCharacterStage->SetSlotID(SlotPosition);
+					InCharacterStage->UpdateKneadingBody();
+				}
 
 				UI_CharacterCreatePanel->CreateKneadFace();
 

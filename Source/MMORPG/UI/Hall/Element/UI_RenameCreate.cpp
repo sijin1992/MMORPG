@@ -37,19 +37,19 @@ void UUI_RenameCreate::ClickedCreate()
 	{
 		if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 		{
-			FMMORPGCharacterAppearance InCA;
-			InCA.Name = EditableName->GetText().ToString();
-			InCA.Date = FDateTime::Now().ToString();
-			InCA.Lv = 1;
-			InCA.SlotPosition = SlotPosition;
+			if (auto* CurrentTmpCreateCharacter = InPlayerState->GetCurrentTmpCreateCharacter())
+			{
+				CurrentTmpCreateCharacter->Name = EditableName->GetText().ToString();
+				CurrentTmpCreateCharacter->Date = FDateTime::Now().ToString();
 
-			if (InCA.Name.IsEmpty())
-			{
-				InHall->PrintLog(TEXT("Name cannot be empty."));
-			}
-			else
-			{
-				InHall->CreateCharacter(InCA);
+				if (CurrentTmpCreateCharacter->Name.IsEmpty())
+				{
+					InHall->PrintLog(TEXT("Name cannot be empty."));
+				}
+				else
+				{
+					InHall->CreateCharacter(*CurrentTmpCreateCharacter);
+				}
 			}
 		}
 	}

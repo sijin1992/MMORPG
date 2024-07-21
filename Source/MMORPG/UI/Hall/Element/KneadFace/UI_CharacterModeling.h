@@ -46,6 +46,11 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
+	void UpdatePawn();
+
+	void UpdateText(UTextBlock* InValueText, float IntValue);
+
+private:
 
 	UFUNCTION()
 	void LegValueChanged(float InDeltaTime);
