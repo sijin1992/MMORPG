@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../../Common/Interface/KneadingInterface.h"
 #include "CharacterStage.generated.h"
 
 UCLASS()
-class MMORPG_API ACharacterStage : public ACharacter
+class MMORPG_API ACharacterStage : public ACharacter, public IKneadingInterface
 {
 	GENERATED_BODY()
 
