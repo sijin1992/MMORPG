@@ -11,6 +11,9 @@
 #include "Element/UI_RenameCreate.h"
 #include "Protocol/HallProtocol.h"
 #include "../../Core/Hall/HallPlayerState.h"
+#include "Element/KneadFace/UI_EditorCharacter.h"
+#include "../../Core/Hall/HallPawn.h"
+#include "../../Core/Hall/Character/CharacterStage.h"
 
 #define LOCTEXT_NAMESPACE "UUI_HallMain"
 
@@ -20,6 +23,7 @@ void UUI_HallMain::NativeConstruct()
 	
 	UI_CharacterCreatePanel->SetParents(this);
 	UI_RenameCreate->SetParents(this);
+	UI_EditorCharacter->SetParents(this);
 
 	//创建客户端
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
@@ -93,6 +97,13 @@ void UUI_HallMain::SpawnRecentCharacter()
 		if (FMMORPGCharacterAppearance* InCAData = InPlayerState->GetRecentCharacter())
 		{
 			UI_CharacterCreatePanel->SpawnCharacter(InCAData);
+
+			SetEditCharacter(InCAData);
+		}
+		else
+		{
+			SetEditCharacter(NULL);
+			DestroyCharacter();
 		}
 	}
 }
@@ -131,6 +142,45 @@ void UUI_HallMain::CreateCharacter(const FMMORPGCharacterAppearance& InCA)
 void UUI_HallMain::SetSlotPosition(const int32 InSlotPos)
 {
 	UI_RenameCreate->SetSlotPosition(InSlotPos);
+}
+
+void UUI_HallMain::DeleteCharacter(int32 InSlot)
+{
+	if (InSlot >= 0 && InSlot < 4)
+	{
+		if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+		{
+			//发送删除角色请求
+			SEND_DATA(SP_DeleteCharacterRequests, InGameInstance->GetUserData().ID, InSlot);
+		}
+	}
+}
+
+void UUI_HallMain::SetEditCharacter(const FMMORPGCharacterAppearance* InCA)
+{
+	if (InCA)
+	{
+		UI_EditorCharacter->SetCharacterName(FText::FromString(InCA->Name));
+		UI_EditorCharacter->SetSlotID(InCA->SlotPosition);
+	}
+	else
+	{
+		UI_EditorCharacter->SetCharacterName(FText::FromString(""));
+		UI_EditorCharacter->SetSlotID(INDEX_NONE);
+	}
+}
+
+void UUI_HallMain::DestroyCharacter()
+{
+	//删除刚刚的角色形象
+	if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+	{
+		if (InPawn->CharacterStage)
+		{
+			InPawn->CharacterStage->Destroy();
+			InPawn->CharacterStage = nullptr;
+		}
+	}
 }
 
 void UUI_HallMain::BindClientRcv()
@@ -218,8 +268,13 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 			if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 			{
 				InPlayerState->AddCharacterCA(InCA);
+				//播放命名界面退出动画
 				PlayRenameOut();
+				//重置角色列表界面
 				ResetCharacterCreatePanel(false);
+
+				//设置编辑角色界面
+				SetEditCharacter(&InCA);
 			}
 		}
 		else
@@ -232,6 +287,31 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 				});
 		}
 
+		break;
+	}
+	case SP_DeleteCharacterResponses:
+	{
+		//收到删除角色回调
+		int32 InUserID = INDEX_NONE;
+		FSimpleAddrInfo AddrInfo;
+		int32 SlotID = INDEX_NONE;
+		int32 SuccessDeleteCount = 0;
+		SIMPLE_PROTOCOLS_RECEIVE(SP_DeleteCharacterResponses, InUserID, SlotID, SuccessDeleteCount);
+		if (SuccessDeleteCount > 2)
+		{
+			if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+			{
+				InPlayerState->RemoveCharacterAppearanceBySlot(SlotID);
+
+				ResetCharacterCreatePanel(true);
+			}
+
+			PrintLog(LOCTEXT("DELETE_CHARACTER_SUCCESS", "The role deletion is successful, and the change operation is irreversible."));
+		}
+		else
+		{
+			PrintLog(LOCTEXT("DELETE_CHARACTER_ERROR", " Failed to delete the role. Please check if the role exists."));
+		}
 		break;
 	}
 	}

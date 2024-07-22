@@ -12,6 +12,7 @@ class FSimpleChannel;
 class UUI_Print;
 class UUI_CharacterCreatePanel;
 class UUI_RenameCreate;
+class UUI_EditorCharacter;
 /**
  * 
  */
@@ -28,6 +29,9 @@ class MMORPG_API UUI_HallMain : public UUI_Base
 
 	UPROPERTY(meta = (BindWidget))
 	UUI_RenameCreate* UI_RenameCreate;						//命名界面
+
+	UPROPERTY(meta = (BindWidget))
+	UUI_EditorCharacter* UI_EditorCharacter;				//角色编辑界面
 
 public:
 	virtual void NativeConstruct() override;
@@ -52,6 +56,12 @@ public:
 	void CreateCharacter(const FMMORPGCharacterAppearance& InCA);	//创建角色
 
 	void SetSlotPosition(const int32 InSlotPos);
+
+	void DeleteCharacter(int32 InSlot);					//删除角色
+
+	void SetEditCharacter(const FMMORPGCharacterAppearance* InCA);//设置编辑角色界面信息
+
+	void DestroyCharacter();							//删除角色舞台
 
 protected:
 	//循环绑定

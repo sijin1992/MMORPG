@@ -62,3 +62,11 @@ int32 AHallPlayerState::AddCharacterCA(const FMMORPGCharacterAppearance& InCA)
 {
 	return CharacterAppearances.Add(InCA);
 }
+
+void AHallPlayerState::RemoveCharacterAppearanceBySlot(int32 InSlot)
+{
+	FMMORPGCharacterAppearance InCA;
+	InCA.SlotPosition = InSlot;
+
+	CharacterAppearances.Remove(InCA);
+}

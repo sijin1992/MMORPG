@@ -29,6 +29,8 @@ public:
 	int32 AddCharacterCA(const FMMORPGCharacterAppearance& InCA);		//增加角色数据
 
 	FMMORPGCharacterAppearance* GetCurrentTmpCreateCharacter() { return &CurrentTmpCreateCharacter; }		//获取客户端临时角色数据
+
+	void RemoveCharacterAppearanceBySlot(int32 InSlot);					//移除角色舞台实例
 private:
 	FCharacterAppearacnce CharacterAppearances;
 	FMMORPGCharacterAppearance CurrentTmpCreateCharacter;				//客户端临时角色数据
