@@ -14,3 +14,8 @@ void UUI_Talent::NativeDestruct()
 	Super::NativeDestruct();
 
 }
+
+void UUI_Talent::InitKneadFace(const FMMORPGCharacterAppearance* InCAData)
+{
+	
+}

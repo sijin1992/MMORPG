@@ -4,6 +4,7 @@
 #include "UI_KneadFace.h"
 #include "Components/CheckBox.h"
 #include "Components/WidgetSwitcher.h"
+#include "KneadFace/Core/UI_KneadFaceBase.h"
 
 void UUI_KneadFace::NativeConstruct()
 {
@@ -19,6 +20,17 @@ void UUI_KneadFace::NativeConstruct()
 void UUI_KneadFace::NativeDestruct()
 {
 	Super::NativeDestruct();
+}
+
+void UUI_KneadFace::InitKneadFace(const FMMORPGCharacterAppearance* InCAData)
+{
+	for (int32 i = 0; i < FacePanel->GetNumWidgets(); i++)
+	{
+		if (UUI_KneadFaceBase* InKFB = Cast<UUI_KneadFaceBase>(FacePanel->GetWidgetAtIndex(i)))
+		{
+			InKFB->InitKneadFace(InCAData);
+		}
+	}
 }
 
 void UUI_KneadFace::OnClickedBody(bool bIsChecked)

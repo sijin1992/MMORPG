@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../Core/UI_Base.h"
+#include "MMORPGType.h"
 #include "UI_KneadFace.generated.h"
 
 class UCheckBox;
@@ -32,6 +33,8 @@ public:
 	virtual void NativeConstruct() override;
 
 	virtual void NativeDestruct() override;
+
+	void InitKneadFace(const FMMORPGCharacterAppearance* InCAData);
 
 private:
 	UFUNCTION()

@@ -31,6 +31,11 @@ void UUI_RenameCreate::SetSlotPosition(const int32 InSlotPos)
 	SlotPosition = InSlotPos;
 }
 
+void UUI_RenameCreate::SetEditableName(const FText& InName)
+{
+	EditableName->SetText(InName);
+}
+
 void UUI_RenameCreate::ClickedCreate()
 {
 	if (UUI_HallMain* InHall = GetParents<UUI_HallMain>())
@@ -59,17 +64,18 @@ void UUI_RenameCreate::ClickedCancel()
 {
 	if (UUI_HallMain* InHall = GetParents<UUI_HallMain>())
 	{
-		//删除刚刚的角色形象
-		if (AHallPawn* InPawn = GetPawn<AHallPawn>())
+		if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 		{
-			if (InPawn->CharacterStage)
+			if (FMMORPGCharacterAppearance* InCA = InPlayerState->GetCharacterCA(SlotPosition))
 			{
-				InPawn->CharacterStage->Destroy();
-				InPawn->CharacterStage = nullptr;
+				InHall->ResetCharacterAppearance(InCA);
 			}
 		}
+		//删除刚刚的角色
+		InHall->DestroyCharacter();
 		InHall->PlayRenameOut();
 		InHall->ResetCharacterCreatePanel();
+		InHall->SetEditorCharacterPanelEnable(true);
 	}
 }
 

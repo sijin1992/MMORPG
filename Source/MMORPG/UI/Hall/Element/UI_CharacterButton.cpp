@@ -87,6 +87,9 @@ void UUI_CharacterButton::ClickedCharacter()
 				{
 					UI_HallMain->PlayRenameIn();
 					UI_HallMain->SetSlotPosition(SlotPosition);
+
+					UI_HallMain->ResetCreateType();
+					UI_HallMain->SetEditorCharacterPanelEnable(false);
 				}
 			}
 			else

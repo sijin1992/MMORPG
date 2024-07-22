@@ -22,7 +22,7 @@ void UUI_CharacterCreatePanel::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void UUI_CharacterCreatePanel::CreateKneadFace()
+UUI_KneadFace* UUI_CharacterCreatePanel::CreateKneadFace()
 {
 	ScrollList->ClearChildren();
 
@@ -33,9 +33,12 @@ void UUI_CharacterCreatePanel::CreateKneadFace()
 			if (UScrollBoxSlot* InScrollBoxSlot = Cast<UScrollBoxSlot>(ScrollList->AddChild(InUI_KneadFace)))
 			{
 				InScrollBoxSlot->SetPadding(10.0f);
+				return InUI_KneadFace;
 			}
 		}
 	}
+
+	return NULL;
 }
 
 void UUI_CharacterCreatePanel::CreateCharacterButtons()

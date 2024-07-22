@@ -34,6 +34,10 @@ public:
 
 	void SetSlotPosition(const int32 InSlotPos);
 
+	void SetEditableName(const FText& InName);
+
+	int32 GetSlotPosition() { return SlotPosition; }
+
 protected:
 	UFUNCTION()
 	void ClickedCreate();

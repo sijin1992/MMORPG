@@ -24,7 +24,6 @@ void UUI_EditorCharacter::NativeConstruct()
 void UUI_EditorCharacter::NativeDestruct()
 {
 	Super::NativeDestruct();
-
 }
 
 void UUI_EditorCharacter::SetCharacterName(const FText& InName)
@@ -34,7 +33,10 @@ void UUI_EditorCharacter::SetCharacterName(const FText& InName)
 
 void UUI_EditorCharacter::EditCharacter()
 {
-
+	if (UUI_HallMain* InHallMain = GetParents<UUI_HallMain>())
+	{
+		InHallMain->EditCharacter(SlotID);
+	}
 }
 
 void UUI_EditorCharacter::DeleteCharacter()

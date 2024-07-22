@@ -37,6 +37,19 @@ void UUI_CharacterModeling::NativeTick(const FGeometry& MyGeometry, float InDelt
 
 }
 
+void UUI_CharacterModeling::InitKneadFace(const FMMORPGCharacterAppearance* InCAData)
+{
+	float LegValue = InCAData->LegSize / 10.0f;
+	float WaistValue = InCAData->WaistSize / 10.0f;
+	float ArmValue = InCAData->ArmSize / 10.0f;
+	LegSlider->SetValue(LegValue);
+	WaistSlider->SetValue(WaistValue);
+	ArmSlider->SetValue(ArmValue);
+	UpdateText(LegValueText, InCAData->LegSize/10.0f);
+	UpdateText(WaistValueText, InCAData->WaistSize/10.0f);
+	UpdateText(ArmValueText, InCAData->ArmSize/10.0f);
+}
+
 void UUI_CharacterModeling::UpdatePawn()
 {
 	if (AHallPawn* InPawn = GetPawn<AHallPawn>())

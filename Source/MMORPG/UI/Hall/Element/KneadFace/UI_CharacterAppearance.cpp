@@ -19,6 +19,11 @@ void UUI_CharacterAppearance::NativeDestruct()
 
 }
 
+void UUI_CharacterAppearance::InitKneadFace(const FMMORPGCharacterAppearance* InCAData)
+{
+	
+}
+
 void UUI_CharacterAppearance::SelectAppearanceType(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../../Core/UI_Base.h"
+#include "Core/UI_KneadFaceBase.h"
 #include "UI_CharacterModeling.generated.h"
 
 class UComboBoxString;
@@ -13,7 +13,7 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class MMORPG_API UUI_CharacterModeling : public UUI_Base
+class MMORPG_API UUI_CharacterModeling : public UUI_KneadFaceBase
 {
 	GENERATED_BODY()
 	
@@ -44,6 +44,9 @@ public:
 	virtual void NativeDestruct() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+
+	virtual void InitKneadFace(const FMMORPGCharacterAppearance* InCAData) override;
 
 private:
 	void UpdatePawn();

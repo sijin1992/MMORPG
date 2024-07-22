@@ -34,6 +34,13 @@ class MMORPG_API UUI_HallMain : public UUI_Base
 	UUI_EditorCharacter* UI_EditorCharacter;				//角色编辑界面
 
 public:
+	enum ECAType
+	{
+		CA_EDITOR,
+		CA_CREATE,
+	};
+
+public:
 	virtual void NativeConstruct() override;
 
 	virtual void NativeDestruct() override;
@@ -63,6 +70,16 @@ public:
 
 	void DestroyCharacter();							//删除角色舞台
 
+	void EditCharacter(int32 InSlot);					//从编辑角色界面打开捏脸界面
+
+	void ResetEditorType();								//设置捏脸界面为编辑模式
+
+	void ResetCreateType();								//设置捏脸界面为创角模式
+
+	void ResetCharacterAppearance(FMMORPGCharacterAppearance* InCA);		//当取消编辑角色时，需要重置当前编辑的角色形象
+
+	void SetEditorCharacterPanelEnable(bool bEnable);	//设置编辑角色界面是否可编辑
+
 protected:
 	//循环绑定
 	void BindClientRcv();
@@ -83,4 +100,8 @@ protected:
 private:
 	//接收代理
 	FDelegateHandle RecvDelegate;
+
+	FMMORPGCharacterAppearance StartCAData;
+
+	ECAType CAType;//描述玩家属于在大厅里面还是正在编辑角色
 };

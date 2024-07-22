@@ -43,7 +43,7 @@ public:
 
 	void NativeDestruct() override;
 	//创建捏脸界面
-	void CreateKneadFace();
+	UUI_KneadFace* CreateKneadFace();
 	//创建角色界面的按钮
 	void CreateCharacterButtons();
 

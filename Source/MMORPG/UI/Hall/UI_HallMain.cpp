@@ -14,12 +14,15 @@
 #include "Element/KneadFace/UI_EditorCharacter.h"
 #include "../../Core/Hall/HallPawn.h"
 #include "../../Core/Hall/Character/CharacterStage.h"
+#include "Element/UI_KneadFace.h"
 
 #define LOCTEXT_NAMESPACE "UUI_HallMain"
 
 void UUI_HallMain::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	CAType = ECAType::CA_CREATE;
 	
 	UI_CharacterCreatePanel->SetParents(this);
 	UI_RenameCreate->SetParents(this);
@@ -132,10 +135,27 @@ void UUI_HallMain::CreateCharacter(const FMMORPGCharacterAppearance& InCA)
 {
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 	{
-		//发送创建角色请求
 		FString CAJson;
-		NetDataAnalysis::CharacterAppearacnceToString(InCA, CAJson);
-		SEND_DATA(SP_CreateCharacterRequests, InGameInstance->GetUserData().ID, CAJson);
+		if (CAType == ECAType::CA_EDITOR)
+		{
+			//发送编辑角色请求
+			if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+			{
+				if (FMMORPGCharacterAppearance* InNewCA = InPlayerState->GetCharacterCA(UI_RenameCreate->GetSlotPosition()))
+				{
+					InNewCA->Date = InCA.Date;
+					InNewCA->Name = InCA.Name;
+					NetDataAnalysis::CharacterAppearacnceToString(*InNewCA, CAJson);
+				}
+			}
+			SEND_DATA(SP_EditorCharacterRequests, InGameInstance->GetUserData().ID, CAJson);
+		}
+		else
+		{
+			//发送创建角色请求
+			NetDataAnalysis::CharacterAppearacnceToString(InCA, CAJson);
+			SEND_DATA(SP_CreateCharacterRequests, InGameInstance->GetUserData().ID, CAJson);
+		}
 	}
 }
 
@@ -181,6 +201,56 @@ void UUI_HallMain::DestroyCharacter()
 			InPawn->CharacterStage = nullptr;
 		}
 	}
+}
+
+void UUI_HallMain::EditCharacter(int32 InSlot)
+{
+	PlayRenameIn();
+	SetSlotPosition(InSlot);
+	
+	if (UUI_KneadFace* InKneadFace = UI_CharacterCreatePanel->CreateKneadFace())
+	{
+		if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
+		{
+			if (FMMORPGCharacterAppearance* InCA = InPlayerState->GetCharacterCA(InSlot))
+			{
+				InKneadFace->InitKneadFace(InCA);
+				StartCAData = *InCA;
+
+				ResetEditorType();
+				SetEditorCharacterPanelEnable(false);
+
+				//设置名称
+				UI_RenameCreate->SetEditableName(FText::FromString(InCA->Name));
+			}
+		}
+	}
+}
+
+void UUI_HallMain::ResetEditorType()
+{
+	CAType = ECAType::CA_EDITOR;
+}
+
+void UUI_HallMain::ResetCreateType()
+{
+	CAType = ECAType::CA_CREATE;
+}
+
+void UUI_HallMain::ResetCharacterAppearance(FMMORPGCharacterAppearance* InCA)
+{
+	if (CAType == ECAType::CA_EDITOR)
+	{
+		if (InCA)
+		{
+			*InCA = StartCAData;
+		}
+	}
+}
+
+void UUI_HallMain::SetEditorCharacterPanelEnable(bool bEnable)
+{
+	UI_EditorCharacter->SetIsEnabled(bEnable);
 }
 
 void UUI_HallMain::BindClientRcv()
@@ -275,6 +345,7 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 
 				//设置编辑角色界面
 				SetEditCharacter(&InCA);
+				SetEditorCharacterPanelEnable(true);
 			}
 		}
 		else
@@ -293,7 +364,6 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 	{
 		//收到删除角色回调
 		int32 InUserID = INDEX_NONE;
-		FSimpleAddrInfo AddrInfo;
 		int32 SlotID = INDEX_NONE;
 		int32 SuccessDeleteCount = 0;
 		SIMPLE_PROTOCOLS_RECEIVE(SP_DeleteCharacterResponses, InUserID, SlotID, SuccessDeleteCount);
@@ -312,6 +382,27 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 		{
 			PrintLog(LOCTEXT("DELETE_CHARACTER_ERROR", " Failed to delete the role. Please check if the role exists."));
 		}
+		break;
+	}
+	case SP_EditorCharacterResponses:
+	{
+		//收到编辑角色回调
+		FSimpleAddrInfo AddrInfo;
+		bool bUpdateSucceeded = false;//是否编辑角色成功
+		SIMPLE_PROTOCOLS_RECEIVE(SP_EditorCharacterResponses, bUpdateSucceeded);
+
+		if (bUpdateSucceeded)
+		{
+			//角色编辑成功
+			PrintLog(LOCTEXT("EDITORCHARACTERRESPONSES_SUCCESSFULLY", "Edit character successfully."));
+		}
+		else
+		{
+			PrintLog(LOCTEXT("EDITORCHARACTERRESPONSES_FAIL", "Edit character fail."));
+		}
+		PlayRenameOut();
+		ResetCharacterCreatePanel(false);
+		SetEditorCharacterPanelEnable(true);
 		break;
 	}
 	}

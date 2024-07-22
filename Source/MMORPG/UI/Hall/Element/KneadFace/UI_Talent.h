@@ -3,20 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../../Core/UI_Base.h"
+#include "Core/UI_KneadFaceBase.h"
 #include "UI_Talent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MMORPG_API UUI_Talent : public UUI_Base
+class MMORPG_API UUI_Talent : public UUI_KneadFaceBase
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 	virtual void NativeConstruct() override;
 
 	virtual void NativeDestruct() override;
 
+	virtual void InitKneadFace(const FMMORPGCharacterAppearance* InCAData) override;
 };
