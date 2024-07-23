@@ -152,3 +152,11 @@ void UUI_CharacterCreatePanel::HighlightSelection(int32 InSlotPos)
 			return false;
 		});
 }
+
+UUI_CharacterButton* UUI_CharacterCreatePanel::GetHighlightButton()
+{
+	return FindByPredicateInScrollList<UUI_CharacterButton>([](UUI_CharacterButton* InButton)->bool
+		{
+			return InButton->IsHighlight();
+		});
+}

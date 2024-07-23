@@ -62,12 +62,18 @@ void UUI_CharacterButton::SetHighlight(bool bHigh)
 	}
 }
 
+bool UUI_CharacterButton::IsHighlight()
+{
+	return CharacterButton->WidgetStyle.Normal.TintColor == HighlightColor;
+}
+
 void UUI_CharacterButton::ClickedCharacter()
 {
 	if (AHallPlayerState* InPlayerState = GetPlayerState<AHallPlayerState>())
 	{
 		if (UUI_CharacterCreatePanel* UI_CharacterCreatePanel = GetParents<UUI_CharacterCreatePanel>())
 		{
+			//创建角色对象
 			if (!InPlayerState->IsCharacterExistInSlot(SlotPosition))//如果当前插槽没有角色,就创建新的角色
 			{
 				if (ACharacterStage* InCharacterStage = UI_CharacterCreatePanel->CreateCharacter())
@@ -92,13 +98,34 @@ void UUI_CharacterButton::ClickedCharacter()
 					UI_HallMain->SetEditorCharacterPanelEnable(false);
 				}
 			}
+			else if(UI_CharacterCreatePanel->GetHighlightButton() == this)
+			{
+				//如果当前插槽已经有角色了,且是高亮状态,就连接DS服务器，OpenLevel
+				JumpDSServer();
+			}
 			else
 			{
-				//如果当前插槽已经有角色了,就连接DS服务器，OpenLevel
-				UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
+				//如果当前插槽已经有角色了，但不是高亮按钮，就将高亮切换成自己
+				UI_CharacterCreatePanel->GetHighlightButton()->SetHighlight(false);
+				SetHighlight(true);
+				//替换角色舞台对象
+				if (FMMORPGCharacterAppearance* InCA = InPlayerState->GetCharacterCA(SlotPosition))
+				{
+					UI_CharacterCreatePanel->SpawnCharacter(InCA);
+
+					if (UUI_HallMain* UI_HallMain = UI_CharacterCreatePanel->GetParents<UUI_HallMain>())
+					{
+						UI_HallMain->SetEditCharacter(InCA);
+					}
+				}
 			}
 
 			UI_CharacterCreatePanel->SetCurrentSlotPosition(SlotPosition);
 		}
 	}
+}
+
+void UUI_CharacterButton::JumpDSServer()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
 }

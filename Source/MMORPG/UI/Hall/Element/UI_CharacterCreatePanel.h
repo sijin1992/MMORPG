@@ -63,7 +63,7 @@ public:
 	/// <param name="Func"></param>
 	/// <param name="bool">是否继续循环</param>
 	template<class T>
-	void FindByPredicateInScrollList(TFunction<bool(T*)> Func) 
+	T* FindByPredicateInScrollList(TFunction<bool(T*)> Func) 
 	{
 		for (auto& Temp : ScrollList->GetAllChildren())
 		{
@@ -71,13 +71,16 @@ public:
 			{
 				if (Func(InButton))
 				{
-					break;
+					return InButton;
 				}
 			}
 		}
+		return NULL;
 	}
 
 	void HighlightSelection(int32 InSlotPos);
+
+	UUI_CharacterButton* GetHighlightButton();
 
 protected:
 	int32 SlotPosition;											//记录当前选择的角色插槽下标

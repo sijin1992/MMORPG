@@ -51,9 +51,14 @@ public:
 	void InitCharacterButton(const FMMORPGCharacterAppearance& InCA);
 
 	void SetHighlight(bool bHigh);
+
+	bool IsHighlight();
 protected:
 	UFUNCTION()
 	void ClickedCharacter();
+
+public:
+	void JumpDSServer();
 
 protected:
 	int32 SlotPosition;									//角色插槽
