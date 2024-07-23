@@ -43,6 +43,8 @@ void ACharacterStage::UpdateKneadingBody(const FMMORPGCharacterAppearance& InCA)
 	SetLegSize(InCA.LegSize);
 	SetWaistSize(InCA.WaistSize);
 	SetArmSize(InCA.ArmSize);
+	SetHeadSize(InCA.HeadSize);
+	SetChestSize(InCA.ChestSize);
 
 	//需要保证Mesh和骨骼一致
 	SetMeshPosition(GetMesh());

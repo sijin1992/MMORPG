@@ -21,6 +21,8 @@ void UUI_CharacterModeling::NativeConstruct()
 	LegSlider->OnValueChanged.AddDynamic(this, &UUI_CharacterModeling::LegValueChanged);
 	WaistSlider->OnValueChanged.AddDynamic(this, &UUI_CharacterModeling::WaistValueChanged);
 	ArmSlider->OnValueChanged.AddDynamic(this, &UUI_CharacterModeling::ArmValueChanged);
+	HeadSlider->OnValueChanged.AddDynamic(this, &UUI_CharacterModeling::HeadValueChanged);
+	ChestSlider->OnValueChanged.AddDynamic(this, &UUI_CharacterModeling::ChestValueChanged);
 
 	ModelingType->OnSelectionChanged.AddDynamic(this, &UUI_CharacterModeling::SelectModelingType);
 }
@@ -39,15 +41,25 @@ void UUI_CharacterModeling::NativeTick(const FGeometry& MyGeometry, float InDelt
 
 void UUI_CharacterModeling::InitKneadFace(const FMMORPGCharacterAppearance* InCAData)
 {
-	float LegValue = InCAData->LegSize / 10.0f;
-	float WaistValue = InCAData->WaistSize / 10.0f;
-	float ArmValue = InCAData->ArmSize / 10.0f;
+	auto GetKFValue = [](float InValue)->float
+		{
+			return InValue / 10.f;
+		};
+	float LegValue = GetKFValue(InCAData->LegSize);
+	float WaistValue = GetKFValue(InCAData->WaistSize);
+	float ArmValue = GetKFValue(InCAData->ArmSize);
+	float HeadValue = GetKFValue(InCAData->HeadSize);
+	float ChestValue = GetKFValue(InCAData->ChestSize);
 	LegSlider->SetValue(LegValue);
 	WaistSlider->SetValue(WaistValue);
 	ArmSlider->SetValue(ArmValue);
-	UpdateText(LegValueText, InCAData->LegSize/10.0f);
-	UpdateText(WaistValueText, InCAData->WaistSize/10.0f);
-	UpdateText(ArmValueText, InCAData->ArmSize/10.0f);
+	HeadSlider->SetValue(HeadValue);
+	ChestSlider->SetValue(ChestValue);
+	UpdateText(LegValueText, LegValue);
+	UpdateText(WaistValueText, WaistValue);
+	UpdateText(ArmValueText, ArmValue);
+	UpdateText(HeadValueText, HeadValue);
+	UpdateText(ArmValueText, ChestValue);
 }
 
 void UUI_CharacterModeling::UpdatePawn()
@@ -76,6 +88,8 @@ void UUI_CharacterModeling::UpdatePawn()
 					InCA->LegSize = LegSlider->GetValue() * 10.f;
 					InCA->WaistSize = WaistSlider->GetValue() * 10.f;
 					InCA->ArmSize = ArmSlider->GetValue() * 10.f;
+					InCA->HeadSize = HeadSlider->GetValue() * 10.f;
+					InCA->ChestSize = ChestSlider->GetValue() * 10.f;
 				}
 
 				InPawn->CharacterStage->UpdateKneadingBody();
@@ -109,6 +123,18 @@ void UUI_CharacterModeling::WaistValueChanged(float InDeltaTime)
 void UUI_CharacterModeling::ArmValueChanged(float InDeltaTime)
 {
 	UpdateText(ArmValueText, InDeltaTime);
+	UpdatePawn();
+}
+
+void UUI_CharacterModeling::HeadValueChanged(float InDeltaTime)
+{
+	UpdateText(HeadValueText, InDeltaTime);
+	UpdatePawn();
+}
+
+void UUI_CharacterModeling::ChestValueChanged(float InDeltaTime)
+{
+	UpdateText(ChestValueText, InDeltaTime);
 	UpdatePawn();
 }
 

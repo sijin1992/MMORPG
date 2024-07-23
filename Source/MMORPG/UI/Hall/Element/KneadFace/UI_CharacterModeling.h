@@ -38,6 +38,18 @@ class MMORPG_API UUI_CharacterModeling : public UUI_KneadFaceBase
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ArmValueText;
 
+	UPROPERTY(meta = (BindWidget))
+	USlider* HeadSlider;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* HeadValueText;
+
+	UPROPERTY(meta = (BindWidget))
+	USlider* ChestSlider;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ChestValueText;
+
 public:
 	virtual void NativeConstruct() override;
 
@@ -63,6 +75,12 @@ private:
 
 	UFUNCTION()
 	void ArmValueChanged(float InDeltaTime);
+
+	UFUNCTION()
+	void HeadValueChanged(float InDeltaTime);
+
+	UFUNCTION()
+	void ChestValueChanged(float InDeltaTime);
 
 	UFUNCTION()
 	void SelectModelingType(FString SelectedItem, ESelectInfo::Type SelectionType);
