@@ -9,6 +9,7 @@
 #include "../../../Core/Hall/HallPlayerState.h"
 #include "../../../Core/Hall/Character/CharacterStage.h"
 #include "../../../Core/Hall/HallPawn.h"
+#include "../UI_HallMain.h"
 
 void UUI_CharacterCreatePanel::NativeConstruct()
 {
@@ -159,4 +160,12 @@ UUI_CharacterButton* UUI_CharacterCreatePanel::GetHighlightButton()
 		{
 			return InButton->IsHighlight();
 		});
+}
+
+void UUI_CharacterCreatePanel::JumpDSServer(int32 InSlotID)
+{
+	if (UUI_HallMain* InHallMain = GetParents<UUI_HallMain>())
+	{
+		InHallMain->JumpDSServer(InSlotID);
+	}
 }

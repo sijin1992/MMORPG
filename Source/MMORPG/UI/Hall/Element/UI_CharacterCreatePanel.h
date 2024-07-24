@@ -82,6 +82,8 @@ public:
 
 	UUI_CharacterButton* GetHighlightButton();
 
+	void JumpDSServer(int32 InSlotID);
+
 protected:
 	int32 SlotPosition;											//记录当前选择的角色插槽下标
 };

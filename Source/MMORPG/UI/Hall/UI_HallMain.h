@@ -80,6 +80,8 @@ public:
 
 	void SetEditorCharacterPanelEnable(bool bEnable);	//设置编辑角色界面是否可编辑
 
+	void JumpDSServer(int32 InSlotID);
+
 protected:
 	//循环绑定
 	void BindClientRcv();

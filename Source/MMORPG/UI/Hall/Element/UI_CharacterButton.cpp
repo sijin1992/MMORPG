@@ -9,7 +9,6 @@
 #include "UI_CharacterCreatePanel.h"
 #include "../UI_HallMain.h"
 #include "../../../Core/Hall/HallPlayerState.h"
-#include "Kismet/GameplayStatics.h"
 #include "../../../Core/Hall/Character/CharacterStage.h"
 
 void UUI_CharacterButton::NativeConstruct()
@@ -100,7 +99,7 @@ void UUI_CharacterButton::ClickedCharacter()
 			}
 			else if(UI_CharacterCreatePanel->GetHighlightButton() == this)
 			{
-				//如果当前插槽已经有角色了,且是高亮状态,就连接DS服务器，OpenLevel
+				//如果当前插槽已经有角色了,且是高亮状态,就请求连接DS服务器
 				JumpDSServer();
 			}
 			else
@@ -127,5 +126,8 @@ void UUI_CharacterButton::ClickedCharacter()
 
 void UUI_CharacterButton::JumpDSServer()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
+	if (UUI_CharacterCreatePanel* InCharacterCreatePanel = GetParents<UUI_CharacterCreatePanel>())
+	{
+		InCharacterCreatePanel->JumpDSServer(SlotPosition);
+	}
 }

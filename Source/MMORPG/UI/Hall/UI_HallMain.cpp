@@ -253,6 +253,15 @@ void UUI_HallMain::SetEditorCharacterPanelEnable(bool bEnable)
 	UI_EditorCharacter->SetIsEnabled(bEnable);
 }
 
+void UUI_HallMain::JumpDSServer(int32 InSlotID)
+{
+	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
+	{
+		//发送登录DS服务器色请求
+		SEND_DATA(SP_LoginToDSServerRequests, InGameInstance->GetUserData().ID, InSlotID);
+	}
+}
+
 void UUI_HallMain::BindClientRcv()
 {
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
@@ -358,6 +367,16 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 				});
 		}
 
+		break;
+	}
+	case SP_LoginToDSServerResponses:
+	{
+		//收到登录DSServer回调
+		FSimpleAddr Addr;//DSServerAddrInfo
+
+		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginToDSServerResponses, Addr);
+		//跳转关卡
+		UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
 		break;
 	}
 	case SP_DeleteCharacterResponses:
