@@ -83,6 +83,11 @@ public:
 	void JumpDSServer(int32 InSlotID);
 
 protected:
+
+	void HallMainIn();
+	void HallMainOut();
+
+protected:
 	//循环绑定
 	void BindClientRcv();
 

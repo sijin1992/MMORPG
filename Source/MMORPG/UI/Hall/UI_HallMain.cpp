@@ -21,6 +21,7 @@
 void UUI_HallMain::NativeConstruct()
 {
 	Super::NativeConstruct();
+	HallMainIn();
 
 	CAType = ECAType::CA_CREATE;
 	
@@ -257,9 +258,19 @@ void UUI_HallMain::JumpDSServer(int32 InSlotID)
 {
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 	{
-		//发送登录DS服务器色请求
+		//发送登录DS服务器色请求1
 		SEND_DATA(SP_LoginToDSServerRequests, InGameInstance->GetUserData().ID, InSlotID);
 	}
+}
+
+void UUI_HallMain::HallMainIn()
+{
+	PlayWidgetAnim(TEXT("HallMainIn"));
+}
+
+void UUI_HallMain::HallMainOut()
+{
+	PlayWidgetAnim(TEXT("HallMainOut"));
 }
 
 void UUI_HallMain::BindClientRcv()
@@ -371,12 +382,19 @@ void UUI_HallMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 	}
 	case SP_LoginToDSServerResponses:
 	{
-		//收到登录DSServer回调
-		FSimpleAddr Addr;//DSServerAddrInfo
+		//收到登录DSServer回调10
+		FSimpleAddr DsAddr;//DSServerAddrInfo
 
-		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginToDSServerResponses, Addr);
+		SIMPLE_PROTOCOLS_RECEIVE(SP_LoginToDSServerResponses, DsAddr);
+
+		FString DSAddrString = FSimpleNetManage::GetAddrString(DsAddr);
+		//播放关闭大厅主界面动画
+		HallMainOut();
 		//跳转关卡
-		UGameplayStatics::OpenLevel(GetWorld(), TEXT("GameMap"));
+		GThread::Get()->GetCoroutines().BindLambda(1.f, [=]()
+			{
+				UGameplayStatics::OpenLevel(GetWorld(), *DSAddrString);
+			});
 		break;
 	}
 	case SP_DeleteCharacterResponses:
