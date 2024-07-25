@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Core/UI_Base.h"
+#include "../Core/UI_MainBase.h"
 #include "SimpleNetChannelType.h"
 #include "MMORPGType.h"
 #include "UI_HallMain.generated.h"
 
 class FSimpleChannel;
-class UUI_Print;
 class UUI_CharacterCreatePanel;
 class UUI_RenameCreate;
 class UUI_EditorCharacter;
@@ -17,12 +16,9 @@ class UUI_EditorCharacter;
  * 
  */
 UCLASS()
-class MMORPG_API UUI_HallMain : public UUI_Base
+class MMORPG_API UUI_HallMain : public UUI_MainBase
 {
 	GENERATED_BODY()
-
-	UPROPERTY(meta = (BindWidget))
-	UUI_Print* UI_Print;									//Log界面
 
 	UPROPERTY(meta = (BindWidget))
 	UUI_CharacterCreatePanel* UI_CharacterCreatePanel;		//创建角色界面
@@ -46,9 +42,6 @@ public:
 	virtual void NativeDestruct() override;
 
 public:
-	void PrintLog(const FString& InMsg);
-	void PrintLog(const FText& InMsg);
-
 	void PlayRenameIn();								//播放角色命名界面渐入动画
 	void PlayRenameOut();								//播放角色命名界面渐出动画
 
@@ -88,26 +81,14 @@ protected:
 	void HallMainOut();
 
 protected:
-	//循环绑定
-	void BindClientRcv();
-
 	//通信协议的代理函数
 	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) override;
 
-	/// <summary>
-	/// 连接服务器信息
-	/// </summary>
-	/// <param name="InType">连接错误状态类型</param>
-	/// <param name="InMsg"></param>
-	UFUNCTION()
-	void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
+	virtual void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
 
 	void PrintLogByCheckNameType(ECheckNameType InCheckNameType);
 
 private:
-	//接收代理
-	FDelegateHandle RecvDelegate;
-
 	FMMORPGCharacterAppearance StartCAData;
 
 	ECAType CAType;//描述玩家属于在大厅里面还是正在编辑角色

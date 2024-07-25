@@ -1,4 +1,4 @@
-#include "MMORPGGameInstance.h"
+#include "Core/Common/MMORPGGameInstance.h"
 
 #if PLATFORM_WINDOWS
 #define SEND_DATA(InProtocols,...) \

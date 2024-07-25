@@ -7,7 +7,6 @@
 #include "UI_Login.h"
 #include "Protocol/LoginProtocol.h"
 #include "../../MMORPGMacroType.h"
-#include "../Common/UI_Print.h"
 #include "Kismet/GameplayStatics.h"
 
 void UUI_LoginMain::NativeConstruct()
@@ -18,21 +17,7 @@ void UUI_LoginMain::NativeConstruct()
 	
 	UI_Login->SetParents(this);
 
-	//创建客户端
-	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
-	{
-		InGameInstance->CreateClient();
-		if (InGameInstance->GetClient())
-		{
-			InGameInstance->GetClient()->NetManageMsgDelegate.BindUObject(this, &UUI_LoginMain::LinkServerInfo);//握手时绑定消息代理
-
-			//连接服务器
-			InGameInstance->LinkServer();
-
-			//开始循环绑定代理
-			BindClientRcv();
-		}
-	}
+	LinkServer();
 
 	//读取账户并解密
 	if (!UI_Login->DecryptionFromLocal(FPaths::ProjectDir() / TEXT("User")))
@@ -44,14 +29,7 @@ void UUI_LoginMain::NativeConstruct()
 void UUI_LoginMain::NativeDestruct()
 {
 	Super::NativeDestruct();
-	//销毁代理
-	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
-	{
-		if (InGameInstance->GetClient() && InGameInstance->GetClient()->GetController())
-		{
-			InGameInstance->GetClient()->GetController()->RecvDelegate.Remove(RecvDelegate);
-		}
-	}
+
 }
 
 void UUI_LoginMain::SignIn(FString& InAccount, FString& InPassword)
@@ -63,50 +41,6 @@ void UUI_LoginMain::SignIn(FString& InAccount, FString& InPassword)
 void UUI_LoginMain::Register()
 {
 
-}
-
-void UUI_LoginMain::PrintLog(const FString& InMsg)
-{
-	PrintLog(FText::FromString(InMsg));
-}
-
-void UUI_LoginMain::PrintLog(const FText& InMsg)
-{
-	//播放Log动画
-	UI_Print->PlayTextAnim();
-
-	UI_Print->SetText(InMsg);
-}
-
-void UUI_LoginMain::BindClientRcv()
-{
-	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
-	{
-		if (InGameInstance->GetClient() && InGameInstance->GetClient()->GetController())
-		{
-			//绑定代理
-			RecvDelegate = InGameInstance->GetClient()->GetController()->RecvDelegate.AddLambda([&](uint32 ProtocolNumber, FSimpleChannel* Channel)
-				{
-					this->RecvProtocol(ProtocolNumber, Channel);
-				});
-		}
-		else
-		{
-			//如果没有获取到Client，就通过协程等待片刻后再次绑定
-			GThread::Get()->GetCoroutines().BindLambda(0.5f, [&]()
-				{
-					BindClientRcv();
-				});
-		}
-	}
-	else
-	{
-		//如果没有获取到GameInstance，就通过协程等待片刻后再次绑定
-		GThread::Get()->GetCoroutines().BindLambda(0.5f, [&]() 
-			{
-				BindClientRcv();
-			});
-	}
 }
 
 void UUI_LoginMain::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)

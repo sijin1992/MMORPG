@@ -30,6 +30,7 @@ public:
 
 	void CreateClient();//创建客户端/Socket
 	void LinkServer();//连接服务器
+	void LinkServer(const FSimpleAddr& InAddr);//连接服务器
 
 	FSimpleNetManage* GetClient();
 	FMMORPGUserData& GetUserData();

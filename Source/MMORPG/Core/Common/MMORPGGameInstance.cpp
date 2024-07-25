@@ -37,8 +37,11 @@ void UMMORPGGameInstance::Shutdown()
 
 void UMMORPGGameInstance::CreateClient()
 {
-	FSimpleNetGlobalInfo::Get()->Init();//初始化服务器全局配置
-	Client = FSimpleNetManage::CreateManage(ESimpleNetLinkState::LINKSTATE_CONNET, ESimpleSocketType::SIMPLESOCKETTYPE_TCP);
+	if (!Client)
+	{
+		FSimpleNetGlobalInfo::Get()->Init();//初始化服务器全局配置
+		Client = FSimpleNetManage::CreateManage(ESimpleNetLinkState::LINKSTATE_CONNET, ESimpleSocketType::SIMPLESOCKETTYPE_TCP);
+	}
 }
 
 void UMMORPGGameInstance::LinkServer()
@@ -47,6 +50,19 @@ void UMMORPGGameInstance::LinkServer()
 	if (Client)
 	{
 		if (!Client->Init())
+		{
+			delete Client;
+			Client = nullptr;
+		}
+	}
+}
+
+void UMMORPGGameInstance::LinkServer(const FSimpleAddr& InAddr)
+{
+	//连接服务器
+	if (Client)
+	{
+		if (!Client->Init(InAddr))
 		{
 			delete Client;
 			Client = nullptr;
