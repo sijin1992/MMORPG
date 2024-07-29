@@ -38,7 +38,7 @@ protected:
 	/// <param name="InType">连接错误状态类型</param>
 	/// <param name="InMsg"></param>
 	UFUNCTION()
-	void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
+	virtual void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg);
 
 	void LinkServer();
 	void LinkServer(const FSimpleAddr& InAddr);

@@ -30,6 +30,7 @@ void UUI_MainBase::LinkServer()
 	//创建客户端
 	if (UMMORPGGameInstance* InGameInstance = GetGameInstance<UMMORPGGameInstance>())
 	{
+		InGameInstance->CreateClient();
 		if (InGameInstance->GetClient())
 		{
 			//握手时绑定消息代理
