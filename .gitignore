@@ -8,3 +8,6 @@ MMORPG.sln
 Build/Windows/FileOpenOrder/CookerOpenOrder.log
 Build/Windows/FileOpenOrder/EditorOpenOrder.log
 Windows/
+MMORPGDSServer/
+Build/WindowsServer/FileOpenOrder/CookerOpenOrder.log
+Build/WindowsServer/FileOpenOrder/EditorOpenOrder.log
