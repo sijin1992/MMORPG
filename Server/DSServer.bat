@@ -1,0 +1,1 @@
+MMORPG\Binaries\Win64\MMORPGServer-Win64-DebugGame.exe
