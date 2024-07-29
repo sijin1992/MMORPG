@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "../Common/Interface/KneadingInterface.h"
 #include "MMORPGCharacter.generated.h"
 
 
 UCLASS(config=Game)
-class AMMORPGCharacter : public ACharacter
+class AMMORPGCharacter : public ACharacter, public IKneadingInterface
 {
 	GENERATED_BODY()
 
@@ -62,5 +63,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+public:
+	virtual void UpdateKneadingBody() override;
+	virtual void UpdateKneadingBody(const FMMORPGCharacterAppearance& InCA) override;
 };
 
