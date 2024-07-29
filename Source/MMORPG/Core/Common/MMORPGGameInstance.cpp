@@ -5,6 +5,11 @@
 #include "Global/SimpleNetGlobalInfo.h"
 #include "ThreadManage.h"
 
+//关闭优化
+#if PLATFORM_WINDOWS
+#pragma optimize("", off)
+#endif
+
 void UMMORPGGameInstance::Init()
 {
 	Super::Init();
@@ -70,6 +75,19 @@ void UMMORPGGameInstance::LinkServer(const FSimpleAddr& InAddr)
 	}
 }
 
+void UMMORPGGameInstance::LinkServer(const TCHAR* InIP, uint32 InPort)
+{
+	//连接服务器
+	if (Client)
+	{
+		if (!Client->Init(InIP, InPort))
+		{
+			delete Client;
+			Client = nullptr;
+		}
+	}
+}
+
 FSimpleNetManage* UMMORPGGameInstance::GetClient()
 {
 	return Client;
@@ -84,3 +102,8 @@ FMMORPGGateStatus& UMMORPGGameInstance::GetGateStatus()
 {
 	return GateStatus;
 }
+
+//打开优化
+#if PLATFORM_WINDOWS
+#pragma optimize("", on)
+#endif
