@@ -64,25 +64,6 @@ void AMMORPGCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	InitKneadingLocation(GetMesh()->GetComponentLocation());
-}
-
-void AMMORPGCharacter::UpdateKneadingBody()
-{
-
-}
-
-void AMMORPGCharacter::UpdateKneadingBody(const FMMORPGCharacterAppearance& InCA)
-{
-	SetLegSize(InCA.LegSize);
-	SetWaistSize(InCA.WaistSize);
-	SetArmSize(InCA.ArmSize);
-	SetHeadSize(InCA.HeadSize);
-	SetChestSize(InCA.ChestSize);
-
-	//需要保证Mesh和骨骼一致
-	SetMeshPosition(GetMesh());
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MMORPGGameMode.h"
-#include "MMORPGCharacter.h"
+#include "Character/MMORPGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "MMORPGHUD.h"
 #include "../../MMORPGMacroType.h"
