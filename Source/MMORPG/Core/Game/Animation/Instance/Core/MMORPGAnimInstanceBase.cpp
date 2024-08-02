@@ -8,7 +8,8 @@
 UMMORPGAnimInstanceBase::UMMORPGAnimInstanceBase()
 	:bDeath(false),
 	Speed(0.0f),
-	bInAir(false)
+	bInAir(false),
+	bFight(false)
 {
 
 }
@@ -27,5 +28,6 @@ void UMMORPGAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		Speed = InCharacterBase->GetVelocity().Size();
 		bInAir = InCharacterBase->GetMovementComponent()->IsFalling();
+		bFight = InCharacterBase->IsFight();
 	}
 }

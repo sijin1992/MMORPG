@@ -86,6 +86,7 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	}
 
+	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
 }
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
@@ -124,6 +125,17 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AMMORPGCharacter::SwitchFight()
+{
+	if (bFight)
+	{
+		bFight = false;
+	}
+	else
+	{
+		bFight = true;
+	}
+}
 
 
 
