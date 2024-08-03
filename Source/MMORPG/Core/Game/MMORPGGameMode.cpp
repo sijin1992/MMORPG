@@ -6,10 +6,15 @@
 #include "MMORPGHUD.h"
 #include "../../MMORPGMacroType.h"
 #include "ThreadManage.h"
+#include "MMORPGGameState.h"
+#include "MMORPGPlayerState.h"
+#include "Character/MMORPGPlayerCharacter.h"
 
 AMMORPGGameMode::AMMORPGGameMode()
 {
 	HUDClass = AMMORPGHUD::StaticClass();
+	GameStateClass = AMMORPGGameState::StaticClass();
+	PlayerStateClass = AMMORPGPlayerState::StaticClass();
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
@@ -42,6 +47,30 @@ void AMMORPGGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMMORPGGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+//DS Server Timer
+void AMMORPGGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	GThread::Get()->GetCoroutines().BindLambda(0.5f, [&](APlayerController* InNewPlayer)
+		{
+			if (InNewPlayer)
+			{
+				if (AMMORPGPlayerCharacter* InPlayerCharacter = InNewPlayer->GetPawn<AMMORPGPlayerCharacter>())
+				{
+					if (AMMORPGGameState* InGameState = GetGameState<AMMORPGGameState>())
+					{
+						if (FCharacterAnimTable* InAnimTable = InGameState->GetCharacterAnimTable(InPlayerCharacter->GetID()))
+						{
+							InPlayerCharacter->AnimTable = InAnimTable;
+						}
+					}
+				}
+			}
+		}, NewPlayer);
+	
 }
 
 void AMMORPGGameMode::BindClientRcv()

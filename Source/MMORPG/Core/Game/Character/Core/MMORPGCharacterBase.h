@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../../../../DataTable/CharacterAnimTable.h"
 #include "MMORPGCharacterBase.generated.h"
 
 UCLASS()
 class MMORPG_API AMMORPGCharacterBase : public ACharacter
 {
 	GENERATED_BODY()
-
+	friend class AMMORPGGameMode;
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
@@ -27,7 +28,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	FORCEINLINE bool IsFight() { return bFight; }
-
+	FORCEINLINE FCharacterAnimTable* GetAnimTable() { return AnimTable; }
+	FORCEINLINE int32 GetID() { return ID; }
 protected:
+	UPROPERTY()
 	bool bFight;
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
+	int32 ID;
+
+	FCharacterAnimTable* AnimTable;//角色动画
 };

@@ -130,10 +130,24 @@ void AMMORPGCharacter::SwitchFight()
 	if (bFight)
 	{
 		bFight = false;
+		if (FCharacterAnimTable* InAnimTable = GetAnimTable())
+		{
+			if (InAnimTable->SwitchFightMontage)
+			{
+				PlayAnimMontage(InAnimTable->SwitchFightMontage,1.0f,TEXT("1"));
+			}
+		}
 	}
 	else
 	{
 		bFight = true;
+		if (FCharacterAnimTable* InAnimTable = GetAnimTable())
+		{
+			if (InAnimTable->SwitchFightMontage)
+			{
+				PlayAnimMontage(InAnimTable->SwitchFightMontage, 1.0f, TEXT("0"));
+			}
+		}
 	}
 }
 

@@ -20,8 +20,8 @@ void UMMORPGGameInstance::Tick(float DeltaTime)
 	if (Client)
 	{
 		Client->Tick(DeltaTime);
-		GThread::Get()->Tick(DeltaTime);//协程插件需要手动Tick
 	}
+	GThread::Get()->Tick(DeltaTime);//协程插件需要手动Tick
 }
 
 TStatId UMMORPGGameInstance::GetStatId() const
