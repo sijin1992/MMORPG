@@ -20,6 +20,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//使用RPC需要重写这个方法告诉引擎同步方式
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,8 +34,17 @@ public:
 	FORCEINLINE FCharacterAnimTable* GetAnimTable() { return AnimTable; }
 	FORCEINLINE int32 GetID() { return ID; }
 protected:
-	UPROPERTY()
+	//RPC服务器接口
+	UFUNCTION(Server,Reliable)
+	void SwitchFightOnServer(bool bNewFight);
+protected:
+	//RPC同步
+	UPROPERTY(ReplicatedUsing = OnRep_FightChanged)
 	bool bFight;
+	//RPC同步，绑定的函数
+	UFUNCTION()
+	virtual void OnRep_FightChanged() {};
+
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	int32 ID;
 

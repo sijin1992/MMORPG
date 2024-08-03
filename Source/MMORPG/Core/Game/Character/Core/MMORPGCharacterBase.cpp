@@ -2,6 +2,8 @@
 
 
 #include "MMORPGCharacterBase.h"
+#include "../../MMORPGGameState.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
@@ -18,6 +20,23 @@ void AMMORPGCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (GetWorld())
+	{
+		if (AMMORPGGameState* InGameState = GetWorld()->GetGameState<AMMORPGGameState>())
+		{
+			if (FCharacterAnimTable* InAnimTable = InGameState->GetCharacterAnimTable(GetID()))
+			{
+				AnimTable = InAnimTable;
+			}
+		}
+	}
+}
+
+void AMMORPGCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//条件注册,COND_SimulatedOnly表示只更新模拟玩家
+	DOREPLIFETIME_CONDITION(AMMORPGCharacterBase, bFight, COND_SimulatedOnly);
 }
 
 // Called every frame
@@ -34,3 +53,7 @@ void AMMORPGCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 }
 
+void AMMORPGCharacterBase::SwitchFightOnServer_Implementation(bool bNewFight)
+{
+	bFight = bNewFight;
+}

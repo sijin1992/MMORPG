@@ -57,6 +57,10 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void OnRep_FightChanged() override;
+
+	void FightChanged();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

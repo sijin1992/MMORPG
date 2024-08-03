@@ -36,8 +36,8 @@ void UMMORPGGameInstance::Shutdown()
 	if (Client)
 	{
 		FSimpleNetManage::Destroy(Client);
-		GThread::Destroy();//销毁协程
 	}
+	GThread::Destroy();//销毁协程
 }
 
 void UMMORPGGameInstance::CreateClient()

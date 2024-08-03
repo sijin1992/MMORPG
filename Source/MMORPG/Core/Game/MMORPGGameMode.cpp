@@ -58,6 +58,7 @@ void AMMORPGGameMode::PostLogin(APlayerController* NewPlayer)
 		{
 			if (InNewPlayer)
 			{
+				/*
 				if (AMMORPGPlayerCharacter* InPlayerCharacter = InNewPlayer->GetPawn<AMMORPGPlayerCharacter>())
 				{
 					if (AMMORPGGameState* InGameState = GetGameState<AMMORPGGameState>())
@@ -68,6 +69,7 @@ void AMMORPGGameMode::PostLogin(APlayerController* NewPlayer)
 						}
 					}
 				}
+				*/
 			}
 		}, NewPlayer);
 	

@@ -127,29 +127,37 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 
 void AMMORPGCharacter::SwitchFight()
 {
+	//客户端改变值
 	if (bFight)
 	{
 		bFight = false;
-		if (FCharacterAnimTable* InAnimTable = GetAnimTable())
-		{
-			if (InAnimTable->SwitchFightMontage)
-			{
-				PlayAnimMontage(InAnimTable->SwitchFightMontage,1.0f,TEXT("1"));
-			}
-		}
 	}
 	else
 	{
 		bFight = true;
-		if (FCharacterAnimTable* InAnimTable = GetAnimTable())
+	}
+	//客户端先播放
+	FightChanged();
+	//通知服务器
+	SwitchFightOnServer(bFight);
+}
+
+void AMMORPGCharacter::FightChanged()
+{
+	if (FCharacterAnimTable* InAnimTable = GetAnimTable())
+	{
+		if (InAnimTable->SwitchFightMontage)
 		{
-			if (InAnimTable->SwitchFightMontage)
-			{
-				PlayAnimMontage(InAnimTable->SwitchFightMontage, 1.0f, TEXT("0"));
-			}
+			FName AnimSlotName = bFight == true ? TEXT("0") : TEXT("1");
+			PlayAnimMontage(InAnimTable->SwitchFightMontage, 1.0f, AnimSlotName);
 		}
 	}
 }
 
-
-
+void AMMORPGCharacter::OnRep_FightChanged()
+{
+	if (GetLocalRole() != ROLE_Authority)//如果是服务器就不执行
+	{
+		FightChanged();
+	}
+}
