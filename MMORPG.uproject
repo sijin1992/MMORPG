@@ -40,6 +40,14 @@
 		{
 			"Name": "MMORPGCommon",
 			"Enabled": true
+		},
+		{
+			"Name": "SimpleActorBrowsing",
+			"Enabled": true
+		},
+		{
+			"Name": "SimpleCombat",
+			"Enabled": true
 		}
 	]
 }

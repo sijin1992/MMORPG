@@ -15,6 +15,11 @@ AMMORPGCharacterBase::AMMORPGCharacterBase()
 
 }
 
+void AMMORPGCharacterBase::AnimSignal(int32 InSignal)
+{
+	K2_AnimSignal(InSignal);
+}
+
 // Called when the game starts or when spawned
 void AMMORPGCharacterBase::BeginPlay()
 {

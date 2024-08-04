@@ -5,16 +5,23 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "../../../../DataTable/CharacterAnimTable.h"
+#include "CombatInterface/SimpleCombatInterface.h"
 #include "MMORPGCharacterBase.generated.h"
 
 UCLASS()
-class MMORPG_API AMMORPGCharacterBase : public ACharacter
+class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatInterface
 {
 	GENERATED_BODY()
 	friend class AMMORPGGameMode;
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
+
+	virtual void AnimSignal(int32 InSignal);
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, DisplayName = "AnimSignal", Category = "Anim Event")
+	void K2_AnimSignal(int32 InSignal);
 
 protected:
 	// Called when the game starts or when spawned
