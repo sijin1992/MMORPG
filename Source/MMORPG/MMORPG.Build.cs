@@ -25,6 +25,7 @@ public class MMORPG : ModuleRules
 			"MMORPGCommon",
             "SimpleActorBrowsing",
             "SimpleCombat",
+            "SimpleAdvancedAnimation",
          });
     }
 }

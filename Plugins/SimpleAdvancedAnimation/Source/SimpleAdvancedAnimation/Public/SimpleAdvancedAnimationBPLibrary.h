@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "SimpleAdvancedAnimType.h"
 #include "SimpleAdvancedAnimationBPLibrary.generated.h"
 
 /* 
@@ -23,10 +24,24 @@
 *	https://wiki.unrealengine.com/Custom_Blueprint_Node_Creation
 */
 UCLASS()
-class USimpleAdvancedAnimationBPLibrary : public UBlueprintFunctionLibrary
+class SIMPLEADVANCEDANIMATION_API USimpleAdvancedAnimationBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "SimpleAdvancedAnimation sample test testing"), Category = "SimpleAdvancedAnimationTesting")
-	static float SimpleAdvancedAnimationSampleFunction(float Param);
+	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
+	static int32 CreateFootIK(ACharacter* InCharacter, const TArray<FName>& InBoneNames, float InTraceStart = 50.0f, float InTraceDistance = 50.0f, float InInterpSpeed = 18.0f);
+
+	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
+	static float FindOffset(const int32 InKeyHandle, const FName& InKeyName);
+
+	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
+	static FFootIKInfo FindFootIKInfo(const int32 InKeyHandle, const FName& InKeyName);
+
+	/// <summary>
+	/// 寻找最小的质心
+	/// </summary>
+	/// <param name="InOffsets"></param>
+	/// <returns></returns>
+	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
+	static float ButtZOffset(const TArray<float>& InOffsets);
 };

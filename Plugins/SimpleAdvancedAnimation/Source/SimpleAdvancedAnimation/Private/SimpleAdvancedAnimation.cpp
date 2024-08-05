@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SimpleAdvancedAnimation.h"
+#include "Core/SimpleAdvancedAnimSystem.h"
 
 #define LOCTEXT_NAMESPACE "FSimpleAdvancedAnimationModule"
 
@@ -14,7 +15,7 @@ void FSimpleAdvancedAnimationModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
-	
+	FSimpleAdvancedAnimSystem::Destroy();
 }
 
 #undef LOCTEXT_NAMESPACE
