@@ -29,7 +29,7 @@ FFootIKInfo USimpleAdvancedAnimationBPLibrary::FindFootIKInfo(const int32 InKeyH
 	return FFootIKInfo();
 }
 
-float USimpleAdvancedAnimationBPLibrary::ButtZOffset(const TArray<float>& InOffsets)
+float USimpleAdvancedAnimationBPLibrary::GetButtZOffset(const TArray<float>& InOffsets)
 {
 	float TempValue = 0.0f;
 	for (auto& Temp:InOffsets)
@@ -37,4 +37,9 @@ float USimpleAdvancedAnimationBPLibrary::ButtZOffset(const TArray<float>& InOffs
 		TempValue = FMath::Min(TempValue, Temp);
 	}
 	return TempValue < 0.0f ? TempValue : 0.0f;
+}
+
+void USimpleAdvancedAnimationBPLibrary::Destroy()
+{
+	FSimpleAdvancedAnimSystem::Destroy();
 }

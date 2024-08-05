@@ -26,14 +26,14 @@ FSAAHandle FSimpleAdvancedAnimSystem::CreateFootIK(ACharacter* InCharacter, cons
 {
 	//随机一个数字
 	FSAAHandle Handle = FMath::RandRange(0, 999999);
-	if (FootIKs.Contains(Handle))
+	if (!FootIKs.Contains(Handle))
 	{
 		FSimpleFootIK& InFootIK = FootIKs.Add(Handle, FSimpleFootIK());
 		InFootIK.Init(InCharacter, InBoneNames, InTraceStart, InTraceDistance, InInterpSpeed);
 		return Handle;
 	}
 
-	return CreateFootIK(InCharacter, InBoneNames, InTraceDistance, InInterpSpeed);
+	return CreateFootIK(InCharacter, InBoneNames, InTraceStart, InTraceDistance, InInterpSpeed);
 }
 
 FSimpleFootIK* FSimpleAdvancedAnimSystem::FindFootIK(const FSAAHandle InKeyHandle)

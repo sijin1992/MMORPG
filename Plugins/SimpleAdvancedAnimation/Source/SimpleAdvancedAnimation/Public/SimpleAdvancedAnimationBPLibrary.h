@@ -43,5 +43,8 @@ class SIMPLEADVANCEDANIMATION_API USimpleAdvancedAnimationBPLibrary : public UBl
 	/// <param name="InOffsets"></param>
 	/// <returns></returns>
 	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
-	static float ButtZOffset(const TArray<float>& InOffsets);
+	static float GetButtZOffset(const TArray<float>& InOffsets);
+
+	UFUNCTION(BlueprintCallable, Category = "SimpleAdvancedAnimation|FootIK")
+	static void Destroy();
 };

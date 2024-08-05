@@ -71,6 +71,7 @@ float FSimpleFootIK::FootTrace(const FName& BoneName, float InTraceDistance)
 		//射线
 		FHitResult HitResult;
 		TArray<AActor*> Ignores;
+		//EDrawDebugTrace::Type::ForOneFrame显示射线
 		if (UKismetSystemLibrary::LineTraceSingle(
 			Character->GetWorld(),
 			StartLocation,
@@ -78,7 +79,7 @@ float FSimpleFootIK::FootTrace(const FName& BoneName, float InTraceDistance)
 			ETraceTypeQuery::TraceTypeQuery1,
 			false,
 			Ignores,
-			EDrawDebugTrace::Type::ForOneFrame,
+			EDrawDebugTrace::Type::None,
 			HitResult,
 			true))
 		{
