@@ -4,6 +4,7 @@
 #include "MMORPGGameInstance.h"
 #include "Global/SimpleNetGlobalInfo.h"
 #include "ThreadManage.h"
+#include "SimpleAdvancedAnimationBPLibrary.h"
 
 //关闭优化
 #if PLATFORM_WINDOWS
@@ -38,6 +39,8 @@ void UMMORPGGameInstance::Shutdown()
 		FSimpleNetManage::Destroy(Client);
 	}
 	GThread::Destroy();//销毁协程
+	//清除FootIK
+	USimpleAdvancedAnimationBPLibrary::Destroy();
 }
 
 void UMMORPGGameInstance::CreateClient()

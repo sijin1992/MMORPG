@@ -4,6 +4,8 @@
 #include "MMORPGCharacterBase.h"
 #include "../../MMORPGGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "../../Animation/Instance/Core/MMORPGAnimInstanceBase.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
@@ -24,7 +26,7 @@ void AMMORPGCharacterBase::AnimSignal(int32 InSignal)
 void AMMORPGCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//注册角色动画
 	if (GetWorld())
 	{
 		if (AMMORPGGameState* InGameState = GetWorld()->GetGameState<AMMORPGGameState>())
@@ -32,6 +34,18 @@ void AMMORPGCharacterBase::BeginPlay()
 			if (FCharacterAnimTable* InAnimTable = InGameState->GetCharacterAnimTable(GetID()))
 			{
 				AnimTable = InAnimTable;
+			}
+		}
+
+		//服务器没必要执行
+		if (!GetWorld()->IsServer())
+		{
+			if (GetMesh())
+			{
+				if (UMMORPGAnimInstanceBase* InAnimInstanceBase = Cast<UMMORPGAnimInstanceBase>(GetMesh()->GetAnimInstance()))
+				{
+					InAnimInstanceBase->InitAnimInstance(this);
+				}
 			}
 		}
 	}
