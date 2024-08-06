@@ -13,5 +13,16 @@ UCLASS()
 class MMORPG_API UUI_GameMain : public UUI_MainBase
 {
 	GENERATED_BODY()
-	
+public:
+
+	virtual void NativeConstruct() override;
+
+	virtual void NativeDestruct() override;
+
+protected:
+
+	virtual void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg) override;
+
+	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) override;
+
 };
