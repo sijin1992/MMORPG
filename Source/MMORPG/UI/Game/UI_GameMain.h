@@ -19,6 +19,8 @@ public:
 
 	virtual void NativeDestruct() override;
 
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 protected:
 
 	virtual void LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg) override;
