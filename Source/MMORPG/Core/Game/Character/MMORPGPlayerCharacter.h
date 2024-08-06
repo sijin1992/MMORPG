@@ -14,7 +14,12 @@ UCLASS()
 class MMORPG_API AMMORPGPlayerCharacter : public AMMORPGCharacter, public IKneadingInterface
 {
 	GENERATED_BODY()
-
+public:
+	UFUNCTION(Client, reliable)
+	void CallUpdateKneadingBodyOnClient(const FMMORPGCharacterAppearance& InCA);
+protected:
+	UFUNCTION(Server, reliable)
+	void CallServerUpdateKneading(int32 InUserID);
 protected:
 	virtual void BeginPlay() override;
 

@@ -40,6 +40,7 @@ public:
 	FORCEINLINE bool IsFight() { return bFight; }
 	FORCEINLINE FCharacterAnimTable* GetAnimTable() { return AnimTable; }
 	FORCEINLINE int32 GetID() { return ID; }
+	FORCEINLINE int32 GetUserID() { return UserID; }
 protected:
 	//RPC服务器接口
 	UFUNCTION(Server,Reliable)
@@ -53,7 +54,9 @@ protected:
 	virtual void OnRep_FightChanged() {};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
-	int32 ID;
+	int32 ID;//角色ID
+	UPROPERTY()
+	int32 UserID;//用户ID
 
 	FCharacterAnimTable* AnimTable;//角色动画
 };

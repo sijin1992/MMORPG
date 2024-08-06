@@ -9,6 +9,8 @@
 #include "MMORPGGameState.h"
 #include "MMORPGPlayerState.h"
 #include "Character/MMORPGPlayerCharacter.h"
+#include "Protocol/GameProtocol.h"
+#include "Core/MethodUnit.h"
 
 AMMORPGGameMode::AMMORPGGameMode()
 {
@@ -47,6 +49,12 @@ void AMMORPGGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMMORPGGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void AMMORPGGameMode::LoginCharacterUpdateKneadingRequest(int32 InUserID)
+{
+	//向中心服务器发送请求捏脸数据
+	SEND_DATA(SP_UpdateLoginCharacterInfoRequests, InUserID);
 }
 
 //DS Server Timer
@@ -131,5 +139,32 @@ void AMMORPGGameMode::LinkServer()
 
 void AMMORPGGameMode::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel)
 {
+	switch (ProtocolNumber)
+	{
+		case SP_UpdateLoginCharacterInfoResponses:
+		{
+			//收到中心服务器的捏脸数据回调
+			int32 InUserID = INDEX_NONE;
+			FString CAJsonString;
+			SIMPLE_PROTOCOLS_RECEIVE(SP_UpdateLoginCharacterInfoResponses, InUserID, CAJsonString);
+			if (InUserID != INDEX_NONE && !CAJsonString.IsEmpty())
+			{
+				FMMORPGCharacterAppearance CA;
+				NetDataAnalysis::StringToFCharacterAppearacnce(CAJsonString, CA);
 
+				//寻找特定玩家
+				MethodUnit::ServerCallAllPlayer<AMMORPGPlayerCharacter>(GetWorld(), [&](AMMORPGPlayerCharacter* InPawn)->MethodUnit::EServerCallType
+					{
+						if (InPawn->GetUserID() == InUserID)
+						{
+							InPawn->UpdateKneadingBody(CA);//服务器更新捏脸数据
+							InPawn->CallUpdateKneadingBodyOnClient(CA);//客户端更新捏脸数据
+							return MethodUnit::EServerCallType::PROGRESS_COMPLETE;
+						}
+						return MethodUnit::EServerCallType::INPROGRESS;
+					});
+			}
+			break;
+		}
+	}
 }

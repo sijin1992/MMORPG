@@ -23,6 +23,10 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+public:
+
+	void LoginCharacterUpdateKneadingRequest(int32 InUserID);
+
 protected:
 	//玩家登录后会激活这个接口
 	virtual void PostLogin(APlayerController* NewPlayer) override;
