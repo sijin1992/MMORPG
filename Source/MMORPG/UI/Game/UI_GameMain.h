@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../Core/UI_MainBase.h"
+#include "../../Robot/MMORPGRobot.h"
 #include "UI_GameMain.generated.h"
 
 /**
@@ -27,4 +28,6 @@ protected:
 
 	virtual void RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channel) override;
 
+protected:
+	FMMORPGRobot Robot;//只是为了测试
 };

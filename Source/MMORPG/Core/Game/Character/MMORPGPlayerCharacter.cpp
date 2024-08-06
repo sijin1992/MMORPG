@@ -4,6 +4,7 @@
 #include "MMORPGPlayerCharacter.h"
 #include "../../Common/MMORPGGameInstance.h"
 #include "../MMORPGGameMode.h"
+#include "ThreadManage.h"
 
 void AMMORPGPlayerCharacter::BeginPlay()
 {
@@ -13,12 +14,25 @@ void AMMORPGPlayerCharacter::BeginPlay()
 
 	if (GetLocalRole() == ENetRole::ROLE_AutonomousProxy)//服务器
 	{
+		//正式打包代码
+		/*
 		if (UMMORPGGameInstance* InGameInstance = GetWorld()->GetGameInstance<UMMORPGGameInstance>())
 		{
 			//RPC调用
 			//请求捏脸数据
 			CallServerUpdateKneading(InGameInstance->GetUserData().ID);
 		}
+		*/
+		//测试代码
+		GThread::Get()->GetCoroutines().BindLambda(0.6f, [=]()
+			{
+				if (UMMORPGGameInstance* InGameInstance = GetWorld()->GetGameInstance<UMMORPGGameInstance>())
+				{
+					//RPC调用
+					//请求捏脸数据
+					CallServerUpdateKneading(1);
+				}
+			});
 	}
 	else if (GetLocalRole() == ENetRole::ROLE_SimulatedProxy)//模拟玩家
 	{
