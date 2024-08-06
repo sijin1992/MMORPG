@@ -5,6 +5,7 @@
 #include "../../Common/MMORPGGameInstance.h"
 #include "../MMORPGGameMode.h"
 #include "ThreadManage.h"
+#include "../../../MMORPGMacroType.h"
 
 void AMMORPGPlayerCharacter::BeginPlay()
 {
@@ -14,25 +15,9 @@ void AMMORPGPlayerCharacter::BeginPlay()
 
 	if (GetLocalRole() == ENetRole::ROLE_AutonomousProxy)//服务器
 	{
-		//正式打包代码
-		/*
-		if (UMMORPGGameInstance* InGameInstance = GetWorld()->GetGameInstance<UMMORPGGameInstance>())
-		{
-			//RPC调用
-			//请求捏脸数据
-			CallServerUpdateKneading(InGameInstance->GetUserData().ID);
-		}
-		*/
-		//测试代码
-		GThread::Get()->GetCoroutines().BindLambda(0.6f, [=]()
-			{
-				if (UMMORPGGameInstance* InGameInstance = GetWorld()->GetGameInstance<UMMORPGGameInstance>())
-				{
-					//RPC调用
-					//请求捏脸数据
-					CallServerUpdateKneading(1);
-				}
-			});
+#if !UE_MMORPG_DEBUG_DS
+		UpdateKneadingRequest();
+#endif
 	}
 	else if (GetLocalRole() == ENetRole::ROLE_SimulatedProxy)//模拟玩家
 	{
@@ -43,6 +28,22 @@ void AMMORPGPlayerCharacter::BeginPlay()
 void AMMORPGPlayerCharacter::CallUpdateKneadingBodyOnClient_Implementation(const FMMORPGCharacterAppearance& InCA)
 {
 	UpdateKneadingBody(InCA);
+}
+
+void AMMORPGPlayerCharacter::UpdateKneadingRequest()
+{
+	if (UMMORPGGameInstance* InGameInstance = GetWorld()->GetGameInstance<UMMORPGGameInstance>())
+	{
+#if UE_MMORPG_DEBUG_DS
+		//测试代码
+		CallServerUpdateKneading(1);
+#else
+		//正式打包代码
+		//RPC调用
+		//请求捏脸数据
+		CallServerUpdateKneading(InGameInstance->GetUserData().ID);
+#endif
+	}
 }
 
 //DS服务器上运行

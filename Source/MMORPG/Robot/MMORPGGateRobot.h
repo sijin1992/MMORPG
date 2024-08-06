@@ -8,10 +8,16 @@
 class FMMORPGGateRobot
 {
 public:
+	FSimpleDelegate StartDelegate;
+
 	FMMORPGGateRobot();
 	~FMMORPGGateRobot();
 
-	void RunRobot();
+	//在网关那边注册ID
+	void RunCharacterAppearanceRequests();
+
+	//登录DS服务器，在服务器注册一个玩家
+	void RunLoginToDSServerRequests();
 
 	void Init(const FString& Host, const int32 Port);
 

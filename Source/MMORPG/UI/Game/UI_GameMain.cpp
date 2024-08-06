@@ -3,17 +3,20 @@
 
 #include "UI_GameMain.h"
 #include "ThreadManage.h"
+#include "../../Core/Game/Character/MMORPGPlayerCharacter.h"
 
 void UUI_GameMain::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+#if UE_MMORPG_DEBUG_DS
+	if (AMMORPGPlayerCharacter* InPlayer = GetPawn<AMMORPGPlayerCharacter>())
+	{
+		Robot.GetGateRobot().StartDelegate.BindUObject(InPlayer, &AMMORPGPlayerCharacter::UpdateKneadingRequest);
+	}
+	
 	Robot.InitGate("127.0.0.1", 11222);
-
-	GThread::Get()->GetCoroutines().BindLambda(0.5f, [=]()
-		{
-			Robot.RunRobot();
-		});
+#endif
 }
 
 void UUI_GameMain::NativeDestruct()
@@ -25,7 +28,9 @@ void UUI_GameMain::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+#if UE_MMORPG_DEBUG_DS
 	Robot.Tick(InDeltaTime);
+#endif
 }
 
 void UUI_GameMain::LinkServerInfo(ESimpleNetErrorType InType, const FString& InMsg)

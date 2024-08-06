@@ -17,6 +17,9 @@ class MMORPG_API AMMORPGPlayerCharacter : public AMMORPGCharacter, public IKnead
 public:
 	UFUNCTION(Client, reliable)
 	void CallUpdateKneadingBodyOnClient(const FMMORPGCharacterAppearance& InCA);
+
+	UFUNCTION()
+	void UpdateKneadingRequest();
 protected:
 	UFUNCTION(Server, reliable)
 	void CallServerUpdateKneading(int32 InUserID);
