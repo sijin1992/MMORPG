@@ -18,6 +18,8 @@ class MMORPG_API UUI_PartnerInfo : public UUI_Base
 {
 	GENERATED_BODY()
 
+	friend class UUI_PartnerList;
+
 	UPROPERTY(meta = (BindWidget))
 	UCheckBox* ClickedCheckBox;
 
@@ -34,12 +36,24 @@ class MMORPG_API UUI_PartnerInfo : public UUI_Base
 	UProgressBar* ManaBar;
 
 public:
+	UUI_PartnerInfo(const FObjectInitializer& ObjectInitializer);
+
 	virtual void NativeConstruct();
 
 	virtual void NativeDestruct();
 
 public:
 
+	void ShowSelected(bool bShow);
+
 	UFUNCTION()
 	void OnClickedCharacter(bool bClicked);
+protected:
+	int32 CharacterID;
+
+protected:
+	void SetCharacterID(int32 InCharacterID) { CharacterID = InCharacterID; };
+
+public:
+	int32 GetCharacterID() { return CharacterID; };
 };

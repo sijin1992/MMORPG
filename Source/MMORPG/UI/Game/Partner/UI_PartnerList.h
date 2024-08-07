@@ -27,4 +27,8 @@ public:
 	virtual void NativeConstruct();
 
 	virtual void NativeDestruct();
+
+	void Init();
+
+	void CallCharacterListByPredicate(TFunction<bool(UUI_PartnerInfo* Info)> InFun);
 };
