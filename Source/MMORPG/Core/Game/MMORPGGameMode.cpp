@@ -11,12 +11,14 @@
 #include "Character/MMORPGPlayerCharacter.h"
 #include "Protocol/GameProtocol.h"
 #include "Core/MethodUnit.h"
+#include "MMORPGPlayerController.h"
 
 AMMORPGGameMode::AMMORPGGameMode()
 {
 	HUDClass = AMMORPGHUD::StaticClass();
 	GameStateClass = AMMORPGGameState::StaticClass();
 	PlayerStateClass = AMMORPGPlayerState::StaticClass();
+	PlayerControllerClass = AMMORPGPlayerController::StaticClass();
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
