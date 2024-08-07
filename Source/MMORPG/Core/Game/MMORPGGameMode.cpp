@@ -151,18 +151,25 @@ void AMMORPGGameMode::RecvProtocol(uint32 ProtocolNumber, FSimpleChannel* Channe
 			SIMPLE_PROTOCOLS_RECEIVE(SP_UpdateLoginCharacterInfoResponses, InUserID, CAJsonString);
 			if (InUserID != INDEX_NONE && !CAJsonString.IsEmpty())
 			{
-				FMMORPGCharacterAppearance CA;
-				NetDataAnalysis::StringToFCharacterAppearacnce(CAJsonString, CA);
-
 				//寻找特定玩家
-				MethodUnit::ServerCallAllPlayer<AMMORPGPlayerCharacter>(GetWorld(), [&](AMMORPGPlayerCharacter* InPawn)->MethodUnit::EServerCallType
+				MethodUnit::ServerCallAllPlayerController<AMMORPGPlayerController>(GetWorld(), [&](AMMORPGPlayerController* InPlayerController)->MethodUnit::EServerCallType
 					{
-						if (InPawn->GetUserID() == InUserID)
+						if (AMMORPGPlayerCharacter* InPlayerCharacter = InPlayerController->GetPawn<AMMORPGPlayerCharacter>())
 						{
-							InPawn->UpdateKneadingBody(CA);//服务器更新捏脸数据
-							InPawn->CallUpdateKneadingBodyOnClient(CA);//客户端更新捏脸数据
-							return MethodUnit::EServerCallType::PROGRESS_COMPLETE;
+							if (InPlayerCharacter->GetUserID() == InUserID)
+							{
+								if (AMMORPGPlayerState* InPlayerState = InPlayerController->GetPlayerState<AMMORPGPlayerState>())
+								{
+									NetDataAnalysis::StringToFCharacterAppearacnce(CAJsonString, InPlayerState->GetCA());//捏脸数据保存在PlayerState中
+
+									InPlayerCharacter->UpdateKneadingBody(InPlayerState->GetCA());//服务器更新捏脸数据
+									InPlayerCharacter->CallUpdateKneadingBodyOnClient(InPlayerState->GetCA());//客户端更新捏脸数据
+								}
+
+								return MethodUnit::EServerCallType::PROGRESS_COMPLETE;
+							}
 						}
+
 						return MethodUnit::EServerCallType::INPROGRESS;
 					});
 			}

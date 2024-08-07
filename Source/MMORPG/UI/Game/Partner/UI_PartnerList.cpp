@@ -22,7 +22,7 @@ void UUI_PartnerList::Init()
 {
 	if (UI_PartnerInfoClass)
 	{
-		for (int32 i = 1; i < 5; i++)
+		for (int32 i = 1; i < 3; i++)
 		{
 			if (UUI_PartnerInfo* InPartner = CreateWidget<UUI_PartnerInfo>(GetWorld(),UI_PartnerInfoClass))
 			{

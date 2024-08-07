@@ -15,4 +15,7 @@ class MMORPG_API AMMORPGPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AMMORPGPlayerController();
+
+	UFUNCTION(server, reliable)
+	void ReplaceCharacter(int32 InCharacterID);
 };

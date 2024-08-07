@@ -14,4 +14,8 @@ class MMORPG_API AMMORPGPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+private:
+	FMMORPGCharacterAppearance CA;
+public:
+	FMMORPGCharacterAppearance& GetCA() { return CA; };
 };

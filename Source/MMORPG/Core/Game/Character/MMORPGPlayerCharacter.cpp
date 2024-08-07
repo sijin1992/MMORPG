@@ -6,6 +6,7 @@
 #include "../MMORPGGameMode.h"
 #include "ThreadManage.h"
 #include "../../../MMORPGMacroType.h"
+#include "../MMORPGPlayerState.h"
 
 void AMMORPGPlayerCharacter::BeginPlay()
 {
@@ -15,6 +16,10 @@ void AMMORPGPlayerCharacter::BeginPlay()
 
 	if (GetLocalRole() == ENetRole::ROLE_AutonomousProxy)//服务器
 	{
+		if (AMMORPGPlayerState* InPlayerState = GetPlayerState<AMMORPGPlayerState>())
+		{
+			UpdateKneadingBody(InPlayerState->GetCA());
+		}
 #if !UE_MMORPG_DEBUG_DS
 		UpdateKneadingRequest();
 #endif
@@ -28,6 +33,14 @@ void AMMORPGPlayerCharacter::BeginPlay()
 void AMMORPGPlayerCharacter::CallUpdateKneadingBodyOnClient_Implementation(const FMMORPGCharacterAppearance& InCA)
 {
 	UpdateKneadingBody(InCA);
+
+	if (GetLocalRole() == ENetRole::ROLE_AutonomousProxy)//是否是客户端
+	{
+		if (AMMORPGPlayerState* InPlayerState = GetPlayerState<AMMORPGPlayerState>())
+		{
+			InPlayerState->GetCA() = InCA;
+		}
+	}
 }
 
 void AMMORPGPlayerCharacter::UpdateKneadingRequest()

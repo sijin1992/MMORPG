@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 #include "UI_PartnerList.h"
+#include "../../../Core/Game/MMORPGPlayerController.h"
 
 UUI_PartnerInfo::UUI_PartnerInfo(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer),
@@ -40,13 +41,19 @@ void UUI_PartnerInfo::OnClickedCharacter(bool bClicked)
 			{
 				if (InInfo->GetCharacterID() == CharacterID)
 				{
-					InInfo->ShowSelected(bClicked);
+					InInfo->ShowSelected(true);
 				}
 				else
 				{
-					InInfo->ShowSelected(!bClicked);
+					InInfo->ShowSelected(false);
 				}
 				return true;
 			});
+	}
+
+	//替换角色
+	if (AMMORPGPlayerController* InPlayerController = GetPlayerController<AMMORPGPlayerController>())
+	{
+		InPlayerController->ReplaceCharacter(CharacterID);
 	}
 }
