@@ -45,10 +45,12 @@ void UFlyComponent::ResetFly()
 		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
 		{
 			CharacterMovementComponent->bOrientRotationToMovement = false;//飞行状态，不自动转向移动方向
+			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Flying);//设置飞行模式
 		}
 		else
 		{
 			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
+			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);//设置走路模式
 		}
 	}
 }
