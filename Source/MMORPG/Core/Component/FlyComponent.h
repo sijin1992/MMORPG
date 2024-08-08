@@ -20,6 +20,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	FVector2D RotationRate;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	bool bFastFly;
+
 public:	
 	// Sets default values for this component's properties
 	UFlyComponent();
@@ -37,6 +40,8 @@ public:
 	void ResetFly();
 
 	void FlyForwardAxis(float InAxisValue);//计算轴向
+
+	void ResetFastFly();
 
 protected:
 	UPROPERTY()

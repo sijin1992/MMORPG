@@ -89,6 +89,7 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
 	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &AMMORPGCharacter::Fly);
+	PlayerInputComponent->BindAction("Fast", IE_Pressed, this, &AMMORPGCharacter::Fast);
 }
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
@@ -150,6 +151,14 @@ void AMMORPGCharacter::SwitchFight()
 	SwitchActionStateOnServer(ActionState);
 
 	LastActionState = ActionState;
+}
+
+void AMMORPGCharacter::Fast()
+{
+	if (ActionState == ECharacterActionState::FLIGHT_STATE)
+	{
+		GetFlyComponent()->ResetFastFly();
+	}
 }
 
 void AMMORPGCharacter::FightChanged()

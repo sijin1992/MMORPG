@@ -40,5 +40,8 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}
 		//角速度设置
 		RotationRate = InCharacterBase->GetFlyComponent()->RotationRate;
+
+		//是否加速飞行
+		bFastFly = InCharacterBase->GetFlyComponent()->bFastFly;
 	}
 }

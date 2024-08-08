@@ -21,6 +21,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	FVector2D RotationRate;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	bool bFastFly;
+
 public:
 
 	virtual void InitAnimInstance(ACharacter* InCharacter) override;

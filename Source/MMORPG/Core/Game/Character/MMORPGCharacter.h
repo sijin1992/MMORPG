@@ -52,6 +52,8 @@ protected:
 	void Fly();
 			
 	void SwitchFight();
+
+	void Fast();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

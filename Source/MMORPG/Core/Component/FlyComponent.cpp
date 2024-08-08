@@ -13,7 +13,8 @@ UFlyComponent::UFlyComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
+	bFastFly = false;
 	// ...
 }
 
@@ -55,7 +56,10 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
 			FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
 
-			CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
+			if (!bFastFly)
+			{
+				CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
+			}
 
 			FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
 			
@@ -74,6 +78,8 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 				Print(DeltaTime, OneSecondRotator.ToString());
 
 				RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Yaw);
+
+				RotationRate.Y = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Pitch);
 
 				LastRotator = MMORPGCharacterBase->GetActorRotation();//保存上一次的旋转
 			}
@@ -104,6 +110,8 @@ void UFlyComponent::ResetFly()
 			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
 			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);//设置走路模式
 		}
+
+		bFastFly = false;
 	}
 }
 
@@ -113,6 +121,18 @@ void UFlyComponent::FlyForwardAxis(float InAxisValue)
 	{
 		const FVector ForwardDirection = CameraComponent->GetForwardVector();
 		MMORPGCharacterBase->AddMovementInput(ForwardDirection, InAxisValue);
+	}
+}
+
+void UFlyComponent::ResetFastFly()
+{
+	if (bFastFly)
+	{
+		bFastFly = false;
+	}
+	else
+	{
+		bFastFly = true;
 	}
 }
 
