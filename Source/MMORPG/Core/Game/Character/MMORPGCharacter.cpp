@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "../../Component/FlyComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -129,6 +130,8 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 void AMMORPGCharacter::Fly()
 {
 	ResetActionState(ECharacterActionState::FLIGHT_STATE);
+	
+	GetFlyComponent()->ResetFly();
 }
 
 void AMMORPGCharacter::SwitchFight()

@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "FlyComponent.generated.h"
 
+class AMMORPGCharacterBase;
+class UCharacterMovementComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MMORPG_API UFlyComponent : public UActorComponent
@@ -24,5 +26,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	void ResetFly();
+
+protected:
+	UPROPERTY()
+	AMMORPGCharacterBase* MMORPGCharacterBase;
+
+	UPROPERTY()
+	UCharacterMovementComponent* CharacterMovementComponent;
 };

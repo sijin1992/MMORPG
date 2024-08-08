@@ -2,6 +2,8 @@
 
 
 #include "FlyComponent.h"
+#include "../Game/Character/Core/MMORPGCharacterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 UFlyComponent::UFlyComponent()
@@ -20,7 +22,11 @@ void UFlyComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	MMORPGCharacterBase = Cast<AMMORPGCharacterBase>(GetOwner());
+	if (MMORPGCharacterBase)
+	{
+		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
+	}
 }
 
 
@@ -30,5 +36,20 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UFlyComponent::ResetFly()
+{
+	if (MMORPGCharacterBase && CharacterMovementComponent)
+	{
+		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
+		{
+			CharacterMovementComponent->bOrientRotationToMovement = false;//飞行状态，不自动转向移动方向
+		}
+		else
+		{
+			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
+		}
+	}
 }
 
