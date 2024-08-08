@@ -9,11 +9,15 @@
 #include "../../../../MMORPGGameType.h"
 #include "MMORPGCharacterBase.generated.h"
 
+class UFlyComponent;
 UCLASS()
 class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatInterface
 {
 	GENERATED_BODY()
 	friend class AMMORPGGameMode;
+
+	UPROPERTY()
+	UFlyComponent* FlyComponent;//飞行组件
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
@@ -42,6 +46,12 @@ public:
 	FORCEINLINE FCharacterAnimTable* GetAnimTable() { return AnimTable; }
 	FORCEINLINE int32 GetID() { return ID; }
 	FORCEINLINE int32 GetUserID() { return UserID; }
+
+	//状态切换
+	void ResetActionState(ECharacterActionState InNewActionState);
+
+	//获取飞行组件
+	FORCEINLINE UFlyComponent* GetFlyComponent() { return FlyComponent; }
 protected:
 	//RPC服务器接口
 	UFUNCTION(Server,Reliable)

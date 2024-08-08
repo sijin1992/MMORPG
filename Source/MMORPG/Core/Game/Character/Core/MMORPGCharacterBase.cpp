@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "../../Animation/Instance/Core/MMORPGAnimInstanceBase.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "../../../Component/FlyComponent.h"
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
@@ -17,6 +18,8 @@ AMMORPGCharacterBase::AMMORPGCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	FlyComponent = CreateDefaultSubobject<UFlyComponent>(TEXT("FlightComponent"));
+	//FlyComponent->SetupAttachment(RootComponent);
 }
 
 void AMMORPGCharacterBase::AnimSignal(int32 InSignal)
@@ -72,6 +75,19 @@ void AMMORPGCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AMMORPGCharacterBase::ResetActionState(ECharacterActionState InNewActionState)
+{
+	//客户端改变值
+	if (ActionState == InNewActionState)
+	{
+		ActionState = ECharacterActionState::NORMAL_STATE;
+	}
+	else
+	{
+		ActionState = InNewActionState;
+	}
 }
 
 void AMMORPGCharacterBase::SwitchActionStateOnServer_Implementation(ECharacterActionState InActionState)

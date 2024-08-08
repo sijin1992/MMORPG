@@ -87,6 +87,7 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	}
 
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
+	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &AMMORPGCharacter::Fly);
 }
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
@@ -125,17 +126,15 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AMMORPGCharacter::Fly()
+{
+	ResetActionState(ECharacterActionState::FLIGHT_STATE);
+}
+
 void AMMORPGCharacter::SwitchFight()
 {
 	//客户端改变值
-	if (ActionState == ECharacterActionState::FIGHT_STATE)
-	{
-		ActionState = ECharacterActionState::NORMAL_STATE;
-	}
-	else
-	{
-		ActionState = ECharacterActionState::FIGHT_STATE;
-	}
+	ResetActionState(ECharacterActionState::FIGHT_STATE);
 	//客户端先播放
 	FightChanged();
 	//通知服务器

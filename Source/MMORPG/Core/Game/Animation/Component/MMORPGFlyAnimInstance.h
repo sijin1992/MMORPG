@@ -14,4 +14,15 @@ class MMORPG_API UMMORPGFlyAnimInstance : public UMMORPGAnimInstanceBase
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	FVector FlySpeed;
+
+public:
+
+	virtual void InitAnimInstance(ACharacter* InCharacter) override;
+
+	virtual void NativeInitializeAnimation() override;
+
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 };

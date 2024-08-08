@@ -48,6 +48,8 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	void Fly();
 			
 	void SwitchFight();
 protected:
