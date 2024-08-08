@@ -36,6 +36,8 @@ public:
 
 	void ResetFly();
 
+	void FlyForwardAxis(float InAxisValue);//计算轴向
+
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<AMMORPGCharacterBase> MMORPGCharacterBase;

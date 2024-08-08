@@ -55,6 +55,8 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
 			FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
 
+			CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
+
 			FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
 			
 			MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
@@ -102,6 +104,15 @@ void UFlyComponent::ResetFly()
 			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
 			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);//设置走路模式
 		}
+	}
+}
+
+void UFlyComponent::FlyForwardAxis(float InAxisValue)
+{
+	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
+	{
+		const FVector ForwardDirection = CameraComponent->GetForwardVector();
+		MMORPGCharacterBase->AddMovementInput(ForwardDirection, InAxisValue);
 	}
 }
 

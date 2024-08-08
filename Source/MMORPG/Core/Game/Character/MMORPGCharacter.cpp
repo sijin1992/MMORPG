@@ -102,15 +102,21 @@ void AMMORPGCharacter::Move(const FInputActionValue& Value)
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+
+		if (ActionState == ECharacterActionState::FLIGHT_STATE)
+		{
+			GetFlyComponent()->FlyForwardAxis(MovementVector.Y);
+		}
+		else
+		{
+			// get forward vector
+			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			// add movement 
+			AddMovementInput(ForwardDirection, MovementVector.Y);
+		}
 	}
 }
 
