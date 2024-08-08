@@ -25,7 +25,7 @@ void UFlyComponent::BeginPlay()
 
 	// ...
 	MMORPGCharacterBase = Cast<AMMORPGCharacterBase>(GetOwner());
-	if (MMORPGCharacterBase)
+	if (MMORPGCharacterBase.IsValid())
 	{
 		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
 		CapsuleComponent = MMORPGCharacterBase->GetCapsuleComponent();
@@ -47,7 +47,7 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (MMORPGCharacterBase && CharacterMovementComponent && CapsuleComponent && CameraComponent)
+	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
 	{
 		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
 		{
@@ -90,7 +90,7 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 void UFlyComponent::ResetFly()
 {
-	if (MMORPGCharacterBase && CharacterMovementComponent)
+	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid())
 	{
 		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
 		{

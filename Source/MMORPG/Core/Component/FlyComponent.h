@@ -38,16 +38,16 @@ public:
 
 protected:
 	UPROPERTY()
-	AMMORPGCharacterBase* MMORPGCharacterBase;
+	TWeakObjectPtr<AMMORPGCharacterBase> MMORPGCharacterBase;
 
 	UPROPERTY()
-	UCapsuleComponent* CapsuleComponent;
+	TWeakObjectPtr<UCapsuleComponent> CapsuleComponent;//胶囊体弱指针，用弱指针用于继承自UObject
 
 	UPROPERTY()
-	UCameraComponent* CameraComponent;
+	TWeakObjectPtr<UCameraComponent> CameraComponent;//像机组件弱指针
 
 	UPROPERTY()
-	UCharacterMovementComponent* CharacterMovementComponent;
+	TWeakObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;
 
 	UPROPERTY()
 	FRotator LastRotator;//上一次的旋转

@@ -19,7 +19,7 @@ class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatI
 	friend class AMMORPGGameMode;
 
 	UPROPERTY()
-	UFlyComponent* FlyComponent;//飞行组件
+	TObjectPtr<UFlyComponent> FlyComponent;//飞行组件的对象指针
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
