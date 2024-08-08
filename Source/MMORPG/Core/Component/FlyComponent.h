@@ -7,12 +7,18 @@
 #include "FlyComponent.generated.h"
 
 class AMMORPGCharacterBase;
+class UCapsuleComponent;
 class UCharacterMovementComponent;
+class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MMORPG_API UFlyComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	FVector2D RotationRate;
 
 public:	
 	// Sets default values for this component's properties
@@ -31,6 +37,12 @@ public:
 protected:
 	UPROPERTY()
 	AMMORPGCharacterBase* MMORPGCharacterBase;
+
+	UPROPERTY()
+	UCapsuleComponent* CapsuleComponent;
+
+	UPROPERTY()
+	UCameraComponent* CameraComponent;
 
 	UPROPERTY()
 	UCharacterMovementComponent* CharacterMovementComponent;

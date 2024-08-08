@@ -4,6 +4,8 @@
 #include "FlyComponent.h"
 #include "../Game/Character/Core/MMORPGCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties
 UFlyComponent::UFlyComponent()
@@ -26,6 +28,8 @@ void UFlyComponent::BeginPlay()
 	if (MMORPGCharacterBase)
 	{
 		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
+		CapsuleComponent = MMORPGCharacterBase->GetCapsuleComponent();
+		CameraComponent = MMORPGCharacterBase->GetFollowCamera();
 	}
 }
 
@@ -35,7 +39,23 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (MMORPGCharacterBase && CharacterMovementComponent && CapsuleComponent && CameraComponent)
+	{
+		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
+		{
+			//设置角色跟随像机旋转
+			FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
+			FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
+
+			FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
+			
+			MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
+
+			//设置旋转的角速度映射到-1~1
+			FVector PhysicsAngularVelocityInDegrees = CapsuleComponent->GetPhysicsAngularVelocityInDegrees();
+			RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360,360), FVector2D(-1.0f,1.0f), PhysicsAngularVelocityInDegrees.Z);
+		}
+	}
 }
 
 void UFlyComponent::ResetFly()

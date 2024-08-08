@@ -5,6 +5,7 @@
 #include "../../Character/Core/MMORPGCharacterBase.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../../../Component/FlyComponent.h"
 
 void UMMORPGFlyAnimInstance::InitAnimInstance(ACharacter* InCharacter)
 {
@@ -37,5 +38,7 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			FlySpeed.Y = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Y);
 			FlySpeed.Z = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Z);
 		}
+		//角速度设置
+		RotationRate = InCharacterBase->GetFlyComponent()->RotationRate;
 	}
 }

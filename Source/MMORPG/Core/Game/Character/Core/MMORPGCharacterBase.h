@@ -10,6 +10,8 @@
 #include "MMORPGCharacterBase.generated.h"
 
 class UFlyComponent;
+class UCameraComponent;
+
 UCLASS()
 class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatInterface
 {
@@ -23,6 +25,8 @@ public:
 	AMMORPGCharacterBase();
 
 	virtual void AnimSignal(int32 InSignal);
+
+	virtual UCameraComponent* GetFollowCamera() const { return NULL; }
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, DisplayName = "AnimSignal", Category = "Anim Event")
