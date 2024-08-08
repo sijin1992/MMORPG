@@ -28,6 +28,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void Print(float InTime, const FString& InString);
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -46,4 +48,7 @@ protected:
 
 	UPROPERTY()
 	UCharacterMovementComponent* CharacterMovementComponent;
+
+	UPROPERTY()
+	FRotator LastRotator;//上一次的旋转
 };
