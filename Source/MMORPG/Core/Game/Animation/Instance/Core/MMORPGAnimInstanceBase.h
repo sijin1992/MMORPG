@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "../../../../../MMORPGGameType.h"
 #include "MMORPGAnimInstanceBase.generated.h"
 
 /**
@@ -34,7 +35,7 @@ public:
 	bool bInAir;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimAttrubute")
-	bool bFight;
+	ECharacterActionState ActionState;
 
 	///FootIK相关
 	//本项目两条腿使用

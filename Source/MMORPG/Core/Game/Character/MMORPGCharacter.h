@@ -57,7 +57,7 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	virtual void OnRep_FightChanged() override;
+	virtual void OnRep_ActionStateChanged() override;
 
 	void FightChanged();
 

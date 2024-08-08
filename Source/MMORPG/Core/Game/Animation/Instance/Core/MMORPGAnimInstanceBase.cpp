@@ -10,7 +10,7 @@ UMMORPGAnimInstanceBase::UMMORPGAnimInstanceBase()
 	:bDeath(false),
 	Speed(0.0f),
 	bInAir(false),
-	bFight(false),
+	ActionState(ECharacterActionState::NORMAL_STATE),
 	bFootIK(false),
 	LeftBoneName(TEXT("foot_l")),
 	RightBoneName(TEXT("foot_r")),
@@ -44,7 +44,7 @@ void UMMORPGAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		Speed = InCharacterBase->GetVelocity().Size();
 		bInAir = InCharacterBase->GetMovementComponent()->IsFalling();
-		bFight = InCharacterBase->IsFight();
+		ActionState = InCharacterBase->GetActionState();
 	}
 
 	if (bFootIK && FootIKID != INDEX_NONE)

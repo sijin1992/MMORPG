@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "../../../../DataTable/CharacterAnimTable.h"
 #include "CombatInterface/SimpleCombatInterface.h"
+#include "../../../../MMORPGGameType.h"
 #include "MMORPGCharacterBase.generated.h"
 
 UCLASS()
@@ -37,21 +38,24 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE bool IsFight() { return bFight; }
+	FORCEINLINE ECharacterActionState GetActionState() { return ActionState; }
 	FORCEINLINE FCharacterAnimTable* GetAnimTable() { return AnimTable; }
 	FORCEINLINE int32 GetID() { return ID; }
 	FORCEINLINE int32 GetUserID() { return UserID; }
 protected:
 	//RPC服务器接口
 	UFUNCTION(Server,Reliable)
-	void SwitchFightOnServer(bool bNewFight);
+	void SwitchActionStateOnServer(ECharacterActionState InActionState);
 protected:
 	//RPC同步
-	UPROPERTY(ReplicatedUsing = OnRep_FightChanged)
-	bool bFight;
+	UPROPERTY(ReplicatedUsing = OnRep_ActionStateChanged)
+	ECharacterActionState ActionState;
+	UPROPERTY()
+	ECharacterActionState LastActionState;//上一次状态
+
 	//RPC同步，绑定的函数
 	UFUNCTION()
-	virtual void OnRep_FightChanged() {};
+	virtual void OnRep_ActionStateChanged() {};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	int32 ID;//角色ID

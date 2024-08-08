@@ -128,18 +128,20 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 void AMMORPGCharacter::SwitchFight()
 {
 	//客户端改变值
-	if (bFight)
+	if (ActionState == ECharacterActionState::FIGHT_STATE)
 	{
-		bFight = false;
+		ActionState = ECharacterActionState::NORMAL_STATE;
 	}
 	else
 	{
-		bFight = true;
+		ActionState = ECharacterActionState::FIGHT_STATE;
 	}
 	//客户端先播放
 	FightChanged();
 	//通知服务器
-	SwitchFightOnServer(bFight);
+	SwitchActionStateOnServer(ActionState);
+
+	LastActionState = ActionState;
 }
 
 void AMMORPGCharacter::FightChanged()
@@ -148,16 +150,22 @@ void AMMORPGCharacter::FightChanged()
 	{
 		if (InAnimTable->SwitchFightMontage)
 		{
-			FName AnimSlotName = bFight == true ? TEXT("0") : TEXT("1");
+			FName AnimSlotName = ActionState == ECharacterActionState::FIGHT_STATE ? TEXT("0") : TEXT("1");
 			PlayAnimMontage(InAnimTable->SwitchFightMontage, 1.0f, AnimSlotName);
 		}
 	}
 }
 
-void AMMORPGCharacter::OnRep_FightChanged()
+void AMMORPGCharacter::OnRep_ActionStateChanged()
 {
 	if (GetLocalRole() != ROLE_Authority)//如果是服务器就不执行
 	{
-		FightChanged();
+		if (ActionState == ECharacterActionState::FIGHT_STATE ||
+			LastActionState == ECharacterActionState::FIGHT_STATE)
+		{
+			FightChanged();
+		}
+
+		LastActionState = ActionState;
 	}
 }

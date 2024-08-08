@@ -9,7 +9,8 @@
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
-	:bFight(false),
+	:ActionState(ECharacterActionState::NORMAL_STATE),
+	LastActionState(ECharacterActionState::NORMAL_STATE),
 	ID(INDEX_NONE),
 	UserID(INDEX_NONE)
 {
@@ -56,7 +57,7 @@ void AMMORPGCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	//条件注册,COND_SimulatedOnly表示只更新模拟玩家
-	DOREPLIFETIME_CONDITION(AMMORPGCharacterBase, bFight, COND_SimulatedOnly);
+	DOREPLIFETIME_CONDITION(AMMORPGCharacterBase, ActionState, COND_SimulatedOnly);
 }
 
 // Called every frame
@@ -73,7 +74,9 @@ void AMMORPGCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 }
 
-void AMMORPGCharacterBase::SwitchFightOnServer_Implementation(bool bNewFight)
+void AMMORPGCharacterBase::SwitchActionStateOnServer_Implementation(ECharacterActionState InActionState)
 {
-	bFight = bNewFight;
+	ActionState = InActionState;
+
+	LastActionState = ActionState;
 }
