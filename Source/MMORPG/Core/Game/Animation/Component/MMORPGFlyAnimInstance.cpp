@@ -7,6 +7,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../../Component/FlyComponent.h"
 
+UMMORPGFlyAnimInstance::UMMORPGFlyAnimInstance()
+	:Super(),
+	DodgeFly(EDodgeFly::DODGE_NONE)
+{
+
+}
+
 void UMMORPGFlyAnimInstance::InitAnimInstance(ACharacter* InCharacter)
 {
 	Super::InitAnimInstance(InCharacter);
@@ -43,5 +50,8 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		//是否加速飞行
 		bFastFly = InCharacterBase->GetFlyComponent()->bFastFly;
+
+		//闪避飞行
+		DodgeFly = InCharacterBase->GetFlyComponent()->DodgeFly;
 	}
 }

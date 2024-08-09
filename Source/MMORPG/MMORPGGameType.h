@@ -13,3 +13,12 @@ enum class ECharacterActionState : uint8
 	CLIMB_STATE		UMETA(DisplayName = "Climb"),//攀爬状态
 	SWIMMING_STATE	UMETA(DisplayName = "Swimming"),//游泳状态
 };
+
+//闪避飞行
+UENUM(BlueprintType)
+enum class EDodgeFly : uint8
+{
+	DODGE_NONE		UMETA(DisplayName = "None"),
+	DODGE_LEFT		UMETA(DisplayName = "Left"),
+	DODGE_RIGHT		UMETA(DisplayName = "Right"),
+};

@@ -15,6 +15,8 @@ class MMORPG_API UMMORPGFlyAnimInstance : public UMMORPGAnimInstanceBase
 	GENERATED_BODY()
 	
 public:
+	UMMORPGFlyAnimInstance();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	FVector FlySpeed;
 
@@ -23,6 +25,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	bool bFastFly;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	EDodgeFly DodgeFly;
 
 public:
 

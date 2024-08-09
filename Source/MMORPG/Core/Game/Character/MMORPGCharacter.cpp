@@ -90,6 +90,8 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
 	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &AMMORPGCharacter::Fly);
 	PlayerInputComponent->BindAction("Fast", IE_Pressed, this, &AMMORPGCharacter::Fast);
+	PlayerInputComponent->BindAction("DodgeLeft", IE_Pressed, this, &AMMORPGCharacter::DodgeLeft);
+	PlayerInputComponent->BindAction("DodgeRight", IE_Pressed, this, &AMMORPGCharacter::DodgeRight);
 }
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
@@ -158,6 +160,22 @@ void AMMORPGCharacter::Fast()
 	if (ActionState == ECharacterActionState::FLIGHT_STATE)
 	{
 		GetFlyComponent()->ResetFastFly();
+	}
+}
+
+void AMMORPGCharacter::DodgeLeft()
+{
+	if (ActionState == ECharacterActionState::FLIGHT_STATE)
+	{
+		GetFlyComponent()->ResetDodgeFly(EDodgeFly::DODGE_LEFT);
+	}
+}
+
+void AMMORPGCharacter::DodgeRight()
+{
+	if (ActionState == ECharacterActionState::FLIGHT_STATE)
+	{
+		GetFlyComponent()->ResetDodgeFly(EDodgeFly::DODGE_RIGHT);
 	}
 }
 

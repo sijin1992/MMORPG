@@ -15,6 +15,8 @@ UFlyComponent::UFlyComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	bFastFly = false;
+
+	DodgeFlyTime = 0.0f;
 	// ...
 }
 
@@ -92,6 +94,18 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 				RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), PhysicsAngularVelocityInDegrees.Z);
 			}
+
+
+			//闪避飞行时间计时
+			if (DodgeFlyTime > 0.0f)
+			{
+				DodgeFlyTime -= DeltaTime;
+				if (DodgeFlyTime <= 0.0f)
+				{
+					DodgeFly = EDodgeFly::DODGE_NONE;
+					DodgeFlyTime = 0.0f;
+				}
+			}
 		}
 	}
 }
@@ -151,6 +165,15 @@ void UFlyComponent::ResetFastFly()
 			bFastFly = true;
 			CharacterMovementComponent->MaxFlySpeed = 2000.0f;
 		}
+	}
+}
+
+void UFlyComponent::ResetDodgeFly(EDodgeFly InFlyState)
+{
+	if (bFastFly)
+	{
+		DodgeFly = InFlyState;
+		DodgeFlyTime = 1.6f;
 	}
 }
 

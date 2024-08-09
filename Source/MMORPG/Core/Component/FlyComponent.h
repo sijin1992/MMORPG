@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "../../MMORPGGameType.h"
 #include "FlyComponent.generated.h"
 
 class AMMORPGCharacterBase;
@@ -22,6 +23,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	bool bFastFly;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	EDodgeFly DodgeFly;
 
 public:	
 	// Sets default values for this component's properties
@@ -43,6 +47,8 @@ public:
 
 	void ResetFastFly();
 
+	void ResetDodgeFly(EDodgeFly InFlyState);//左右闪避飞行
+
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<AMMORPGCharacterBase> MMORPGCharacterBase;
@@ -58,4 +64,7 @@ protected:
 
 	UPROPERTY()
 	FRotator LastRotator;//上一次的旋转
+
+	UPROPERTY()
+	float DodgeFlyTime;//用于闪避飞行计时
 };

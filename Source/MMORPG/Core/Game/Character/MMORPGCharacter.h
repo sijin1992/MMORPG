@@ -54,6 +54,10 @@ protected:
 	void SwitchFight();
 
 	void Fast();
+
+	void DodgeLeft();//向左闪避飞行
+
+	void DodgeRight();//向右闪避飞行
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
