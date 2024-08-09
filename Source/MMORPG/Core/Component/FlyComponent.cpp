@@ -108,6 +108,7 @@ void UFlyComponent::ResetFly()
 		else
 		{
 			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
+			CharacterMovementComponent->MaxFlySpeed = 600.0f;
 			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);//设置走路模式
 		}
 
@@ -119,20 +120,33 @@ void UFlyComponent::FlyForwardAxis(float InAxisValue)
 {
 	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
 	{
-		const FVector ForwardDirection = CameraComponent->GetForwardVector();
-		MMORPGCharacterBase->AddMovementInput(ForwardDirection, InAxisValue);
+		if (bFastFly)
+		{
+			const FVector ForwardDirection = CameraComponent->GetForwardVector();
+			MMORPGCharacterBase->AddMovementInput(ForwardDirection, 1.0f);
+		}
+		else
+		{
+			const FVector ForwardDirection = CameraComponent->GetForwardVector();
+			MMORPGCharacterBase->AddMovementInput(ForwardDirection, InAxisValue);
+		}
 	}
 }
 
 void UFlyComponent::ResetFastFly()
 {
-	if (bFastFly)
+	if (CharacterMovementComponent.IsValid())
 	{
-		bFastFly = false;
-	}
-	else
-	{
-		bFastFly = true;
+		if (bFastFly)
+		{
+			bFastFly = false;
+			CharacterMovementComponent->MaxFlySpeed = 600.0f;
+		}
+		else
+		{
+			bFastFly = true;
+			CharacterMovementComponent->MaxFlySpeed = 2000.0f;
+		}
 	}
 }
 
