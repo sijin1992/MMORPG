@@ -110,6 +110,10 @@ void UFlyComponent::ResetFly()
 			CharacterMovementComponent->bOrientRotationToMovement = true;//其他状态自动转向移动方向
 			CharacterMovementComponent->MaxFlySpeed = 600.0f;
 			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);//设置走路模式
+			//修正旋转
+			FRotator NewRot = MMORPGCharacterBase->GetActorRotation();
+			NewRot.Pitch = 0;
+			MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
 		}
 
 		bFastFly = false;
