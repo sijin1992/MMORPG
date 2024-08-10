@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Core/MotionComponent.h"
 #include "../../MMORPGGameType.h"
 #include "FlyComponent.generated.h"
 
@@ -13,7 +13,7 @@ class UCharacterMovementComponent;
 class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MMORPG_API UFlyComponent : public UActorComponent
+class MMORPG_API UFlyComponent : public UMotionComponent
 {
 	GENERATED_BODY()
 

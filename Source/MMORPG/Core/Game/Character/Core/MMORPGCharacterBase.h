@@ -10,6 +10,7 @@
 #include "MMORPGCharacterBase.generated.h"
 
 class UFlyComponent;
+class USwimmingComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -20,6 +21,9 @@ class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatI
 
 	UPROPERTY()
 	TObjectPtr<UFlyComponent> FlyComponent;//飞行组件的对象指针
+
+	UPROPERTY()
+	TObjectPtr<USwimmingComponent> SwimmingComponent;//游泳组件的对象指针
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
@@ -56,6 +60,9 @@ public:
 
 	//获取飞行组件
 	FORCEINLINE UFlyComponent* GetFlyComponent() { return FlyComponent; }
+
+	//获取游泳组件
+	FORCEINLINE USwimmingComponent* GetSwimmingComponent() { return SwimmingComponent; }
 protected:
 	//RPC服务器接口
 	UFUNCTION(Server,Reliable)

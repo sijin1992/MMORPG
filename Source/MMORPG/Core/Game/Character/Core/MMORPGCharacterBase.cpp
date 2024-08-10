@@ -7,6 +7,7 @@
 #include "../../Animation/Instance/Core/MMORPGAnimInstanceBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "../../../Component/FlyComponent.h"
+#include "../../../Component/SwimmingComponent.h"
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
@@ -19,6 +20,7 @@ AMMORPGCharacterBase::AMMORPGCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	FlyComponent = CreateDefaultSubobject<UFlyComponent>(TEXT("FlightComponent"));
+	SwimmingComponent = CreateDefaultSubobject<USwimmingComponent>(TEXT("SwimmingComponent"));
 	//FlyComponent->SetupAttachment(RootComponent);
 }
 
