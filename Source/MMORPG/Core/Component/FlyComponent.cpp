@@ -33,6 +33,12 @@ void UFlyComponent::BeginPlay()
 		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
 		CapsuleComponent = MMORPGCharacterBase->GetCapsuleComponent();
 		CameraComponent = MMORPGCharacterBase->GetFollowCamera();
+
+		if (CharacterMovementComponent.IsValid())
+		{
+			CharacterMovementComponent->MaxAcceleration = 2500.0f;//设置最大加速度
+			CharacterMovementComponent->BrakingDecelerationFlying = 1400.0f;//飞行摩擦力/飞行减速
+		}
 	}
 }
 
