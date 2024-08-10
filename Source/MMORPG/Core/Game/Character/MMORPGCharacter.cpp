@@ -136,10 +136,15 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AMMORPGCharacter::Fly()
+void AMMORPGCharacter::Fly_Implementation()
+{
+	MulticastFly();
+}
+
+void AMMORPGCharacter::MulticastFly_Implementation()
 {
 	ResetActionState(ECharacterActionState::FLIGHT_STATE);
-	
+
 	GetFlyComponent()->ResetFly();
 }
 

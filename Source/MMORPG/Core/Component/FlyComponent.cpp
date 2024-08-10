@@ -109,47 +109,51 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	{
 		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE)
 		{
-			if (!bLand)
+			if (MMORPGCharacterBase->GetLocalRole() == ENetRole::ROLE_Authority ||
+				MMORPGCharacterBase->GetLocalRole() == ENetRole::ROLE_AutonomousProxy)//服务器玩家和主机玩家也需要计算,模拟玩家不需要执行，因为服务器会顺带到客户端
 			{
-				//设置角色跟随像机旋转
-				FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
-				FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
-
-				if (!bFastFly)
+				if (!bLand)
 				{
-					CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
-				}
+					//设置角色跟随像机旋转
+					FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
+					FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
 
-				FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
+					if (!bFastFly)
+					{
+						CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
+					}
 
-				MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
+					FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
 
-				//设置旋转的角速度映射到-1~1
-				if (1)
-				{
-					//自己算角速度
-					float PerFrameNum = 1.0f / DeltaTime;//算出1S的帧数
+					MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
 
-					FRotator DeltaTimeRot = MMORPGCharacterBase->GetActorRotation() - LastRotator;//计算2帧之间的角度差
+					//设置旋转的角速度映射到-1~1
+					if (1)
+					{
+						//自己算角速度
+						float PerFrameNum = 1.0f / DeltaTime;//算出1S的帧数
 
-					FRotator OneSecondRotator = DeltaTimeRot *= PerFrameNum;//角速度
+						FRotator DeltaTimeRot = MMORPGCharacterBase->GetActorRotation() - LastRotator;//计算2帧之间的角度差
 
-					Print(DeltaTime, OneSecondRotator.ToString());
+						FRotator OneSecondRotator = DeltaTimeRot *= PerFrameNum;//角速度
 
-					RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Yaw);
+						Print(DeltaTime, OneSecondRotator.ToString());
 
-					RotationRate.Y = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Pitch);
+						RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Yaw);
 
-					LastRotator = MMORPGCharacterBase->GetActorRotation();//保存上一次的旋转
-				}
-				else
-				{
-					//UE5无法获取角速度的BUG
-					FVector PhysicsAngularVelocityInDegrees = CapsuleComponent->GetPhysicsAngularVelocityInDegrees();
+						RotationRate.Y = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Pitch);
 
-					Print(DeltaTime, PhysicsAngularVelocityInDegrees.ToString());
+						LastRotator = MMORPGCharacterBase->GetActorRotation();//保存上一次的旋转
+					}
+					else
+					{
+						//UE5无法获取角速度的BUG
+						FVector PhysicsAngularVelocityInDegrees = CapsuleComponent->GetPhysicsAngularVelocityInDegrees();
 
-					RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), PhysicsAngularVelocityInDegrees.Z);
+						Print(DeltaTime, PhysicsAngularVelocityInDegrees.ToString());
+
+						RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), PhysicsAngularVelocityInDegrees.Z);
+					}
 				}
 			}
 		}

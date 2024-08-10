@@ -49,7 +49,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	UFUNCTION(Server, Reliable)
 	void Fly();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFly();
 			
 	void SwitchFight();
 
