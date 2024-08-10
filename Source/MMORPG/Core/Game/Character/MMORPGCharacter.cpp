@@ -173,7 +173,12 @@ void AMMORPGCharacter::MulticastFast_Implementation()
 	}
 }
 
-void AMMORPGCharacter::DodgeLeft()
+void AMMORPGCharacter::DodgeLeft_Implementation()
+{
+	MulticastDodgeLeft();
+}
+
+void AMMORPGCharacter::MulticastDodgeLeft_Implementation()
 {
 	if (ActionState == ECharacterActionState::FLIGHT_STATE)
 	{
@@ -181,7 +186,12 @@ void AMMORPGCharacter::DodgeLeft()
 	}
 }
 
-void AMMORPGCharacter::DodgeRight()
+void AMMORPGCharacter::DodgeRight_Implementation()
+{
+	MulticastDodgeRight();
+}
+
+void AMMORPGCharacter::MulticastDodgeRight_Implementation()
 {
 	if (ActionState == ECharacterActionState::FLIGHT_STATE)
 	{

@@ -63,9 +63,17 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFast();
 
+	UFUNCTION(Server, Reliable)
 	void DodgeLeft();//向左闪避飞行
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDodgeLeft();
+
+	UFUNCTION(Server, Reliable)
 	void DodgeRight();//向右闪避飞行
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDodgeRight();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
