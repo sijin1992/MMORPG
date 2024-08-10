@@ -57,7 +57,11 @@ protected:
 			
 	void SwitchFight();
 
+	UFUNCTION(Server, Reliable)
 	void Fast();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFast();
 
 	void DodgeLeft();//向左闪避飞行
 

@@ -160,7 +160,12 @@ void AMMORPGCharacter::SwitchFight()
 	LastActionState = ActionState;
 }
 
-void AMMORPGCharacter::Fast()
+void AMMORPGCharacter::Fast_Implementation()
+{
+	MulticastFast();
+}
+
+void AMMORPGCharacter::MulticastFast_Implementation()
 {
 	if (ActionState == ECharacterActionState::FLIGHT_STATE)
 	{
