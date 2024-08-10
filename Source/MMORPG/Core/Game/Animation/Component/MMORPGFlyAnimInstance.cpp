@@ -49,9 +49,12 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		RotationRate = InCharacterBase->GetFlyComponent()->RotationRate;
 
 		//是否加速飞行
-		bFastFly = InCharacterBase->GetFlyComponent()->bFastFly;
+		bFastFly = *InCharacterBase->GetFlyComponent()->bFastFly;
 
 		//闪避飞行
 		DodgeFly = InCharacterBase->GetFlyComponent()->DodgeFly;
+
+		//飞行是否着地
+		bLand = *InCharacterBase->GetFlyComponent()->bLand;
 	}
 }

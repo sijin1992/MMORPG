@@ -21,11 +21,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	FVector2D RotationRate;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	bool bFastFly;
+	FResetBool bFastFly;//是否加速飞行
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	EDodgeFly DodgeFly;
+
+	FResetBool bLand;//是否着地
 
 public:	
 	// Sets default values for this component's properties
@@ -36,6 +37,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Print(float InTime, const FString& InString);
+
+	UFUNCTION()
+	void Landed(const FHitResult& InHit);//着陆的代理函数,这里弃用，因为这里是主动着陆才会触发，而飞行着陆是通过胶囊体碰撞地面实现的
+
+	UFUNCTION()
+	void LandHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:	
 	// Called every frame
@@ -48,6 +55,8 @@ public:
 	void ResetFastFly();
 
 	void ResetDodgeFly(EDodgeFly InFlyState);//左右闪避飞行
+
+	void Reset();
 
 protected:
 	UPROPERTY()
@@ -64,7 +73,4 @@ protected:
 
 	UPROPERTY()
 	FRotator LastRotator;//上一次的旋转
-
-	UPROPERTY()
-	float DodgeFlyTime;//用于闪避飞行计时
 };

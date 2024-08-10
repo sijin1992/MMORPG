@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	EDodgeFly DodgeFly;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	bool bLand;//是否着地
+
 public:
 
 	virtual void InitAnimInstance(ACharacter* InCharacter) override;

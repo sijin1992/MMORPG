@@ -22,3 +22,55 @@ enum class EDodgeFly : uint8
 	DODGE_LEFT		UMETA(DisplayName = "Left"),
 	DODGE_RIGHT		UMETA(DisplayName = "Right"),
 };
+
+struct FResetBool
+{
+	FResetBool()
+		:bSet(false),
+		Time(0.0f)
+	{
+	}
+
+	void Tick(float DeltaTime)
+	{
+		//闪避飞行时间计时
+		if (Time > 0.0f)
+		{
+			Time -= DeltaTime;
+			if (Time <= 0.0f)
+			{
+				Fun.ExecuteIfBound();
+				Time = 0.0f;
+				bSet = false;
+			}
+		}
+	}
+
+	FResetBool& operator=(bool bNewSet)
+	{
+		bSet = bNewSet;
+		return *this;
+	}
+
+	FResetBool& operator=(float bNewTime)
+	{
+		Time = bNewTime;
+		return *this;
+	}
+
+	bool operator*()
+	{
+		return bSet;
+	}
+	//explicit显性调用
+	explicit operator bool()
+	{
+		return bSet;
+	}
+
+	bool bSet;
+	float Time;
+
+	//TFunction<void()> FuncPtr;
+	FSimpleDelegate Fun;
+};
