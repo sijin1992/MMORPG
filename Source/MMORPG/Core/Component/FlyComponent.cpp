@@ -83,10 +83,19 @@ void UFlyComponent::LandHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	{
 		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE && bFastFly)
 		{
-			Reset();
+			float CosValue = FVector::DotProduct(CapsuleComponent->GetForwardVector(), Hit.ImpactNormal);//胶囊体向前的向量与射线碰撞点的法线向量点乘
+			float CosAngle = (180.0f) / PI * FMath::Acos(CosValue);//通过弧度求弧度所对应的角度
 
-			bLand = true;
-			bLand = 1.6f;
+			if (CosAngle >= 125.0f)
+			{
+				if (Hit.ImpactNormal.Z > 0.5f)//与山体碰撞时不要执行着陆
+				{
+					Reset();
+
+					bLand = true;
+					bLand = 1.6f;
+				}
+			}
 		}
 	}
 }
