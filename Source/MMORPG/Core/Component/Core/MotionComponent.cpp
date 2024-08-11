@@ -2,6 +2,10 @@
 
 
 #include "MotionComponent.h"
+#include "../../Game/Character/Core/MMORPGCharacterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties
 UMotionComponent::UMotionComponent()
@@ -20,6 +24,14 @@ void UMotionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+
+	MMORPGCharacterBase = Cast<AMMORPGCharacterBase>(GetOwner());
+	if (MMORPGCharacterBase.IsValid())
+	{
+		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
+		CapsuleComponent = MMORPGCharacterBase->GetCapsuleComponent();
+		CameraComponent = MMORPGCharacterBase->GetFollowCamera();
+	}
 	
 }
 

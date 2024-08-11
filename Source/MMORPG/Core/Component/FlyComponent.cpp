@@ -24,13 +24,8 @@ void UFlyComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	MMORPGCharacterBase = Cast<AMMORPGCharacterBase>(GetOwner());
 	if (MMORPGCharacterBase.IsValid())
 	{
-		CharacterMovementComponent = Cast<UCharacterMovementComponent>(MMORPGCharacterBase->GetMovementComponent());
-		CapsuleComponent = MMORPGCharacterBase->GetCapsuleComponent();
-		CameraComponent = MMORPGCharacterBase->GetFollowCamera();
-
 		if (CharacterMovementComponent.IsValid())
 		{
 			CharacterMovementComponent->MaxAcceleration = 2500.0f;//设置最大加速度
@@ -38,7 +33,10 @@ void UFlyComponent::BeginPlay()
 		}
 
 		//MMORPGCharacterBase->LandedDelegate.AddDynamic(this, &UFlyComponent::Landed);
-		CapsuleComponent->OnComponentHit.AddDynamic(this, &UFlyComponent::LandHit);
+		if (CapsuleComponent.IsValid())
+		{
+			CapsuleComponent->OnComponentHit.AddDynamic(this, &UFlyComponent::LandHit);
+		}
 
 		bFastFly.Fun.BindLambda([&]() 
 			{
