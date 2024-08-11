@@ -112,18 +112,7 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			{
 				if (!bLand)
 				{
-					//设置角色跟随像机旋转
-					FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
-					FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
-
-					if (!bFastFly)
-					{
-						CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
-					}
-
-					FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
-
-					MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
+					LockView(DeltaTime , *bFastFly);
 
 					//设置旋转的角速度映射到-1~1
 					if (1)

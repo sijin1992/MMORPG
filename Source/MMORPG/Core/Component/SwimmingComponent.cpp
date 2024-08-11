@@ -31,7 +31,19 @@ void USwimmingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		else if (CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Swimming
 			&& MMORPGCharacterBase->GetActionState() == ECharacterActionState::SWIMMING_STATE)
 		{
+			LockView(DeltaTime);
+		}
+	}
+}
 
+void USwimmingComponent::SwimForwardAxis(float InValue)
+{
+	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
+	{
+		if (InValue >= 0.0f)
+		{
+			const FVector ForwardDirection = CameraComponent->GetForwardVector();
+			MMORPGCharacterBase->AddMovementInput(ForwardDirection, InValue);
 		}
 	}
 }

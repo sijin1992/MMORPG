@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "../../Component/FlyComponent.h"
+#include "../../Component/SwimmingComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,6 +113,10 @@ void AMMORPGCharacter::Move(const FInputActionValue& Value)
 		if (ActionState == ECharacterActionState::FLIGHT_STATE)
 		{
 			GetFlyComponent()->FlyForwardAxis(MovementVector.Y);
+		}
+		else if (ActionState == ECharacterActionState::SWIMMING_STATE)
+		{
+			GetSwimmingComponent()->SwimForwardAxis(MovementVector.Y);
 		}
 		else
 		{

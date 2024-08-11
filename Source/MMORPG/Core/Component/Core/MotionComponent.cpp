@@ -36,6 +36,22 @@ void UMotionComponent::BeginPlay()
 }
 
 
+void UMotionComponent::LockView(float DeltaTime, bool bClearPitch)
+{
+	//设置角色跟随像机旋转
+	FRotator CameraRotator = CameraComponent->GetComponentRotation();//获取像机旋转
+	FRotator CapsuleRotator = CapsuleComponent->GetComponentRotation();//获取胶囊体旋转
+
+	if (bClearPitch)
+	{
+		CameraRotator.Pitch = 0.0f;//修正Pitch，旋转时不控制Pitch,防止朝上朝下飞再落地后导致身体倾斜的问题
+	}
+
+	FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
+
+	MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
+}
+
 // Called every frame
 void UMotionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
