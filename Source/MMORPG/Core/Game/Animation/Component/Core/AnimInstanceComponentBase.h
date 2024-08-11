@@ -3,33 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/AnimInstanceComponentBase.h"
-#include "MMORPGFlyAnimInstance.generated.h"
+#include "../../Instance/Core/MMORPGAnimInstanceBase.h"
+#include "AnimInstanceComponentBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MMORPG_API UMMORPGFlyAnimInstance : public UAnimInstanceComponentBase
+class MMORPG_API UAnimInstanceComponentBase : public UMMORPGAnimInstanceBase
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	FVector AxisSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	FVector2D RotationRate;
 	
 public:
-	UMMORPGFlyAnimInstance();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	bool bFastFly;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	EDodgeFly DodgeFly;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	bool bLand;//是否着地
-
-public:
-
-	virtual void InitAnimInstance(ACharacter* InCharacter) override;
-
 	virtual void NativeInitializeAnimation() override;
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
