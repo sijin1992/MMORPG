@@ -50,10 +50,10 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	UFUNCTION(Server, Reliable)
-	void Fly();
+	void ActionSwitch();//Q键
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastFly();
+	void MulticastActionSwitch();
 			
 	void SwitchFight();
 

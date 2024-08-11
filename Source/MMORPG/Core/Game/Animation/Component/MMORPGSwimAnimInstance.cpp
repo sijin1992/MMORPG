@@ -19,6 +19,8 @@ void UMMORPGSwimAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		//是否加速游泳
 		bFast = InCharacterBase->GetSwimmingComponent()->bFast;
+		//是否潜泳
+		bDiving = *InCharacterBase->GetSwimmingComponent()->bDiving;
 	}
 
 }

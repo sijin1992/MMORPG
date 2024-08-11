@@ -89,7 +89,7 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	}
 
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
-	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &AMMORPGCharacter::Fly);
+	PlayerInputComponent->BindAction("ActionSwitch", IE_Pressed, this, &AMMORPGCharacter::ActionSwitch);
 	PlayerInputComponent->BindAction("Fast", IE_Pressed, this, &AMMORPGCharacter::Fast);
 	PlayerInputComponent->BindAction("Fast", IE_Released, this, &AMMORPGCharacter::FastReleased);
 	PlayerInputComponent->BindAction("DodgeLeft", IE_Pressed, this, &AMMORPGCharacter::DodgeLeft);
@@ -142,16 +142,27 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AMMORPGCharacter::Fly_Implementation()
+void AMMORPGCharacter::ActionSwitch_Implementation()
 {
-	MulticastFly();
+	MulticastActionSwitch();
 }
 
-void AMMORPGCharacter::MulticastFly_Implementation()
+void AMMORPGCharacter::MulticastActionSwitch_Implementation()
 {
-	ResetActionState(ECharacterActionState::FLIGHT_STATE);
+	if (UCharacterMovementComponent* CharacterMovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent()))
+	{
+		if (CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Walking || CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Flying)
+		{
+			ResetActionState(ECharacterActionState::FLIGHT_STATE);
 
-	GetFlyComponent()->ResetFly();
+			GetFlyComponent()->ResetFly();
+		}
+		else if (CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Swimming)
+		{
+			GetSwimmingComponent()->GoUnderWater();
+		}
+	}
+
 }
 
 void AMMORPGCharacter::SwitchFight()

@@ -18,6 +18,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	bool bFast;
 
+	FResetBool bDiving;//是否潜水
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -28,4 +30,6 @@ public:
 	void SwimForwardAxis(float InValue);
 
 	void ResetFastSwim();
+
+	void GoUnderWater();
 };

@@ -13,6 +13,10 @@ UCLASS()
 class MMORPG_API UMMORPGSwimAnimInstance : public UAnimInstanceComponentBase
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SwimAnimAttrubute")
+	bool bDiving;//是否潜泳
 	
 public:
 	virtual void NativeInitializeAnimation() override;

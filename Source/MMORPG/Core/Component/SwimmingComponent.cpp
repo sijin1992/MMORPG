@@ -31,7 +31,7 @@ void USwimmingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		else if (CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Swimming
 			&& MMORPGCharacterBase->GetActionState() == ECharacterActionState::SWIMMING_STATE)
 		{
-			LockView(DeltaTime);
+			LockView(DeltaTime, *bDiving);
 		}
 	}
 }
@@ -62,5 +62,26 @@ void USwimmingComponent::ResetFastSwim()
 			bFast = true;
 			CharacterMovementComponent->MaxSwimSpeed = 600.0f;
 		}
+	}
+}
+
+void USwimmingComponent::GoUnderWater()
+{
+	if (bDiving)
+	{
+		bDiving = false;
+		if (bFast)
+		{
+			CharacterMovementComponent->MaxSwimSpeed = 600.0f;
+		}
+		else
+		{
+			CharacterMovementComponent->MaxSwimSpeed = 300.0f;
+		}
+	}
+	else
+	{
+		bDiving = true;
+		CharacterMovementComponent->MaxSwimSpeed = 600.0f;
 	}
 }
