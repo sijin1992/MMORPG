@@ -16,8 +16,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	FVector2D RotationRate;
 
-	FResetBool bFastFly;//是否加速飞行
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	EDodgeFly DodgeFly;
 

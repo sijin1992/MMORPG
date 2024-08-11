@@ -58,5 +58,8 @@ void UMotionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	//加速时间计时
+	bFast.Tick(DeltaTime);
 }
 

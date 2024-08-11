@@ -31,8 +31,11 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (AMMORPGCharacterBase* InCharacterBase = Cast<AMMORPGCharacterBase>(TryGetPawnOwner()))
 	{
+		//角速度设置
+		RotationRate = InCharacterBase->GetFlyComponent()->RotationRate;
+
 		//是否加速飞行
-		bFastFly = *InCharacterBase->GetFlyComponent()->bFastFly;
+		bFast = *InCharacterBase->GetFlyComponent()->bFast;
 
 		//闪避飞行
 		DodgeFly = InCharacterBase->GetFlyComponent()->DodgeFly;

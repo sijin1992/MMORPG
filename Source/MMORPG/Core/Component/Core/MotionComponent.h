@@ -31,6 +31,9 @@ protected:
 	UPROPERTY()
 	FRotator LastRotator;//上一次的旋转
 
+public:
+	FResetBool bFast;//是否加速
+
 public:	
 	// Sets default values for this component's properties
 	UMotionComponent();
@@ -39,7 +42,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void LockView(float DeltaTime, bool bClearPitch = false);
+	void LockView(float DeltaTime, bool bClearPitch = true);
 
 public:	
 	// Called every frame

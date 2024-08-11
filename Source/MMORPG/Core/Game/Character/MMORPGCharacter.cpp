@@ -91,6 +91,7 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
 	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &AMMORPGCharacter::Fly);
 	PlayerInputComponent->BindAction("Fast", IE_Pressed, this, &AMMORPGCharacter::Fast);
+	PlayerInputComponent->BindAction("Fast", IE_Released, this, &AMMORPGCharacter::FastReleased);
 	PlayerInputComponent->BindAction("DodgeLeft", IE_Pressed, this, &AMMORPGCharacter::DodgeLeft);
 	PlayerInputComponent->BindAction("DodgeRight", IE_Pressed, this, &AMMORPGCharacter::DodgeRight);
 }
@@ -170,11 +171,23 @@ void AMMORPGCharacter::Fast_Implementation()
 	MulticastFast();
 }
 
+void AMMORPGCharacter::FastReleased_Implementation()
+{
+	if (ActionState == ECharacterActionState::SWIMMING_STATE)
+	{
+		GetSwimmingComponent()->ResetFastSwim();
+	}
+}
+
 void AMMORPGCharacter::MulticastFast_Implementation()
 {
 	if (ActionState == ECharacterActionState::FLIGHT_STATE)
 	{
 		GetFlyComponent()->ResetFastFly();
+	}
+	else if (ActionState == ECharacterActionState::SWIMMING_STATE)
+	{
+		GetSwimmingComponent()->ResetFastSwim();
 	}
 }
 

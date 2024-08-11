@@ -47,3 +47,20 @@ void USwimmingComponent::SwimForwardAxis(float InValue)
 		}
 	}
 }
+
+void USwimmingComponent::ResetFastSwim()
+{
+	if (CharacterMovementComponent.IsValid())
+	{
+		if (bFast)
+		{
+			bFast = false;
+			CharacterMovementComponent->MaxSwimSpeed = 300.0f;
+		}
+		else
+		{
+			bFast = true;
+			CharacterMovementComponent->MaxSwimSpeed = 600.0f;
+		}
+	}
+}

@@ -14,6 +14,10 @@ class MMORPG_API USwimmingComponent : public UMotionComponent
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	bool bFast;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -22,4 +26,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SwimForwardAxis(float InValue);
+
+	void ResetFastSwim();
 };

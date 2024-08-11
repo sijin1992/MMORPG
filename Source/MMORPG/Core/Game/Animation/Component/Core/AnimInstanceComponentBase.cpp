@@ -32,7 +32,5 @@ void UAnimInstanceComponentBase::NativeUpdateAnimation(float DeltaSeconds)
 			AxisSpeed.Y = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Y);
 			AxisSpeed.Z = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Z);
 		}
-		//角速度设置
-		RotationRate = InCharacterBase->GetFlyComponent()->RotationRate;
 	}
 }

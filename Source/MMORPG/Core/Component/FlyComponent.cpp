@@ -38,7 +38,7 @@ void UFlyComponent::BeginPlay()
 			CapsuleComponent->OnComponentHit.AddDynamic(this, &UFlyComponent::LandHit);
 		}
 
-		bFastFly.Fun.BindLambda([&]() 
+		bFast.Fun.BindLambda([&]() 
 			{
 				DodgeFly = EDodgeFly::DODGE_NONE;
 			});
@@ -67,7 +67,7 @@ void UFlyComponent::Landed(const FHitResult& InHit)
 {
 	if (MMORPGCharacterBase.IsValid())
 	{
-		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE && bFastFly)
+		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE && bFast)
 		{
 			bLand = true;
 			bLand = 1.6f;
@@ -79,7 +79,7 @@ void UFlyComponent::LandHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 {
 	if (MMORPGCharacterBase.IsValid())
 	{
-		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE && bFastFly)
+		if (MMORPGCharacterBase->GetActionState() == ECharacterActionState::FLIGHT_STATE && bFast)
 		{
 			float CosValue = FVector::DotProduct(CapsuleComponent->GetForwardVector(), Hit.ImpactNormal);//胶囊体向前的向量与射线碰撞点的法线向量点乘
 			float CosAngle = (180.0f) / PI * FMath::Acos(CosValue);//通过弧度求弧度所对应的角度
@@ -112,7 +112,7 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			{
 				if (!bLand)
 				{
-					LockView(DeltaTime , *bFastFly);
+					LockView(DeltaTime , !*bFast);
 
 					//设置旋转的角速度映射到-1~1
 					if (1)
@@ -145,8 +145,6 @@ void UFlyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			}
 		}
 
-		//闪避飞行时间计时
-		bFastFly.Tick(DeltaTime);
 		//着陆时间计时
 		bLand.Tick(DeltaTime);
 	}
@@ -166,7 +164,7 @@ void UFlyComponent::ResetFly()
 			Reset();
 		}
 
-		bFastFly = false;
+		bFast = false;
 	}
 }
 
@@ -174,7 +172,7 @@ void UFlyComponent::FlyForwardAxis(float InAxisValue)
 {
 	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
 	{
-		if (bFastFly)
+		if (bFast)
 		{
 			const FVector ForwardDirection = CameraComponent->GetForwardVector();
 			MMORPGCharacterBase->AddMovementInput(ForwardDirection, 1.0f);
@@ -191,14 +189,14 @@ void UFlyComponent::ResetFastFly()
 {
 	if (CharacterMovementComponent.IsValid())
 	{
-		if (bFastFly)
+		if (bFast)
 		{
-			bFastFly = false;
+			bFast = false;
 			CharacterMovementComponent->MaxFlySpeed = 600.0f;
 		}
 		else
 		{
-			bFastFly = true;
+			bFast = true;
 			CharacterMovementComponent->MaxFlySpeed = 2000.0f;
 		}
 	}
@@ -206,10 +204,10 @@ void UFlyComponent::ResetFastFly()
 
 void UFlyComponent::ResetDodgeFly(EDodgeFly InFlyState)
 {
-	if (bFastFly)
+	if (bFast)
 	{
 		DodgeFly = InFlyState;
-		bFastFly = 1.6f;
+		bFast = 1.6f;
 	}
 }
 

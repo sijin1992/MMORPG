@@ -18,9 +18,6 @@ public:
 	UMMORPGFlyAnimInstance();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	bool bFastFly;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	EDodgeFly DodgeFly;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
