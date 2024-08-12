@@ -80,10 +80,14 @@ void USwimmingComponent::GoUnderWater()
 		{
 			CharacterMovementComponent->MaxSwimSpeed = 300.0f;
 		}
+
+		CharacterMovementComponent->RotationRate = FRotator(0.0f, 0.0f, 300.0f);
 	}
 	else
 	{
 		bDiving = true;
 		CharacterMovementComponent->MaxSwimSpeed = 600.0f;
+
+		CharacterMovementComponent->RotationRate = FRotator(0.0f, 0.0f, 540.0f);
 	}
 }
