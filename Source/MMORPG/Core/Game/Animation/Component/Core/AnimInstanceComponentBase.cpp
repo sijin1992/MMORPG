@@ -16,6 +16,18 @@ void UAnimInstanceComponentBase::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+}
+
+void UAnimInstanceComponentBase::Print(float InTime, const FString& InString)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, InTime, FColor::Red, FString::Printf(TEXT("%s"), *InString));
+	}
+}
+
+void UAnimInstanceComponentBase::ResetAxisSpeed(float InNewSpeed)
+{
 	if (AMMORPGCharacterBase* InCharacterBase = Cast<AMMORPGCharacterBase>(TryGetPawnOwner()))
 	{
 		FVector SpeedVector = InCharacterBase->GetVelocity();
@@ -26,11 +38,10 @@ void UAnimInstanceComponentBase::NativeUpdateAnimation(float DeltaSeconds)
 
 		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
 		{
-			float MaxFlySpeed = InCharacterMovementComponent->MaxFlySpeed;
 			//将移动速度映射到-1~1范围
-			AxisSpeed.X = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.X);
-			AxisSpeed.Y = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Y);
-			AxisSpeed.Z = FMath::GetMappedRangeValueClamped(FVector2D(-MaxFlySpeed, MaxFlySpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Z);
+			AxisSpeed.X = FMath::GetMappedRangeValueClamped(FVector2D(-InNewSpeed, InNewSpeed), FVector2D(-1.0f, 1.0f), SpeedVector.X);
+			AxisSpeed.Y = FMath::GetMappedRangeValueClamped(FVector2D(-InNewSpeed, InNewSpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Y);
+			AxisSpeed.Z = FMath::GetMappedRangeValueClamped(FVector2D(-InNewSpeed, InNewSpeed), FVector2D(-1.0f, 1.0f), SpeedVector.Z);
 		}
 	}
 }

@@ -42,5 +42,10 @@ void UMMORPGFlyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		//飞行是否着地
 		bLand = *InCharacterBase->GetFlyComponent()->bLand;
+
+		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
+		{
+			ResetAxisSpeed(InCharacterMovementComponent->MaxFlySpeed);
+		}
 	}
 }

@@ -28,4 +28,9 @@ public:
 	virtual void NativeInitializeAnimation() override;
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	void Print(float InTime, const FString& InString);
+
+protected:
+	void ResetAxisSpeed(float InNewSpeed);
 };

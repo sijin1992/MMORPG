@@ -32,7 +32,7 @@ protected:
 	FRotator LastRotator;//上一次的旋转
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimAttrubute")
 	FVector2D RotationRate;
 
 	FResetBool bFast;//是否加速

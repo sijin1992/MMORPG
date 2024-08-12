@@ -4,6 +4,7 @@
 #include "MMORPGSwimAnimInstance.h"
 #include "../../Character/Core/MMORPGCharacterBase.h"
 #include "../../../Component/SwimmingComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UMMORPGSwimAnimInstance::NativeInitializeAnimation()
 {
@@ -20,9 +21,15 @@ void UMMORPGSwimAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//角速度设置
 		RotationRate = InCharacterBase->GetSwimmingComponent()->RotationRate;
 		//是否加速游泳
-		bFast = InCharacterBase->GetSwimmingComponent()->bFast;
+		bFast = *InCharacterBase->GetSwimmingComponent()->bFast;
+
 		//是否潜泳
 		bDiving = *InCharacterBase->GetSwimmingComponent()->bDiving;
+
+		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
+		{
+			ResetAxisSpeed(InCharacterMovementComponent->MaxSwimSpeed);
+		}
 	}
 
 }

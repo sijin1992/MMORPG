@@ -15,9 +15,6 @@ class MMORPG_API USwimmingComponent : public UMotionComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	bool bFast;
-
 	FResetBool bDiving;//是否潜水
 
 protected:
