@@ -210,6 +210,10 @@ void AMMORPGCharacter::FastReleased_Implementation()
 	{
 		GetSwimmingComponent()->ResetFastSwim();
 	}
+	else if (ActionState == ECharacterActionState::NORMAL_STATE)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
 }
 
 void AMMORPGCharacter::MulticastFast_Implementation()
@@ -221,6 +225,10 @@ void AMMORPGCharacter::MulticastFast_Implementation()
 	else if (ActionState == ECharacterActionState::SWIMMING_STATE)
 	{
 		GetSwimmingComponent()->ResetFastSwim();
+	}
+	else if (ActionState == ECharacterActionState::NORMAL_STATE)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 800.0f;
 	}
 }
 
