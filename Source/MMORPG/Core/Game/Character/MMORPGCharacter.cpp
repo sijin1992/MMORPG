@@ -115,7 +115,7 @@ void AMMORPGCharacter::Move(const FInputActionValue& Value)
 		{
 			GetFlyComponent()->FlyForwardAxis(MovementVector.Y);
 		}
-		else if (ActionState == ECharacterActionState::SWIMMING_STATE)
+		else if (ActionState == ECharacterActionState::SWIMMING_STATE && GetSwimmingComponent()->bDiving)
 		{
 			GetSwimmingComponent()->SwimForwardAxis(MovementVector.Y);
 		}
