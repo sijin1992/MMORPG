@@ -35,6 +35,14 @@ void UMotionComponent::BeginPlay()
 	
 }
 
+void UMotionComponent::Print(float InTime, const FString& InString)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, InTime, FColor::Red, FString::Printf(TEXT("%s"), *InString));
+	}
+}
+
 
 void UMotionComponent::LockView(float DeltaTime, bool bClearPitch)
 {
@@ -50,6 +58,37 @@ void UMotionComponent::LockView(float DeltaTime, bool bClearPitch)
 	FRotator NewRot = FMath::RInterpTo(CapsuleRotator, CameraRotator, DeltaTime, 8.0f);//插值
 
 	MMORPGCharacterBase->SetActorRotation(NewRot);//设置旋转
+}
+
+void UMotionComponent::ResetRotationRate(float DeltaTime)
+{
+	//设置旋转的角速度映射到-1~1
+	if (1)
+	{
+		//自己算角速度
+		float PerFrameNum = 1.0f / DeltaTime;//算出1S的帧数
+
+		FRotator DeltaTimeRot = MMORPGCharacterBase->GetActorRotation() - LastRotator;//计算2帧之间的角度差
+
+		FRotator OneSecondRotator = DeltaTimeRot *= PerFrameNum;//角速度
+
+		Print(DeltaTime, OneSecondRotator.ToString());
+
+		RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Yaw);
+
+		RotationRate.Y = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), OneSecondRotator.Pitch);
+
+		LastRotator = MMORPGCharacterBase->GetActorRotation();//保存上一次的旋转
+	}
+	else
+	{
+		//UE5无法获取角速度的BUG
+		FVector PhysicsAngularVelocityInDegrees = CapsuleComponent->GetPhysicsAngularVelocityInDegrees();
+
+		Print(DeltaTime, PhysicsAngularVelocityInDegrees.ToString());
+
+		RotationRate.X = FMath::GetMappedRangeValueClamped(FVector2D(-360, 360), FVector2D(-1.0f, 1.0f), PhysicsAngularVelocityInDegrees.Z);
+	}
 }
 
 // Called every frame

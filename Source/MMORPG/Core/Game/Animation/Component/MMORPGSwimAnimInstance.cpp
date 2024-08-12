@@ -17,6 +17,8 @@ void UMMORPGSwimAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (AMMORPGCharacterBase* InCharacterBase = Cast<AMMORPGCharacterBase>(TryGetPawnOwner()))
 	{
+		//角速度设置
+		RotationRate = InCharacterBase->GetSwimmingComponent()->RotationRate;
 		//是否加速游泳
 		bFast = InCharacterBase->GetSwimmingComponent()->bFast;
 		//是否潜泳

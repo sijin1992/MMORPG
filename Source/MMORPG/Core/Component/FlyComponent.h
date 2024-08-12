@@ -14,9 +14,6 @@ class MMORPG_API UFlyComponent : public UMotionComponent
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
-	FVector2D RotationRate;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
 	EDodgeFly DodgeFly;
 
 	FResetBool bLand;//是否着地
@@ -28,8 +25,6 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	void Print(float InTime, const FString& InString);
 
 	UFUNCTION()
 	void Landed(const FHitResult& InHit);//着陆的代理函数,这里弃用，因为这里是主动着陆才会触发，而飞行着陆是通过胶囊体碰撞地面实现的

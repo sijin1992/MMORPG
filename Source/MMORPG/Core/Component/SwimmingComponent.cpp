@@ -32,6 +32,8 @@ void USwimmingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 			&& MMORPGCharacterBase->GetActionState() == ECharacterActionState::SWIMMING_STATE)
 		{
 			LockView(DeltaTime, *bDiving);
+
+			ResetRotationRate(DeltaTime);
 		}
 	}
 }

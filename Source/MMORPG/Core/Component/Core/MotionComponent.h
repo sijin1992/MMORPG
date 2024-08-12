@@ -32,6 +32,9 @@ protected:
 	FRotator LastRotator;//上一次的旋转
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlyAnimAttrubute")
+	FVector2D RotationRate;
+
 	FResetBool bFast;//是否加速
 
 public:	
@@ -42,7 +45,11 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void Print(float InTime, const FString& InString);
+
 	void LockView(float DeltaTime, bool bClearPitch = true);
+
+	void ResetRotationRate(float DeltaTime);
 
 public:	
 	// Called every frame
