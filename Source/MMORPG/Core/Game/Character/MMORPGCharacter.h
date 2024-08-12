@@ -49,6 +49,21 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	//走路减速速
+	UFUNCTION(Server, Reliable)
+	void SlowDown();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSlowDown();
+
+	//取消走路减速
+	UFUNCTION(Server, Reliable)
+	void SlowDownReleased();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSlowDownReleased();
+
+
 	UFUNCTION(Server, Reliable)
 	void ActionSwitch();//Q键
 

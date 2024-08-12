@@ -88,6 +88,8 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	}
 
+	PlayerInputComponent->BindAction("SlowDown", IE_Pressed, this, &AMMORPGCharacter::SlowDown);
+	PlayerInputComponent->BindAction("SlowDown", IE_Released, this, &AMMORPGCharacter::SlowDownReleased);
 	PlayerInputComponent->BindAction("SwitchFight", IE_Pressed, this, &AMMORPGCharacter::SwitchFight);
 	PlayerInputComponent->BindAction("ActionSwitch", IE_Pressed, this, &AMMORPGCharacter::ActionSwitch);
 	PlayerInputComponent->BindAction("Fast", IE_Pressed, this, &AMMORPGCharacter::Fast);
@@ -140,6 +142,26 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AMMORPGCharacter::SlowDown_Implementation()
+{
+	MulticastSlowDown();
+}
+
+void AMMORPGCharacter::MulticastSlowDown_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 190.0f;
+}
+
+void AMMORPGCharacter::SlowDownReleased_Implementation()
+{
+	MulticastSlowDownReleased();
+}
+
+void AMMORPGCharacter::MulticastSlowDownReleased_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
 
 void AMMORPGCharacter::ActionSwitch_Implementation()
