@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "../../Component/FlyComponent.h"
 #include "../../Component/SwimmingComponent.h"
+#include "../../Component/ClimbComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -100,6 +101,8 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
 {
+	ActionState = ECharacterActionState::CLIMB_STATE;
+
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -109,10 +112,19 @@ void AMMORPGCharacter::Move(const FInputActionValue& Value)
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		//左右
+		if (ActionState == ECharacterActionState::CLIMB_STATE)
+		{
+			GetClimbComponent()->ClimbRightAxis(MovementVector.X);
+		}
+		else
+		{
+			// get right vector 
+			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			AddMovementInput(RightDirection, MovementVector.X);
+		}
 
+		//前后
 		if (ActionState == ECharacterActionState::FLIGHT_STATE)
 		{
 			GetFlyComponent()->FlyForwardAxis(MovementVector.Y);
@@ -121,7 +133,11 @@ void AMMORPGCharacter::Move(const FInputActionValue& Value)
 		{
 			GetSwimmingComponent()->SwimForwardAxis(MovementVector.Y);
 		}
-		else
+		else if (ActionState == ECharacterActionState::CLIMB_STATE)
+		{
+			GetClimbComponent()->ClimbForwardAxis(MovementVector.Y);
+		}
+		else if (MovementVector.Y != 0.0f)
 		{
 			// get forward vector
 			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);

@@ -20,13 +20,13 @@ class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatI
 	GENERATED_BODY()
 	friend class AMMORPGGameMode;
 
-	UPROPERTY()
+	UPROPERTY(Category = MMORPGCharacterBase, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UFlyComponent> FlyComponent;//飞行组件的对象指针
 
-	UPROPERTY()
+	UPROPERTY(Category = MMORPGCharacterBase, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USwimmingComponent> SwimmingComponent;//游泳组件的对象指针
 
-	UPROPERTY()
+	UPROPERTY(Category = MMORPGCharacterBase, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UClimbComponent> ClimbComponent;//攀爬组件的对象指针
 public:
 	// Sets default values for this character's properties

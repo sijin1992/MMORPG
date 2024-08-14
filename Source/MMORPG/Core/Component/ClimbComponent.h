@@ -13,5 +13,12 @@ UCLASS()
 class MMORPG_API UClimbComponent : public UMotionComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	void ClimbForwardAxis(float InAxisValue);
+
+	void ClimbRightAxis(float InAxisValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Climbing")
+	void PhysClimbing(float deltaTime, int32 Iterations);
 };
