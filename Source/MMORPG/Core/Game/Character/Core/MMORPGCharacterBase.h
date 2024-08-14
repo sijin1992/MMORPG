@@ -11,6 +11,7 @@
 
 class UFlyComponent;
 class USwimmingComponent;
+class UClimbComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -24,6 +25,9 @@ class MMORPG_API AMMORPGCharacterBase : public ACharacter, public ISimpleCombatI
 
 	UPROPERTY()
 	TObjectPtr<USwimmingComponent> SwimmingComponent;//游泳组件的对象指针
+
+	UPROPERTY()
+	TObjectPtr<UClimbComponent> ClimbComponent;//攀爬组件的对象指针
 public:
 	// Sets default values for this character's properties
 	AMMORPGCharacterBase();
@@ -63,6 +67,9 @@ public:
 
 	//获取游泳组件
 	FORCEINLINE USwimmingComponent* GetSwimmingComponent() { return SwimmingComponent; }
+
+	//获取攀爬组件
+	FORCEINLINE UClimbComponent* GetClimbComponent() { return ClimbComponent; }
 protected:
 	//RPC服务器接口
 	UFUNCTION(Server,Reliable)

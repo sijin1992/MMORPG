@@ -8,6 +8,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "../../../Component/FlyComponent.h"
 #include "../../../Component/SwimmingComponent.h"
+#include "../../../Component/ClimbComponent.h"
 
 // Sets default values
 AMMORPGCharacterBase::AMMORPGCharacterBase()
@@ -21,6 +22,7 @@ AMMORPGCharacterBase::AMMORPGCharacterBase()
 
 	FlyComponent = CreateDefaultSubobject<UFlyComponent>(TEXT("FlightComponent"));
 	SwimmingComponent = CreateDefaultSubobject<USwimmingComponent>(TEXT("SwimmingComponent"));
+	ClimbComponent = CreateDefaultSubobject<UClimbComponent>(TEXT("ClimbComponent"));
 	//FlyComponent->SetupAttachment(RootComponent);
 }
 
