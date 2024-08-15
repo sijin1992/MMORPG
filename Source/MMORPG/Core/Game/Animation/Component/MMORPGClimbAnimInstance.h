@@ -14,4 +14,8 @@ class MMORPG_API UMMORPGClimbAnimInstance : public UAnimInstanceComponentBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void NativeInitializeAnimation() override;
+
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 };

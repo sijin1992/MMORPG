@@ -36,6 +36,12 @@ void UAnimInstanceComponentBase::ResetAxisSpeed(float InNewSpeed)
 		//更改速度方向
 		SpeedVector = CharacterRot.UnrotateVector(SpeedVector);
 
+		//if (InCharacterBase->GetLocalRole() == ENetRole::ROLE_SimulatedProxy)
+		//{
+			//GEngine->AddOnScreenDebugMessage(-1, 0.06f, FColor::Red, *InCharacterBase->GetVelocity().ToString());
+			//GEngine->AddOnScreenDebugMessage(-1, 0.06f, FColor::Green, *SpeedVector.ToString());
+		//}
+
 		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
 		{
 			//将移动速度映射到-1~1范围
