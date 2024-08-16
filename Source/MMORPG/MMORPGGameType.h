@@ -29,8 +29,9 @@ enum class EClimbState : uint8
 {
 	CLIMB_NONE					UMETA(DisplayName = "None"),
 	CLIMB_CLIMBOVEROBSTACLES	UMETA(DisplayName = "Climb over Obstacles"),//爬完翻越障碍
-	CLIMB_WALLCLIMB				UMETA(DisplayName = "Right"),//直接翻越
-	CLIMB_CLIMBING				UMETA(DisplayName = "Right"),//攀爬
+	CLIMB_WALLCLIMB				UMETA(DisplayName = "WallClimb"),//直接翻越
+	CLIMB_CLIMBING				UMETA(DisplayName = "Climb"),//攀爬
+	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
 };
 
 struct FResetBool

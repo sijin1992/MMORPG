@@ -17,6 +17,9 @@ class MMORPG_API UMMORPGClimbAnimInstance : public UAnimInstanceComponentBase
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAnimAttrubute")
 	EClimbState ClimbState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAttrubute")
+	bool bJumpToClimb;//是否跳起来触发攀爬
 	
 public:
 	virtual void NativeInitializeAnimation() override;

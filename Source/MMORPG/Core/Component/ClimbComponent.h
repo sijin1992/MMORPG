@@ -18,6 +18,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAttrubute")
 	EClimbState ClimbState;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAttrubute")
+	bool bJumpToClimb;//是否跳起来触发攀爬
+
 public:
 	UClimbComponent();
 

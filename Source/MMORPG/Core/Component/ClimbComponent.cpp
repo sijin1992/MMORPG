@@ -12,7 +12,8 @@ const float MaxDistance = 99999999.0f;
 
 UClimbComponent::UClimbComponent()
 	:Super(),
-	ClimbState(EClimbState::CLIMB_NONE)
+	ClimbState(EClimbState::CLIMB_NONE),
+	bJumpToClimb(false)
 {
 
 }
@@ -78,6 +79,7 @@ void UClimbComponent::PhysClimbing(float deltaTime, int32 Iterations)
 void UClimbComponent::TraceClimbingState(float DelaTime)
 {
 	FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
+	FVector UpDirection = MMORPGCharacterBase->GetActorUpVector();
 	FVector Location = MMORPGCharacterBase->GetActorLocation();
 
 	//从胸口发出射线
@@ -135,28 +137,99 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 		}
 	}
 
+	//从脚向地面发出射线
+	FHitResult HitGroundResult;
+	float GroundDistance = MaxDistance;//到碰撞点的距离
+	{
+		FVector StartTraceLocation = Location;
+		StartTraceLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight();
+		FVector EndTraceLocation = StartTraceLocation + (-UpDirection) * 40.0f;
+
+		TArray<AActor*> HeadActorsToIgnore;
+		UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
+			StartTraceLocation,
+			EndTraceLocation,
+			ETraceTypeQuery::TraceTypeQuery1,
+			true,
+			HeadActorsToIgnore,
+			EDrawDebugTrace::ForOneFrame,
+			HitGroundResult,
+			true
+		);
+
+		if (HitGroundResult.bBlockingHit)
+		{
+			GroundDistance = FVector::Distance(StartTraceLocation, HitGroundResult.Location);
+		}
+	}
+
+	//处理状态
+
 	if (HitChestResult.bBlockingHit && HitHeadResult.bBlockingHit)//头和胸都打到墙了,就是爬墙状态
 	{
-		if (ChestDistance <= 50.0f && HeadDistance <= 50.0f)
+		if (ChestDistance <= 43.0f && HeadDistance <= 43.0f)
 		{
-			if (ClimbState == EClimbState::CLIMB_CLIMBING)
+			if (ClimbState == EClimbState::CLIMB_CLIMBING)//如果当前攀爬状态已经是正在攀爬状态
 			{
+				if (HitGroundResult.bBlockingHit)//如果检测到落地了
+				{
+					if (GroundDistance <= 1.0f)
+					{
+						ClimbState = EClimbState::CLIMB_GROUND;
+						CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
+						CharacterMovementComponent->bOrientRotationToMovement = true;
+						MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
+					}
+				}
 			}
-			else
+			else if(ClimbState != EClimbState::CLIMB_GROUND)//如果当前攀爬状态不是落地状态
 			{
 				ClimbState = EClimbState::CLIMB_CLIMBING;
 				CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Custom);
 				CharacterMovementComponent->bOrientRotationToMovement = false;
 				MMORPGCharacterBase->ResetActionState(ECharacterActionState::CLIMB_STATE);
+				bJumpToClimb = false;
 			}
 		}
+		else
+		{
+			//如果距离墙远了
+			if (ClimbState == EClimbState::CLIMB_GROUND)//如果是落地状态且距离较远
+			{
+				ClimbState = EClimbState::CLIMB_NONE;
+			}
+		}
+
+		if (!HitGroundResult.bBlockingHit)
+		{
+			if (bJumpToClimb)
+			{
+				bJumpToClimb = false;
+			}
+			else
+			{
+				bJumpToClimb = true;
+			}
+		}
+		else
+		{
+			bJumpToClimb = false;
+		}
 	}
-	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸都打到墙了,头没有，攀爬后翻越
+	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸打到墙了,头没有，攀爬后翻越
 	{
 		ClimbState = EClimbState::CLIMB_CLIMBOVEROBSTACLES;
 	}
 	else if (!HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//头和胸都没有打到，就是NONE
 	{
-		ClimbState = EClimbState::CLIMB_NONE;
+		if (ClimbState == EClimbState::CLIMB_CLIMBING)
+		{
+			ClimbState = EClimbState::CLIMB_NONE;
+			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
+			CharacterMovementComponent->bOrientRotationToMovement = true;
+			MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
+			bJumpToClimb = false;
+		}
 	}
 }

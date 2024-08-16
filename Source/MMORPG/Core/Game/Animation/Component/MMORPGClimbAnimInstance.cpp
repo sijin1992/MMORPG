@@ -22,6 +22,8 @@ void UMMORPGClimbAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//攀爬状态设置
 		ClimbState = InCharacterBase->GetClimbComponent()->ClimbState;
 
+		bJumpToClimb = InCharacterBase->GetClimbComponent()->bJumpToClimb;
+
 		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
 		{
 			//Print(DeltaSeconds, FString::FormatAsNumber(InCharacterMovementComponent->MaxCustomMovementSpeed));
