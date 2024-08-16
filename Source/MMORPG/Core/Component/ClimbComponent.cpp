@@ -6,6 +6,27 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+const float MaxDistance = 99999999.0f;
+
+UClimbComponent::UClimbComponent()
+	:Super(),
+	ClimbState(EClimbState::CLIMB_NONE)
+{
+
+}
+
+void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (MMORPGCharacterBase.IsValid() && CharacterMovementComponent.IsValid() && CapsuleComponent.IsValid() && CameraComponent.IsValid())
+	{
+		//做命令激活
+		TraceClimbingState(DeltaTime);
+	}
+}
 
 void UClimbComponent::ClimbForwardAxis(float InAxisValue)
 {
@@ -51,5 +72,91 @@ void UClimbComponent::PhysClimbing(float deltaTime, int32 Iterations)
 
 		FHitResult Hit(1.0f);
 		CharacterMovementComponent->SafeMoveUpdatedComponent(Adjusted, CharacterMovementComponent->UpdatedComponent->GetComponentQuat(), true, Hit);
+	}
+}
+
+void UClimbComponent::TraceClimbingState(float DelaTime)
+{
+	FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
+	FVector Location = MMORPGCharacterBase->GetActorLocation();
+
+	//从胸口发出射线
+	FHitResult HitChestResult;
+	float ChestDistance = MaxDistance;//到碰撞点的距离
+	{
+		FVector StartTraceChestLocation = Location;
+		StartTraceChestLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight() / 4.0f;
+		FVector EndTraceChestLocation = StartTraceChestLocation + ForwardDirection * 100.0f;
+
+
+		TArray<AActor*> ChestActorsToIgnore;
+		UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
+			StartTraceChestLocation,
+			EndTraceChestLocation,
+			ETraceTypeQuery::TraceTypeQuery1,
+			true,
+			ChestActorsToIgnore,
+			EDrawDebugTrace::ForOneFrame,
+			HitChestResult,
+			true
+		);
+
+		if (HitChestResult.bBlockingHit)
+		{
+			ChestDistance = FVector::Distance(StartTraceChestLocation, HitChestResult.Location);
+		}
+	}
+
+	//从头顶发出射线
+	FHitResult HitHeadResult;
+	float HeadDistance = MaxDistance;//到碰撞点的距离
+	{
+		FVector StartTraceHeadLocation = Location;
+		StartTraceHeadLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();
+		FVector EndTraceHeadLocation = StartTraceHeadLocation + ForwardDirection * 100.0f;
+
+		TArray<AActor*> HeadActorsToIgnore;
+		UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
+			StartTraceHeadLocation,
+			EndTraceHeadLocation,
+			ETraceTypeQuery::TraceTypeQuery1,
+			true,
+			HeadActorsToIgnore,
+			EDrawDebugTrace::ForOneFrame,
+			HitHeadResult,
+			true
+		);
+
+		if (HitHeadResult.bBlockingHit)
+		{
+			HeadDistance = FVector::Distance(StartTraceHeadLocation, HitHeadResult.Location);
+		}
+	}
+
+	if (HitChestResult.bBlockingHit && HitHeadResult.bBlockingHit)//头和胸都打到墙了,就是爬墙状态
+	{
+		if (ChestDistance <= 50.0f && HeadDistance <= 50.0f)
+		{
+			if (ClimbState == EClimbState::CLIMB_CLIMBING)
+			{
+			}
+			else
+			{
+				ClimbState = EClimbState::CLIMB_CLIMBING;
+				CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Custom);
+				CharacterMovementComponent->bOrientRotationToMovement = false;
+				MMORPGCharacterBase->ResetActionState(ECharacterActionState::CLIMB_STATE);
+			}
+		}
+	}
+	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸都打到墙了,头没有，攀爬后翻越
+	{
+		ClimbState = EClimbState::CLIMB_CLIMBOVEROBSTACLES;
+	}
+	else if (!HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//头和胸都没有打到，就是NONE
+	{
+		ClimbState = EClimbState::CLIMB_NONE;
 	}
 }

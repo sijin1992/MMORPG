@@ -101,8 +101,6 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
 {
-	ActionState = ECharacterActionState::CLIMB_STATE;
-
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 

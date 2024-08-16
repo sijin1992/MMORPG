@@ -13,6 +13,10 @@ UCLASS()
 class MMORPG_API UMMORPGClimbAnimInstance : public UAnimInstanceComponentBase
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAnimAttrubute")
+	EClimbState ClimbState;
 	
 public:
 	virtual void NativeInitializeAnimation() override;

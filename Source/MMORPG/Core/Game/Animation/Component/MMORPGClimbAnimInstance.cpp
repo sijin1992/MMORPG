@@ -19,6 +19,8 @@ void UMMORPGClimbAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		//角速度设置
 		RotationRate = InCharacterBase->GetClimbComponent()->RotationRate;
+		//攀爬状态设置
+		ClimbState = InCharacterBase->GetClimbComponent()->ClimbState;
 
 		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
 		{

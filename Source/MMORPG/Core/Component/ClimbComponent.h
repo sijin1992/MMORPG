@@ -15,10 +15,21 @@ class MMORPG_API UClimbComponent : public UMotionComponent
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAttrubute")
+	EClimbState ClimbState;
+
+public:
+	UClimbComponent();
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	void ClimbForwardAxis(float InAxisValue);
 
 	void ClimbRightAxis(float InAxisValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Climbing")
-	void PhysClimbing(float deltaTime, int32 Iterations);
+	void PhysClimbing(float deltaTime, int32 Iterations);//在蓝图中进行调用
+
+private:
+	void TraceClimbingState(float DelaTime);//射线检测
 };

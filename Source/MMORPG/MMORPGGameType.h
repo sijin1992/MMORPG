@@ -23,6 +23,16 @@ enum class EDodgeFly : uint8
 	DODGE_RIGHT		UMETA(DisplayName = "Right"),
 };
 
+//攀爬状态
+UENUM(BlueprintType)
+enum class EClimbState : uint8
+{
+	CLIMB_NONE					UMETA(DisplayName = "None"),
+	CLIMB_CLIMBOVEROBSTACLES	UMETA(DisplayName = "Climb over Obstacles"),//爬完翻越障碍
+	CLIMB_WALLCLIMB				UMETA(DisplayName = "Right"),//直接翻越
+	CLIMB_CLIMBING				UMETA(DisplayName = "Right"),//攀爬
+};
+
 struct FResetBool
 {
 	FResetBool()
