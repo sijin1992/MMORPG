@@ -47,7 +47,7 @@ void UMMORPGClimbAnimInstance::ClimbJump()
 		EClimbJumpState InClimbJumpState = CalculationClimbJumpState();
 		if (InClimbJumpState != EClimbJumpState::CLIMB_JUMP_MAX)
 		{
-			Print(0.04f, FString::FromInt((int32)InClimbJumpState));
+			//Print(0.04f, FString::FromInt((int32)InClimbJumpState));
 			InCharacterBase->ClimbJumpChanged(InClimbJumpState);
 		}
 	}
@@ -59,7 +59,7 @@ EClimbJumpState UMMORPGClimbAnimInstance::CalculationClimbJumpState()
 	{
 		if (UCharacterMovementComponent* InCharacterMovementComponent = Cast<UCharacterMovementComponent>(InCharacterBase->GetMovementComponent()))
 		{
-			FVector2D Axis(InCharacterMovementComponent->Velocity.Y, InCharacterMovementComponent->Velocity.Z);
+			FVector2D Axis(InCharacterMovementComponent->GetLastInputVector().Y, InCharacterMovementComponent->GetLastInputVector().Z);
 			Axis.Normalize();//单位化
 
 			//区分左右
@@ -72,7 +72,7 @@ EClimbJumpState UMMORPGClimbAnimInstance::CalculationClimbJumpState()
 			FVector2D YAxis(0.0f, 1.0f);
 			float YCosValue = FVector2D::DotProduct(Axis, YAxis);//点乘
 			float YAxisCosAngle = (180.0f) / PI * FMath::Acos(YCosValue);
-			bool bUPAxis = FMath::IsWithinInclusive(YAxisCosAngle, 0.2f, 90.0f);
+			bool bUPAxis = FMath::IsWithinInclusive(YAxisCosAngle, 0.0f, 90.0f);
 			//Print(0.04f, FString::SanitizeFloat(YAxisCosAngle));
 
 			//区分单位圆里的8个方向

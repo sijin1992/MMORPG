@@ -27,7 +27,7 @@ void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		//做命令激活
 		TraceClimbingState(DeltaTime);
 
-		//bJump.Tick(DeltaTime);
+		bJump.Tick(DeltaTime);
 	}
 }
 
@@ -65,8 +65,17 @@ void UClimbComponent::PhysClimbing(float deltaTime, int32 Iterations)
 		{
 			return;
 		}
-		//求移动速度
-		CharacterMovementComponent->Velocity = CharacterMovementComponent->GetLastInputVector() * CharacterMovementComponent->MaxCustomMovementSpeed;
+
+		if (!CharacterMovementComponent->HasAnimRootMotion())
+		{
+			//求移动速度
+			CharacterMovementComponent->Velocity = CharacterMovementComponent->GetLastInputVector() * CharacterMovementComponent->MaxCustomMovementSpeed;
+		}
+		else
+		{
+			CharacterMovementComponent->Velocity = CharacterMovementComponent->ConstrainAnimRootMotionVelocity(CharacterMovementComponent->AnimRootMotionVelocity, CharacterMovementComponent->Velocity);
+			Print(0.04f, CharacterMovementComponent->AnimRootMotionVelocity.ToString());
+		}
 
 		const FVector Adjusted = CharacterMovementComponent->Velocity * deltaTime;
 
