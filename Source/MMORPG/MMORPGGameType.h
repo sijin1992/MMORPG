@@ -34,6 +34,21 @@ enum class EClimbState : uint8
 	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
 };
 
+//攀爬时跳跃状态
+UENUM(BlueprintType)
+enum class EClimbJumpState : uint8
+{
+	CLIMB_JUMP_D				UMETA(DisplayName = "Down"),//向下跳跃
+	CLIMB_JUMP_DL				UMETA(DisplayName = "Down Left"),//向左下跳跃
+	CLIMB_JUMP_DR				UMETA(DisplayName = "Down Right"),//向右下跳跃
+	CLIMB_JUMP_L				UMETA(DisplayName = "Left"),//向左跳跃
+	CLIMB_JUMP_R				UMETA(DisplayName = "Right"),//向右跳跃
+	CLIMB_JUMP_U				UMETA(DisplayName = "Up"),//向上跳跃
+	CLIMB_JUMP_UL				UMETA(DisplayName = "Up Left"),//向左上跳跃
+	CLIMB_JUMP_UR				UMETA(DisplayName = "Up Right"),//向右上跳跃
+	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
+};
+
 struct FResetBool
 {
 	FResetBool()

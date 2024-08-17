@@ -78,8 +78,8 @@ void AMMORPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMMORPGCharacter::CharacterJump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMMORPGCharacter::CharacterStopJump);
 
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMMORPGCharacter::Move);
@@ -272,6 +272,21 @@ void AMMORPGCharacter::MulticastDodgeRight_Implementation()
 	}
 }
 
+void AMMORPGCharacter::CharacterJump()
+{
+	Jump();
+	if (ActionState == ECharacterActionState::CLIMB_STATE)
+	{
+		GetClimbComponent()->ResetJump();
+	}
+}
+
+
+void AMMORPGCharacter::CharacterStopJump()
+{
+	StopJumping();
+}
+
 void AMMORPGCharacter::FightChanged()
 {
 	if (FCharacterAnimTable* InAnimTable = GetAnimTable())
@@ -280,6 +295,17 @@ void AMMORPGCharacter::FightChanged()
 		{
 			FName AnimSlotName = ActionState == ECharacterActionState::FIGHT_STATE ? TEXT("0") : TEXT("1");
 			PlayAnimMontage(InAnimTable->SwitchFightMontage, 1.0f, AnimSlotName);
+		}
+	}
+}
+
+void AMMORPGCharacter::ClimbJumpChanged(EClimbJumpState InClimbJumpState)
+{
+	if (FCharacterAnimTable* InAnimTable = GetAnimTable())
+	{
+		if (InAnimTable->ClimbJumpMontage)
+		{
+			PlayAnimMontage(InAnimTable->ClimbJumpMontage, 1.0f, *FString::FromInt((int32)InClimbJumpState));
 		}
 	}
 }

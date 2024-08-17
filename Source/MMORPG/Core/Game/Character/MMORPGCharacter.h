@@ -92,6 +92,10 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastDodgeRight();
+
+	void CharacterJump();
+
+	void CharacterStopJump();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -102,6 +106,9 @@ protected:
 	virtual void OnRep_ActionStateChanged() override;
 
 	void FightChanged();
+
+public:
+	virtual void ClimbJumpChanged(EClimbJumpState InClimbJumpState) override;//攀爬跳跃状态切换
 
 public:
 	/** Returns CameraBoom subobject **/

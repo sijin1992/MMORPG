@@ -36,6 +36,8 @@ public:
 
 	virtual UCameraComponent* GetFollowCamera() const { return NULL; }
 
+	virtual void ClimbJumpChanged(EClimbJumpState ClimbJumpState) {};
+
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, DisplayName = "AnimSignal", Category = "Anim Event")
 	void K2_AnimSignal(int32 InSignal);

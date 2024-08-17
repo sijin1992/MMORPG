@@ -21,6 +21,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ClimbAttrubute")
 	bool bJumpToClimb;//是否跳起来触发攀爬
 
+	FResetBool bJump;//攀爬中是否跳跃
+
 public:
 	UClimbComponent();
 
@@ -32,6 +34,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Climbing")
 	void PhysClimbing(float deltaTime, int32 Iterations);//在蓝图中进行调用
+
+	void ResetJump();
 
 private:
 	void TraceClimbingState(float DelaTime);//射线检测

@@ -26,6 +26,8 @@ void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		//做命令激活
 		TraceClimbingState(DeltaTime);
+
+		//bJump.Tick(DeltaTime);
 	}
 }
 
@@ -71,6 +73,12 @@ void UClimbComponent::PhysClimbing(float deltaTime, int32 Iterations)
 		FHitResult Hit(1.0f);
 		CharacterMovementComponent->SafeMoveUpdatedComponent(Adjusted, CharacterMovementComponent->UpdatedComponent->GetComponentQuat(), true, Hit);
 	}
+}
+
+void UClimbComponent::ResetJump()
+{
+	bJump = true;
+	//bJump = 1.6f;
 }
 
 void UClimbComponent::TraceClimbingState(float DelaTime)
