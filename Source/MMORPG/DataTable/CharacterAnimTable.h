@@ -18,5 +18,5 @@ struct FCharacterAnimTable : public FTableRowBase
 	UAnimMontage* SwitchFightMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAnim")
-	UAnimMontage* ClimbJumpMontage;
+	UAnimMontage* ClimbMontage;
 };

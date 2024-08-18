@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "ThreadManage.h"
 
 const float MaxDistance = 99999999.0f;
 
@@ -239,9 +240,29 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 			bJumpToClimb = false;
 		}
 	}
-	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸打到墙了,头没有，攀爬后翻越
+	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸打到墙了,头没有
 	{
-		ClimbState = EClimbState::CLIMB_CLIMBOVEROBSTACLES;
+		if (ClimbState == EClimbState::CLIMB_CLIMBING)//攀爬中到顶了
+		{
+			ClimbState = EClimbState::CLIMB_TOTOP;
+
+			GThread::Get()->GetCoroutines().BindLambda(1.0f, [this]()
+				{
+					FRotator InActorRotation = MMORPGCharacterBase->GetActorRotation();
+
+					CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
+					CharacterMovementComponent->bOrientRotationToMovement = true;
+					MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
+
+					InActorRotation.Pitch = 0.0f;
+					MMORPGCharacterBase->SetActorRotation(InActorRotation);
+					bJumpToClimb = false;
+				});
+		}
+		else if (ClimbState != EClimbState::CLIMB_TOTOP)
+		{
+			ClimbState = EClimbState::CLIMB_WALLCLIMB;
+		}
 	}
 	else if (!HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//头和胸都没有打到，就是NONE
 	{

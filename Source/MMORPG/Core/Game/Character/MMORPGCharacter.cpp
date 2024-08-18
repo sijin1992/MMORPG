@@ -299,13 +299,13 @@ void AMMORPGCharacter::FightChanged()
 	}
 }
 
-void AMMORPGCharacter::ClimbJumpChanged(EClimbJumpState InClimbJumpState)
+void AMMORPGCharacter::ClimbMontageChanged(EClimbMontageState InClimbMontageState)
 {
 	if (FCharacterAnimTable* InAnimTable = GetAnimTable())
 	{
-		if (InAnimTable->ClimbJumpMontage)
+		if (InAnimTable->ClimbMontage)
 		{
-			PlayAnimMontage(InAnimTable->ClimbJumpMontage, 1.0f, *FString::FromInt((int32)InClimbJumpState));
+			PlayAnimMontage(InAnimTable->ClimbMontage, 1.0f, *FString::FromInt((int32)InClimbMontageState));
 		}
 	}
 }

@@ -37,6 +37,12 @@ void UMMORPGClimbAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			InCharacterBase->GetClimbComponent()->bJump = false;
 			ClimbJump();
 		}
+
+		if (ClimbState == EClimbState::CLIMB_TOTOP)//攀爬到顶部
+		{
+			InCharacterBase->GetClimbComponent()->ClimbState = EClimbState::CLIMB_NONE;
+			InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_UPATTOP);
+		}
 	}
 }
 
@@ -44,16 +50,16 @@ void UMMORPGClimbAnimInstance::ClimbJump()
 {
 	if (AMMORPGCharacterBase* InCharacterBase = Cast<AMMORPGCharacterBase>(TryGetPawnOwner()))
 	{
-		EClimbJumpState InClimbJumpState = CalculationClimbJumpState();
-		if (InClimbJumpState != EClimbJumpState::CLIMB_JUMP_MAX)
+		EClimbMontageState InClimbJumpState = CalculationClimbJumpState();
+		if (InClimbJumpState != EClimbMontageState::CLIMB_JUMP_MAX)
 		{
 			//Print(0.04f, FString::FromInt((int32)InClimbJumpState));
-			InCharacterBase->ClimbJumpChanged(InClimbJumpState);
+			InCharacterBase->ClimbMontageChanged(InClimbJumpState);
 		}
 	}
 }
 
-EClimbJumpState UMMORPGClimbAnimInstance::CalculationClimbJumpState()
+EClimbMontageState UMMORPGClimbAnimInstance::CalculationClimbJumpState()
 {
 	if (AMMORPGCharacterBase* InCharacterBase = Cast<AMMORPGCharacterBase>(TryGetPawnOwner()))
 	{
@@ -78,38 +84,38 @@ EClimbJumpState UMMORPGClimbAnimInstance::CalculationClimbJumpState()
 			//区分单位圆里的8个方向
 			if (FMath::IsWithinInclusive(XAxisCosAngle, 67.5f, 112.5f) && bUPAxis)//上
 			{
-				return EClimbJumpState::CLIMB_JUMP_U;
+				return EClimbMontageState::CLIMB_JUMP_U;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 22.5f, 67.5f) && bUPAxis)//右上
 			{
-				return EClimbJumpState::CLIMB_JUMP_UR;
+				return EClimbMontageState::CLIMB_JUMP_UR;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 112.5f, 157.5f) && bUPAxis)//左上
 			{
-				return EClimbJumpState::CLIMB_JUMP_UL;
+				return EClimbMontageState::CLIMB_JUMP_UL;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 67.5f, 112.5f) && !bUPAxis)//下
 			{
-				return EClimbJumpState::CLIMB_JUMP_D;
+				return EClimbMontageState::CLIMB_JUMP_D;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 22.5f, 67.5f) && !bUPAxis)//右下
 			{
-				return EClimbJumpState::CLIMB_JUMP_DR;
+				return EClimbMontageState::CLIMB_JUMP_DR;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 112.5f, 157.5f) && !bUPAxis)//左下
 			{
-				return EClimbJumpState::CLIMB_JUMP_DL;
+				return EClimbMontageState::CLIMB_JUMP_DL;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 157.5f, 180.0f))//左
 			{
-				return EClimbJumpState::CLIMB_JUMP_L;
+				return EClimbMontageState::CLIMB_JUMP_L;
 			}
 			else if (FMath::IsWithinInclusive(XAxisCosAngle, 0.0f, 22.5f))//右
 			{
-				return EClimbJumpState::CLIMB_JUMP_R;
+				return EClimbMontageState::CLIMB_JUMP_R;
 			}
 		}
 	}
 
-	return EClimbJumpState::CLIMB_JUMP_MAX;
+	return EClimbMontageState::CLIMB_JUMP_MAX;
 }

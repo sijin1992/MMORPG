@@ -32,11 +32,12 @@ enum class EClimbState : uint8
 	CLIMB_WALLCLIMB				UMETA(DisplayName = "WallClimb"),//直接翻越
 	CLIMB_CLIMBING				UMETA(DisplayName = "Climb"),//攀爬
 	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
+	CLIMB_TOTOP					UMETA(DisplayName = "Top"),//爬到顶部
 };
 
-//攀爬时跳跃状态
+//攀爬蒙太奇状态
 UENUM(BlueprintType)
-enum class EClimbJumpState : uint8
+enum class EClimbMontageState : uint8
 {
 	CLIMB_JUMP_D				UMETA(DisplayName = "Down"),//向下跳跃
 	CLIMB_JUMP_DL				UMETA(DisplayName = "Down Left"),//向左下跳跃
@@ -46,6 +47,7 @@ enum class EClimbJumpState : uint8
 	CLIMB_JUMP_U				UMETA(DisplayName = "Up"),//向上跳跃
 	CLIMB_JUMP_UL				UMETA(DisplayName = "Up Left"),//向左上跳跃
 	CLIMB_JUMP_UR				UMETA(DisplayName = "Up Right"),//向右上跳跃
+	CLIMB_UPATTOP				UMETA(DisplayName = "Up At Top"),//攀爬到顶部
 	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
 };
 

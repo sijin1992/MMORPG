@@ -32,5 +32,5 @@ public:
 private:
 	void ClimbJump();//攀爬跳跃
 
-	EClimbJumpState CalculationClimbJumpState();//计算攀爬跳跃的方向
+	EClimbMontageState CalculationClimbJumpState();//计算攀爬跳跃的方向
 };
