@@ -184,8 +184,18 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 
 	if (HitChestResult.bBlockingHit && HitHeadResult.bBlockingHit)//头和胸都打到墙了,就是爬墙状态
 	{
-		if (ChestDistance <= 28.0f)
+		if (ChestDistance <= 45.0f)
 		{
+			//修正角色距离墙的位置
+			float CompensationValue = ChestDistance - 30.0f;
+			if (CompensationValue > 0.0f)
+			{
+				FVector TargetPoint = ForwardDirection * CompensationValue * (DelaTime * 8);
+				TargetPoint += MMORPGCharacterBase->GetActorLocation();
+				MMORPGCharacterBase->SetActorLocation(TargetPoint);
+			}
+
+
 			if (ClimbState == EClimbState::CLIMB_CLIMBING)//如果当前攀爬状态已经是正在攀爬状态
 			{
 				if (HitGroundResult.bBlockingHit)//如果检测到落地了
@@ -256,12 +266,15 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 	//攀爬曲面
 	if (HitChestResult.bBlockingHit)
 	{
-		FRotator NewRot = FRotationMatrix::MakeFromX(MMORPGCharacterBase->GetActorForwardVector() - HitChestResult.Normal).Rotator();
+		if (ClimbState == EClimbState::CLIMB_CLIMBING)
+		{
+			FRotator NewRot = FRotationMatrix::MakeFromX(MMORPGCharacterBase->GetActorForwardVector() - HitChestResult.Normal).Rotator();
 
-		ActorRotation.Yaw = NewRot.Yaw;
-		ActorRotation.Pitch = NewRot.Pitch;
-		MMORPGCharacterBase->SetActorRotation(ActorRotation);
-
+			ActorRotation.Yaw = NewRot.Yaw;
+			ActorRotation.Pitch = NewRot.Pitch;
+			ActorRotation.Roll = 0.0f;
+			MMORPGCharacterBase->SetActorRotation(ActorRotation);
+		}
 	}
 }
 
