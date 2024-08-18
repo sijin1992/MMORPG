@@ -184,7 +184,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 
 	if (HitChestResult.bBlockingHit && HitHeadResult.bBlockingHit)//头和胸都打到墙了,就是爬墙状态
 	{
-		if (ChestDistance <= 80.0f && HeadDistance <= 80.0f)
+		if (ChestDistance <= 28.0f)
 		{
 			if (ClimbState == EClimbState::CLIMB_CLIMBING)//如果当前攀爬状态已经是正在攀爬状态
 			{
@@ -199,14 +199,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 			}
 			else if(ClimbState != EClimbState::CLIMB_GROUND)//如果当前攀爬状态不是落地状态
 			{
-				ClimbState = EClimbState::CLIMB_CLIMBING;
-				CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Custom);
-				CharacterMovementComponent->bOrientRotationToMovement = false;
-				MMORPGCharacterBase->ResetActionState(ECharacterActionState::CLIMB_STATE);
-
-				ActorRotation.Pitch = 0.0f;
-				MMORPGCharacterBase->SetActorRotation(ActorRotation);
-				bJumpToClimb = false;
+				SetClimbing();
 			}
 		}
 		else
