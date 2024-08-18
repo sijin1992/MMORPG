@@ -199,6 +199,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 			}
 			else if(ClimbState != EClimbState::CLIMB_GROUND)//如果当前攀爬状态不是落地状态
 			{
+				ClimbState = EClimbState::CLIMB_CLIMBING;
 				SetClimbing();
 			}
 		}
