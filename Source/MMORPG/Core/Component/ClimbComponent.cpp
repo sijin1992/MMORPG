@@ -193,13 +193,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 					if (GroundDistance <= 1.0f)
 					{
 						ClimbState = EClimbState::CLIMB_GROUND;
-						CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
-						CharacterMovementComponent->bOrientRotationToMovement = true;
-						MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
-
-						ActorRotation.Pitch = 0.0f;
-						MMORPGCharacterBase->SetActorRotation(ActorRotation);
-						bJumpToClimb = false;
+						ReleaseClimeb();
 					}
 				}
 			}
@@ -248,15 +242,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 
 			GThread::Get()->GetCoroutines().BindLambda(1.0f, [this]()
 				{
-					FRotator InActorRotation = MMORPGCharacterBase->GetActorRotation();
-
-					CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
-					CharacterMovementComponent->bOrientRotationToMovement = true;
-					MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
-
-					InActorRotation.Pitch = 0.0f;
-					MMORPGCharacterBase->SetActorRotation(InActorRotation);
-					bJumpToClimb = false;
+					ReleaseClimeb();
 				});
 		}
 		else if (ClimbState != EClimbState::CLIMB_TOTOP)
@@ -269,13 +255,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 		if (ClimbState == EClimbState::CLIMB_CLIMBING)
 		{
 			ClimbState = EClimbState::CLIMB_NONE;
-			CharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
-			CharacterMovementComponent->bOrientRotationToMovement = true;
-			MMORPGCharacterBase->ResetActionState(ECharacterActionState::NORMAL_STATE);
-
-			ActorRotation.Pitch = 0.0f;
-			MMORPGCharacterBase->SetActorRotation(ActorRotation);
-			bJumpToClimb = false;
+			ReleaseClimeb();
 		}
 	}
 
@@ -289,4 +269,27 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 		MMORPGCharacterBase->SetActorRotation(ActorRotation);
 
 	}
+}
+
+void UClimbComponent::SetClimbing()
+{
+	SetClimbState(EMovementMode::MOVE_Custom, ECharacterActionState::CLIMB_STATE, false);
+}
+
+void UClimbComponent::ReleaseClimeb()
+{
+	SetClimbState(EMovementMode::MOVE_Walking, ECharacterActionState::NORMAL_STATE, true);
+}
+
+void UClimbComponent::SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement)
+{
+	FRotator InActorRotation = MMORPGCharacterBase->GetActorRotation();
+
+	CharacterMovementComponent->SetMovementMode(InMovementMode);
+	CharacterMovementComponent->bOrientRotationToMovement = bOrientRotationToMovement;
+	MMORPGCharacterBase->ResetActionState(InCharacterActionState);
+
+	InActorRotation.Pitch = 0.0f;
+	MMORPGCharacterBase->SetActorRotation(InActorRotation);
+	bJumpToClimb = false;
 }

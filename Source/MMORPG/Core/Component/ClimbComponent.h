@@ -37,6 +37,12 @@ public:
 
 	void ResetJump();
 
+	void SetClimbing();
+
+	void ReleaseClimeb();
+
 private:
 	void TraceClimbingState(float DelaTime);//射线检测
+
+	void SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement);
 };
