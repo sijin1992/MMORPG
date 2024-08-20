@@ -23,8 +23,16 @@ public:
 
 	FResetBool bJump;//攀爬中是否跳跃
 
+	FResetBool bThrowOver;//是否翻越
+
+private:
+	FVector ThrowOverPoint;//翻越点
+	float ThrowOverHeight;//翻越高度
+
 public:
 	UClimbComponent();
+
+	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -41,8 +49,13 @@ public:
 
 	void ReleaseClimeb();
 
+	void ClearClimbingState();
+
+	bool IsLowThrowOver();//判断是高低翻越(单手翻越还是双手翻越)
+
+	void AdjustmentClimbing(bool bStart = true);//翻越到墙顶后调整角色的高度，防止脚部下陷
 private:
-	void TraceClimbingState(float DelaTime);//射线检测
+	void TraceClimbingState(float DeltaTime);//射线检测
 
 	void SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement);
 };

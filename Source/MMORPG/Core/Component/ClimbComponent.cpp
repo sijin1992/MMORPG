@@ -14,9 +14,20 @@ const float MaxDistance = 99999999.0f;
 UClimbComponent::UClimbComponent()
 	:Super(),
 	ClimbState(EClimbState::CLIMB_NONE),
-	bJumpToClimb(false)
+	bJumpToClimb(false),
+	ThrowOverHeight(0.0f)
 {
 
+}
+
+void UClimbComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	bThrowOver.Fun.BindLambda([&]()
+		{
+			AdjustmentClimbing(false);//翻越动画结束后还原角色高度
+		});
 }
 
 void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -29,6 +40,8 @@ void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		TraceClimbingState(DeltaTime);
 
 		bJump.Tick(DeltaTime);
+
+		bThrowOver.Tick(DeltaTime);
 	}
 }
 
@@ -91,7 +104,7 @@ void UClimbComponent::ResetJump()
 	//bJump = 1.6f;
 }
 
-void UClimbComponent::TraceClimbingState(float DelaTime)
+void UClimbComponent::TraceClimbingState(float DeltaTime)
 {
 	FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
 	FVector UpDirection = MMORPGCharacterBase->GetActorUpVector();
@@ -103,7 +116,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 	float ChestDistance = MaxDistance;//到碰撞点的距离
 	{
 		FVector StartTraceChestLocation = Location;
-		StartTraceChestLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight() / 4.0f;
+		//StartTraceChestLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight() / 4.0f;
 		FVector EndTraceChestLocation = StartTraceChestLocation + ForwardDirection * 100.0f;
 
 
@@ -190,7 +203,7 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 			float CompensationValue = ChestDistance - 30.0f;
 			if (CompensationValue > 0.0f)
 			{
-				FVector TargetPoint = ForwardDirection * CompensationValue * (DelaTime * 8);
+				FVector TargetPoint = ForwardDirection * CompensationValue * (DeltaTime * 8);
 				TargetPoint += MMORPGCharacterBase->GetActorLocation();
 				MMORPGCharacterBase->SetActorLocation(TargetPoint);
 			}
@@ -249,9 +262,66 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 					ReleaseClimeb();
 				});
 		}
-		else if (ClimbState != EClimbState::CLIMB_TOTOP)
+		else if (ClimbState != EClimbState::CLIMB_TOTOP 
+			&& ClimbState != EClimbState::CLIMB_THROWOVER
+			&& !bThrowOver)//不是攀爬状态，且不是到顶，说明是翻越状态
 		{
-			ClimbState = EClimbState::CLIMB_WALLCLIMB;
+			if (ChestDistance <= 18.0f)
+			{
+				//1、面向墙
+				{
+					FRotator NewRot = FRotationMatrix::MakeFromX(MMORPGCharacterBase->GetActorForwardVector() - HitChestResult.Normal).Rotator();
+
+					ActorRotation.Yaw = NewRot.Yaw;
+					ActorRotation.Pitch = 0.0f;
+					ActorRotation.Roll = 0.0f;
+					MMORPGCharacterBase->SetActorRotation(ActorRotation);
+				}
+
+				//从角色头顶前方40处向下打射线
+				FHitResult HitThrowOverResult;
+
+				FVector StartTraceLocation = Location + ForwardDirection * 40.0f;
+				StartTraceLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();
+				FVector EndTraceLocation = StartTraceLocation - UpDirection * 100.0f;
+				TArray<AActor*> ThrowOverActorsToIgnore;
+
+				UKismetSystemLibrary::LineTraceSingle(
+					GetWorld(),
+					StartTraceLocation,
+					EndTraceLocation,
+					ETraceTypeQuery::TraceTypeQuery1,
+					false,
+					ThrowOverActorsToIgnore,
+					EDrawDebugTrace::ForOneFrame,
+					HitThrowOverResult,
+					true
+				);
+
+				if (HitThrowOverResult.bBlockingHit)
+				{
+					HitThrowOverResult.Location.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();//修正翻越时的距离
+
+					ThrowOverPoint = HitThrowOverResult.Location;
+
+					ThrowOverHeight = HitThrowOverResult.Distance;
+
+					ClimbState = EClimbState::CLIMB_THROWOVER;
+
+					AdjustmentClimbing();//播放翻越动画时提高角色高度,防止下陷
+
+					if (IsLowThrowOver())
+					{
+						bThrowOver = 0.8f;
+					}
+					else
+					{
+						bThrowOver = 1.7f;
+					}
+
+					bThrowOver = true;
+				}
+			}
 		}
 	}
 	else if (!HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//头和胸都没有打到，就是NONE
@@ -276,6 +346,13 @@ void UClimbComponent::TraceClimbingState(float DelaTime)
 			MMORPGCharacterBase->SetActorRotation(ActorRotation);
 		}
 	}
+
+	//翻越,将角色平滑的移动到墙上
+	if (bThrowOver)
+	{
+		FVector VInterpToLocation = FMath::VInterpTo(Location, ThrowOverPoint, DeltaTime, 27.0f);
+		MMORPGCharacterBase->SetActorLocation(VInterpToLocation);
+	}
 }
 
 void UClimbComponent::SetClimbing()
@@ -286,6 +363,31 @@ void UClimbComponent::SetClimbing()
 void UClimbComponent::ReleaseClimeb()
 {
 	SetClimbState(EMovementMode::MOVE_Walking, ECharacterActionState::NORMAL_STATE, true);
+}
+
+void UClimbComponent::ClearClimbingState()
+{
+	ClimbState = EClimbState::CLIMB_NONE;
+}
+
+bool UClimbComponent::IsLowThrowOver()
+{
+	return ThrowOverHeight > 40.0f;
+}
+
+void UClimbComponent::AdjustmentClimbing(bool bStart /*= true*/)
+{
+	FVector RelativeLocation = MMORPGCharacterBase->GetMesh()->GetRelativeLocation();//获取相对位置
+	float AdjustValue = 5.0f;
+	if (bStart)
+	{
+		RelativeLocation.Z += AdjustValue;
+	}
+	else
+	{
+		RelativeLocation.Z -= AdjustValue;
+	}
+	MMORPGCharacterBase->GetMesh()->SetRelativeLocation(RelativeLocation);
 }
 
 void UClimbComponent::SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement)

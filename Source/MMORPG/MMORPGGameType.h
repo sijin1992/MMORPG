@@ -29,7 +29,7 @@ enum class EClimbState : uint8
 {
 	CLIMB_NONE					UMETA(DisplayName = "None"),
 	CLIMB_CLIMBOVEROBSTACLES	UMETA(DisplayName = "Climb over Obstacles"),//爬完翻越障碍
-	CLIMB_WALLCLIMB				UMETA(DisplayName = "WallClimb"),//直接翻越
+	CLIMB_THROWOVER				UMETA(DisplayName = "Throw-over"),//直接翻越
 	CLIMB_CLIMBING				UMETA(DisplayName = "Climb"),//攀爬
 	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
 	CLIMB_TOTOP					UMETA(DisplayName = "Top"),//爬到顶部
@@ -48,6 +48,9 @@ enum class EClimbMontageState : uint8
 	CLIMB_JUMP_UL				UMETA(DisplayName = "Up Left"),//向左上跳跃
 	CLIMB_JUMP_UR				UMETA(DisplayName = "Up Right"),//向右上跳跃
 	CLIMB_UPATTOP				UMETA(DisplayName = "Up At Top"),//攀爬到顶部
+	CLIMB_THROWOVER_L			UMETA(DisplayName = "Throw-over left"),//从左边翻越
+	CLIMB_THROWOVER_R			UMETA(DisplayName = "Throw-over right"),//从右边翻越
+	CLIMB_THROWOVER_HIGH		UMETA(DisplayName = "Throw-over high"),//双手翻越高一点的墙
 	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
 };
 

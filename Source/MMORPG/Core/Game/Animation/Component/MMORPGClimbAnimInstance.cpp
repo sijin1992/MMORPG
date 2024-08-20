@@ -40,8 +40,21 @@ void UMMORPGClimbAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		if (ClimbState == EClimbState::CLIMB_TOTOP)//攀爬到顶部
 		{
-			InCharacterBase->GetClimbComponent()->ClimbState = EClimbState::CLIMB_NONE;
+			InCharacterBase->GetClimbComponent()->ClearClimbingState();
 			InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_UPATTOP);
+		}
+		else if (ClimbState == EClimbState::CLIMB_THROWOVER)//翻越
+		{
+			InCharacterBase->GetClimbComponent()->ClearClimbingState();
+			if (InCharacterBase->GetClimbComponent()->IsLowThrowOver())
+			{
+				//随机播放从左还是从右翻越
+				InCharacterBase->ClimbMontageChanged((EClimbMontageState)FMath::RandRange((int32)EClimbMontageState::CLIMB_THROWOVER_L, (int32)EClimbMontageState::CLIMB_THROWOVER_R));
+			}
+			else
+			{
+				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_THROWOVER_HIGH);
+			}
 		}
 	}
 }
