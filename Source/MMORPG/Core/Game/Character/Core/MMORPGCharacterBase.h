@@ -49,6 +49,8 @@ protected:
 	//使用RPC需要重写这个方法告诉引擎同步方式
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void Landed(const FHitResult& Hit) override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

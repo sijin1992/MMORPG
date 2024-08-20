@@ -67,6 +67,16 @@ void AMMORPGCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME_CONDITION(AMMORPGCharacterBase, ActionState, COND_SimulatedOnly);
 }
 
+void AMMORPGCharacterBase::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	//if (LastActionState == ECharacterActionState::CLIMB_STATE)
+	{
+		StopAnimMontage();
+	}
+}
+
 // Called every frame
 void AMMORPGCharacterBase::Tick(float DeltaTime)
 {

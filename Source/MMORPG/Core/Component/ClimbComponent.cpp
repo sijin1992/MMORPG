@@ -42,6 +42,8 @@ void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		bJump.Tick(DeltaTime);
 
 		bThrowOver.Tick(DeltaTime);
+
+		AdjustPendingLaunchVelocity(DeltaTime);
 	}
 }
 
@@ -83,12 +85,12 @@ void UClimbComponent::PhysClimbing(float deltaTime, int32 Iterations)
 		if (!CharacterMovementComponent->HasAnimRootMotion())
 		{
 			//求移动速度
-			CharacterMovementComponent->Velocity = CharacterMovementComponent->GetLastInputVector() * CharacterMovementComponent->MaxCustomMovementSpeed;
+			CharacterMovementComponent->Velocity = PendingLaunchVelocity + CharacterMovementComponent->GetLastInputVector() * CharacterMovementComponent->MaxCustomMovementSpeed;
 		}
 		else
 		{
-			CharacterMovementComponent->Velocity = CharacterMovementComponent->ConstrainAnimRootMotionVelocity(CharacterMovementComponent->AnimRootMotionVelocity, CharacterMovementComponent->Velocity);
-			Print(0.04f, CharacterMovementComponent->AnimRootMotionVelocity.ToString());
+			CharacterMovementComponent->Velocity = PendingLaunchVelocity + CharacterMovementComponent->ConstrainAnimRootMotionVelocity(CharacterMovementComponent->AnimRootMotionVelocity, CharacterMovementComponent->Velocity);
+			//Print(0.04f, CharacterMovementComponent->AnimRootMotionVelocity.ToString());
 		}
 
 		const FVector Adjusted = CharacterMovementComponent->Velocity * deltaTime;
@@ -401,4 +403,34 @@ void UClimbComponent::SetClimbState(EMovementMode InMovementMode, ECharacterActi
 	InActorRotation.Pitch = 0.0f;
 	MMORPGCharacterBase->SetActorRotation(InActorRotation);
 	bJumpToClimb = false;
+}
+
+void UClimbComponent::LaunchCharacter(const FVector& LaunchVelocity)
+{
+	PendingLaunchVelocity = LaunchVelocity;
+}
+
+void UClimbComponent::AdjustPendingLaunchVelocity(float DeltaTime)
+{
+	auto AxisCheck = [](double& InValue, float DeltaTime)
+		{
+			if (FMath::IsNearlyEqual(InValue, 0, 1))
+			{
+				InValue = 0;
+			}
+			else if (InValue > 0)
+			{
+				InValue -= InValue * DeltaTime;
+			}
+			else if(InValue < 0)
+			{
+				InValue += -InValue * DeltaTime;
+			}
+		};
+
+	AxisCheck(PendingLaunchVelocity.X, DeltaTime);
+	AxisCheck(PendingLaunchVelocity.Y, DeltaTime);
+	AxisCheck(PendingLaunchVelocity.Z, DeltaTime);
+
+	Print(DeltaTime, PendingLaunchVelocity.ToString());
 }

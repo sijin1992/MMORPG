@@ -29,6 +29,8 @@ private:
 	FVector ThrowOverPoint;//翻越点
 	float ThrowOverHeight;//翻越高度
 
+	FVector PendingLaunchVelocity;//施加力
+
 public:
 	UClimbComponent();
 
@@ -40,6 +42,7 @@ public:
 
 	void ClimbRightAxis(float InAxisValue);
 
+	//自定义的物理系统
 	UFUNCTION(BlueprintCallable, Category = "Climbing")
 	void PhysClimbing(float deltaTime, int32 Iterations);//在蓝图中进行调用
 
@@ -54,8 +57,12 @@ public:
 	bool IsLowThrowOver();//判断是高低翻越(单手翻越还是双手翻越)
 
 	void AdjustmentClimbing(bool bStart = true);//翻越到墙顶后调整角色的高度，防止脚部下陷
+
+	void LaunchCharacter(const FVector& LaunchVelocity);//自定义施力
 private:
 	void TraceClimbingState(float DeltaTime);//射线检测
 
 	void SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement);
+
+	void AdjustPendingLaunchVelocity(float DeltaTime);//调节力的函数
 };

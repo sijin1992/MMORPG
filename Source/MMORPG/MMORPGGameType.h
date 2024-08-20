@@ -33,6 +33,7 @@ enum class EClimbState : uint8
 	CLIMB_CLIMBING				UMETA(DisplayName = "Climb"),//攀爬
 	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
 	CLIMB_TOTOP					UMETA(DisplayName = "Top"),//爬到顶部
+	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落
 };
 
 //攀爬蒙太奇状态
@@ -51,6 +52,7 @@ enum class EClimbMontageState : uint8
 	CLIMB_THROWOVER_L			UMETA(DisplayName = "Throw-over left"),//从左边翻越
 	CLIMB_THROWOVER_R			UMETA(DisplayName = "Throw-over right"),//从右边翻越
 	CLIMB_THROWOVER_HIGH		UMETA(DisplayName = "Throw-over high"),//双手翻越高一点的墙
+	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落动画
 	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
 };
 
