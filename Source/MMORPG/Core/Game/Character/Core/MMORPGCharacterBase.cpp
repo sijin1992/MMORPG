@@ -71,7 +71,7 @@ void AMMORPGCharacterBase::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	//if (LastActionState == ECharacterActionState::CLIMB_STATE)
+	if (ActionState == ECharacterActionState::CLIMB_STATE)
 	{
 		StopAnimMontage();
 	}
