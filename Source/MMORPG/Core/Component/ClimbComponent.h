@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/MotionComponent.h"
+#include "../../MMORPGGameType.h"
 #include "ClimbComponent.generated.h"
 
 /**
@@ -59,6 +60,10 @@ public:
 	void AdjustmentClimbing(bool bStart = true);//翻越到墙顶后调整角色的高度，防止脚部下陷
 
 	void LaunchCharacter(const FVector& LaunchVelocity);//自定义施力
+
+	void DropClimbState();//坠落状态
+
+	bool IsDropClimbState();
 private:
 	void TraceClimbingState(float DeltaTime);//射线检测
 

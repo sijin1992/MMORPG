@@ -199,14 +199,16 @@ void AMMORPGCharacter::MulticastActionSwitch_Implementation()
 		}
 		else if(CharacterMovementComponent->MovementMode == EMovementMode::MOVE_Custom)	//取消攀爬
 		{
+			if (!GetClimbComponent()->IsDropClimbState())
+			{
+				GetClimbComponent()->ReleaseClimeb();
+				GetClimbComponent()->DropClimbState();
+				ClimbMontageChanged(EClimbMontageState::CLIMB_DROP);
+				//施加向后的力
+				FVector Dir = -GetActorForwardVector();
 
-			GetClimbComponent()->ReleaseClimeb();
-			GetClimbComponent()->ClearClimbingState();
-			ClimbMontageChanged(EClimbMontageState::CLIMB_DROP);
-			//施加向后的力
-			FVector Dir = -GetActorForwardVector();
-
-			GetClimbComponent()->LaunchCharacter(Dir * 1000.0f);
+				GetClimbComponent()->LaunchCharacter(Dir * 1000.0f);
+			}
 		}
 	}
 

@@ -222,7 +222,7 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 					}
 				}
 			}
-			else if(ClimbState != EClimbState::CLIMB_GROUND)//如果当前攀爬状态不是落地状态
+			else if(ClimbState != EClimbState::CLIMB_GROUND && ClimbState != EClimbState::CLIMB_DROP)//如果当前攀爬状态不是落地状态且不是下落状态
 			{
 				ClimbState = EClimbState::CLIMB_CLIMBING;
 				SetClimbing();
@@ -255,7 +255,7 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 	}
 	else if (HitChestResult.bBlockingHit && !HitHeadResult.bBlockingHit)//胸打到墙了,头没有
 	{
-		if (ClimbState == EClimbState::CLIMB_CLIMBING)//攀爬中到顶了
+		if (ClimbState == EClimbState::CLIMB_CLIMBING && !HitGroundResult.bBlockingHit)//攀爬中到顶了
 		{
 			ClimbState = EClimbState::CLIMB_TOTOP;
 
@@ -355,6 +355,14 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 		FVector VInterpToLocation = FMath::VInterpTo(Location, ThrowOverPoint, DeltaTime, 27.0f);
 		MMORPGCharacterBase->SetActorLocation(VInterpToLocation);
 	}
+
+	if (ClimbState == EClimbState::CLIMB_DROP)
+	{
+		if (CharacterMovementComponent->MovementMode != EMovementMode::MOVE_Falling)
+		{
+			ClearClimbingState();
+		}
+	}
 }
 
 void UClimbComponent::SetClimbing()
@@ -408,6 +416,16 @@ void UClimbComponent::SetClimbState(EMovementMode InMovementMode, ECharacterActi
 void UClimbComponent::LaunchCharacter(const FVector& LaunchVelocity)
 {
 	PendingLaunchVelocity = LaunchVelocity;
+}
+
+void UClimbComponent::DropClimbState()
+{
+	ClimbState = EClimbState::CLIMB_DROP;
+}
+
+bool UClimbComponent::IsDropClimbState()
+{
+	return ClimbState == EClimbState::CLIMB_DROP;
 }
 
 void UClimbComponent::AdjustPendingLaunchVelocity(float DeltaTime)

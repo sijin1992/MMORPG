@@ -40,19 +40,19 @@ enum class EClimbState : uint8
 UENUM(BlueprintType)
 enum class EClimbMontageState : uint8
 {
-	CLIMB_JUMP_D				UMETA(DisplayName = "Down"),//向下跳跃
-	CLIMB_JUMP_DL				UMETA(DisplayName = "Down Left"),//向左下跳跃
-	CLIMB_JUMP_DR				UMETA(DisplayName = "Down Right"),//向右下跳跃
-	CLIMB_JUMP_L				UMETA(DisplayName = "Left"),//向左跳跃
-	CLIMB_JUMP_R				UMETA(DisplayName = "Right"),//向右跳跃
-	CLIMB_JUMP_U				UMETA(DisplayName = "Up"),//向上跳跃
-	CLIMB_JUMP_UL				UMETA(DisplayName = "Up Left"),//向左上跳跃
-	CLIMB_JUMP_UR				UMETA(DisplayName = "Up Right"),//向右上跳跃
-	CLIMB_UPATTOP				UMETA(DisplayName = "Up At Top"),//攀爬到顶部
-	CLIMB_THROWOVER_L			UMETA(DisplayName = "Throw-over left"),//从左边翻越
-	CLIMB_THROWOVER_R			UMETA(DisplayName = "Throw-over right"),//从右边翻越
-	CLIMB_THROWOVER_HIGH		UMETA(DisplayName = "Throw-over high"),//双手翻越高一点的墙
-	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落动画
+	CLIMB_JUMP_D				UMETA(DisplayName = "Down"),//向下跳跃0
+	CLIMB_JUMP_DL				UMETA(DisplayName = "Down Left"),//向左下跳跃1
+	CLIMB_JUMP_DR				UMETA(DisplayName = "Down Right"),//向右下跳跃2
+	CLIMB_JUMP_L				UMETA(DisplayName = "Left"),//向左跳跃3
+	CLIMB_JUMP_R				UMETA(DisplayName = "Right"),//向右跳跃4
+	CLIMB_JUMP_U				UMETA(DisplayName = "Up"),//向上跳跃5
+	CLIMB_JUMP_UL				UMETA(DisplayName = "Up Left"),//向左上跳跃6
+	CLIMB_JUMP_UR				UMETA(DisplayName = "Up Right"),//向右上跳跃7
+	CLIMB_UPATTOP				UMETA(DisplayName = "Up At Top"),//攀爬到顶部8
+	CLIMB_THROWOVER_L			UMETA(DisplayName = "Throw-over left"),//从左边翻越9
+	CLIMB_THROWOVER_R			UMETA(DisplayName = "Throw-over right"),//从右边翻越10
+	CLIMB_THROWOVER_HIGH		UMETA(DisplayName = "Throw-over high"),//双手翻越高一点的墙11
+	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落动画12
 	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
 };
 
