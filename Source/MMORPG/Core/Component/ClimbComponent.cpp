@@ -115,85 +115,31 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 
 	//从胸口发出射线
 	FHitResult HitChestResult;
-	float ChestDistance = MaxDistance;//到碰撞点的距离
-	{
-		FVector StartTraceChestLocation = Location;
-		//StartTraceChestLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight() / 4.0f;
-		FVector EndTraceChestLocation = StartTraceChestLocation + ForwardDirection * 100.0f;
-
-
-		TArray<AActor*> ChestActorsToIgnore;
-		UKismetSystemLibrary::LineTraceSingle(
-			GetWorld(),
-			StartTraceChestLocation,
-			EndTraceChestLocation,
-			ETraceTypeQuery::TraceTypeQuery1,
-			true,
-			ChestActorsToIgnore,
-			EDrawDebugTrace::ForOneFrame,
-			HitChestResult,
-			true
-		);
-
-		if (HitChestResult.bBlockingHit)
+	float ChestDistance = Scanning(HitChestResult, [&](FVector& StartTraceChestLocation, FVector& EndTraceChestLocation)
 		{
-			ChestDistance = FVector::Distance(StartTraceChestLocation, HitChestResult.Location);
-		}
-	}
+			StartTraceChestLocation = Location;
+			StartTraceChestLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight() / 2.0f;
+			EndTraceChestLocation = StartTraceChestLocation + ForwardDirection * CapsuleComponent->GetScaledCapsuleHalfHeight() * 2.0f;
+		});
 
 	//从头顶发出射线
 	FHitResult HitHeadResult;
-	float HeadDistance = MaxDistance;//到碰撞点的距离
-	{
-		FVector StartTraceHeadLocation = Location;
-		StartTraceHeadLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();
-		FVector EndTraceHeadLocation = StartTraceHeadLocation + ForwardDirection * 100.0f;
-
-		TArray<AActor*> HeadActorsToIgnore;
-		UKismetSystemLibrary::LineTraceSingle(
-			GetWorld(),
-			StartTraceHeadLocation,
-			EndTraceHeadLocation,
-			ETraceTypeQuery::TraceTypeQuery1,
-			true,
-			HeadActorsToIgnore,
-			EDrawDebugTrace::ForOneFrame,
-			HitHeadResult,
-			true
-		);
-
-		if (HitHeadResult.bBlockingHit)
+	//到碰撞点的距离
+	float HeadDistance = Scanning(HitHeadResult, [&](FVector& StartTraceHeadLocation, FVector& EndTraceHeadLocation)
 		{
-			HeadDistance = FVector::Distance(StartTraceHeadLocation, HitHeadResult.Location);
-		}
-	}
+			StartTraceHeadLocation = Location;
+			StartTraceHeadLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();
+			EndTraceHeadLocation = StartTraceHeadLocation + ForwardDirection * CapsuleComponent->GetScaledCapsuleHalfHeight() * 2.0f;
+		});
 
 	//从脚向地面发出射线
 	FHitResult HitGroundResult;
-	float GroundDistance = MaxDistance;//到碰撞点的距离
-	{
-		FVector StartTraceLocation = Location;
-		StartTraceLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight();
-		FVector EndTraceLocation = StartTraceLocation + (-UpDirection) * 40.0f;
-
-		TArray<AActor*> HeadActorsToIgnore;
-		UKismetSystemLibrary::LineTraceSingle(
-			GetWorld(),
-			StartTraceLocation,
-			EndTraceLocation,
-			ETraceTypeQuery::TraceTypeQuery1,
-			true,
-			HeadActorsToIgnore,
-			EDrawDebugTrace::ForOneFrame,
-			HitGroundResult,
-			true
-		);
-
-		if (HitGroundResult.bBlockingHit)
+	float GroundDistance = Scanning(HitGroundResult, [&](FVector& StartTraceGroundLocation, FVector& EndTraceGroundLocation)
 		{
-			GroundDistance = FVector::Distance(StartTraceLocation, HitGroundResult.Location);
-		}
-	}
+			StartTraceGroundLocation = Location;
+			StartTraceGroundLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight();
+			EndTraceGroundLocation = StartTraceGroundLocation + (-UpDirection) * 40.0f;
+		});
 
 	//处理状态
 
@@ -285,7 +231,7 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 
 				FVector StartTraceLocation = Location + ForwardDirection * 40.0f;
 				StartTraceLocation.Z += CapsuleComponent->GetScaledCapsuleHalfHeight();
-				FVector EndTraceLocation = StartTraceLocation - UpDirection * 100.0f;
+				FVector EndTraceLocation = StartTraceLocation - UpDirection * CapsuleComponent->GetScaledCapsuleHalfHeight() * 2.0f;
 				TArray<AActor*> ThrowOverActorsToIgnore;
 
 				UKismetSystemLibrary::LineTraceSingle(
@@ -426,6 +372,34 @@ void UClimbComponent::DropClimbState()
 bool UClimbComponent::IsDropClimbState()
 {
 	return ClimbState == EClimbState::CLIMB_DROP;
+}
+
+float UClimbComponent::Scanning(FHitResult& HitResult, TFunction<void(FVector&, FVector&)> TraceLocation)
+{
+	float Distance = MaxDistance;
+
+	FVector StartTraceLocation, EndTraceLocation;
+	TraceLocation(StartTraceLocation, EndTraceLocation);
+
+	TArray<AActor*> ActorsToIgnore;
+	UKismetSystemLibrary::LineTraceSingle(
+		GetWorld(),
+		StartTraceLocation,
+		EndTraceLocation,
+		ETraceTypeQuery::TraceTypeQuery1,
+		true,
+		ActorsToIgnore,
+		EDrawDebugTrace::ForOneFrame,
+		HitResult,
+		true
+	);
+
+	if (HitResult.bBlockingHit)
+	{
+		Distance = FVector::Distance(StartTraceLocation, HitResult.Location);
+	}
+
+	return Distance;
 }
 
 void UClimbComponent::AdjustPendingLaunchVelocity(float DeltaTime)

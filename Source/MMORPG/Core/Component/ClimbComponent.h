@@ -64,6 +64,8 @@ public:
 	void DropClimbState();//坠落状态
 
 	bool IsDropClimbState();
+
+	float Scanning(FHitResult& HitResult, TFunction<void(FVector&, FVector&)> TraceLocation);//射线扫描的封装方法
 private:
 	void TraceClimbingState(float DeltaTime);//射线检测
 
