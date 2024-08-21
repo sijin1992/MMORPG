@@ -110,6 +110,7 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 {
 	FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
 	FVector UpDirection = MMORPGCharacterBase->GetActorUpVector();
+	FVector RightDirection = MMORPGCharacterBase->GetActorRightVector();
 	FVector Location = MMORPGCharacterBase->GetActorLocation();
 	FRotator ActorRotation = MMORPGCharacterBase->GetActorRotation();
 
@@ -139,6 +140,38 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 			StartTraceGroundLocation = Location;
 			StartTraceGroundLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight();
 			EndTraceGroundLocation = StartTraceGroundLocation + (-UpDirection) * 40.0f;
+		});
+
+	//向右发出射线
+	FHitResult HitRightResult;
+	float RightDistance = Scanning(HitRightResult, [&](FVector& StartRightLocation, FVector& EndRightLocation)
+		{
+			StartRightLocation = Location + RightDirection * 10.0f - ForwardDirection * 10.0f;
+			EndRightLocation = StartRightLocation + RightDirection * CapsuleComponent->GetScaledCapsuleHalfHeight();
+		});
+
+	//向左发出射线
+	FHitResult HitLeftResult;
+	float LeftDistance = Scanning(HitLeftResult, [&](FVector& StartLeftLocation, FVector& EndLeftLocation)
+		{
+			StartLeftLocation = Location - RightDirection * 10.0f - ForwardDirection * 10.0f;
+			EndLeftLocation = StartLeftLocation - RightDirection * CapsuleComponent->GetScaledCapsuleHalfHeight();
+		});
+
+	//从右70处向前发出射线
+	FHitResult HitRightForwardResult;
+	float RightForwardDistance = Scanning(HitRightForwardResult, [&](FVector& StartRightForwardLocation, FVector& EndRightForwardLocation)
+		{
+			StartRightForwardLocation = Location + RightDirection * 70.0f;
+			EndRightForwardLocation = StartRightForwardLocation + ForwardDirection * 100.0f;
+		});
+
+	//从左70处向前发出射线
+	FHitResult HitLeftForwardResult;
+	float LeftForwardDistance = Scanning(HitLeftForwardResult, [&](FVector& StartLeftForwardLocation, FVector& EndLeftForwardLocation)
+		{
+			StartLeftForwardLocation = Location - RightDirection * 70.0f;
+			EndLeftForwardLocation = StartLeftForwardLocation + ForwardDirection * 100.0f;
 		});
 
 	//处理状态
