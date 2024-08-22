@@ -28,6 +28,35 @@ void UClimbComponent::BeginPlay()
 		{
 			AdjustmentClimbing(false);//翻越动画结束后还原角色高度
 		});
+
+	bTurn.Fun.BindLambda([&]()
+		{
+			CharacterMovementComponent->GravityScale = 1.0f;//关闭重力
+
+			//暂时暴力解决BUG
+			FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
+			FVector Location = MMORPGCharacterBase->GetActorLocation();
+
+			//旋转攀爬后进行射线检测
+			FHitResult HitChestResult;
+			float ChestDistance = Scanning(HitChestResult, [&](FVector& StartTraceLocation, FVector& EndTraceLocation)
+				{
+					StartTraceLocation = Location;
+					StartTraceLocation.Z -= CapsuleComponent->GetScaledCapsuleHalfHeight() / 2.0f;
+					EndTraceLocation = StartTraceLocation + ForwardDirection * CapsuleComponent->GetScaledCapsuleHalfHeight() * 2.0f;
+				});
+
+			//修正旋转攀爬后距离墙体的距离
+			if (ChestDistance >= 29.0f)
+			{
+				Location += ForwardDirection * (ChestDistance - 29.0f);
+			}
+			else
+			{
+				Location -= ForwardDirection * (29.0f - ChestDistance);
+			}
+			MMORPGCharacterBase->SetActorLocation(Location);
+		});
 }
 
 void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -42,6 +71,8 @@ void UClimbComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		bJump.Tick(DeltaTime);
 
 		bThrowOver.Tick(DeltaTime);
+
+		bTurn.Tick(DeltaTime);
 
 		AdjustPendingLaunchVelocity(DeltaTime);
 	}
@@ -108,13 +139,19 @@ void UClimbComponent::ResetJump()
 
 void UClimbComponent::TraceClimbingState(float DeltaTime)
 {
+	//如果正在旋转攀爬,就不再检测
+	if (bTurn)
+	{
+		return;
+	}
+
 	FVector ForwardDirection = MMORPGCharacterBase->GetActorForwardVector();
 	FVector UpDirection = MMORPGCharacterBase->GetActorUpVector();
 	FVector RightDirection = MMORPGCharacterBase->GetActorRightVector();
 	FVector Location = MMORPGCharacterBase->GetActorLocation();
 	FRotator ActorRotation = MMORPGCharacterBase->GetActorRotation();
 
-	//从胸口发出射线
+	//从胸口发出射线(下移至腿部)
 	FHitResult HitChestResult;
 	float ChestDistance = Scanning(HitChestResult, [&](FVector& StartTraceChestLocation, FVector& EndTraceChestLocation)
 		{
@@ -174,6 +211,74 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 			EndLeftForwardLocation = StartLeftForwardLocation + ForwardDirection * 100.0f;
 		});
 
+	//检测旋转攀爬
+	auto CheckTurn = [&]()
+		{
+			if (!HitRightForwardResult.bBlockingHit && !HitLeftResult.bBlockingHit && !HitRightResult.bBlockingHit)
+			{
+				FHitResult HitTurnRightOutResult;
+				float TurnRightOutDistance = Scanning(HitTurnRightOutResult, [&](FVector& StartTraceLocation, FVector& EndTraceLocation)
+					{
+						StartTraceLocation = Location + RightDirection * 70.0f + ForwardDirection * 40.0f;
+						EndTraceLocation = StartTraceLocation - RightDirection * CapsuleComponent->GetScaledCapsuleHalfHeight();
+					});
+
+				if (HitTurnRightOutResult.bBlockingHit && TurnRightOutDistance != 0.0f)
+				{
+					if (TurnRightOutDistance >= 8.0f)
+					{
+						bTurn = true;
+						bTurn = 1.2f;
+						TurnState = EClimbTurnState::OUTSIDE_RIGHT;
+					}
+				}
+			}
+			else if (!HitLeftForwardResult.bBlockingHit && !HitLeftResult.bBlockingHit && !HitRightResult.bBlockingHit)
+			{
+				FHitResult HitTurnLeftOutResult;
+				float TurnLeftOutDistance = Scanning(HitTurnLeftOutResult, [&](FVector& StartTraceLocation, FVector& EndTraceLocation)
+					{
+						StartTraceLocation = Location - RightDirection * 70.0f + ForwardDirection * 40.0f;
+						EndTraceLocation = StartTraceLocation + RightDirection * CapsuleComponent->GetScaledCapsuleHalfHeight();
+					});
+
+				if (HitTurnLeftOutResult.bBlockingHit && TurnLeftOutDistance != 0.0f)
+				{
+					if (TurnLeftOutDistance >= 8.0f)
+					{
+						bTurn = true;
+						bTurn = 1.2f;
+						TurnState = EClimbTurnState::OUTSIDE_LEFT;
+					}
+				}
+			}
+			else if (HitLeftResult.bBlockingHit)
+			{
+				if (FMath::IsNearlyEqual(LeftDistance, 43.0f, 0.7f))
+				{
+					bTurn = true;
+					bTurn = 1.2f;
+					TurnState = EClimbTurnState::INSIDE_LEFT;
+				}
+			}
+			else if (HitRightResult.bBlockingHit)
+			{
+				if (FMath::IsNearlyEqual(RightDistance, 49.0f, 0.7f))
+				{
+					bTurn = true;
+					bTurn = 1.2f;
+					TurnState = EClimbTurnState::INSIDE_RIGHT;
+				}
+			}
+
+			if (bTurn)
+			{
+				ClimbState = EClimbState::CLIMB_TURN;
+				CharacterMovementComponent->GravityScale = 0.0f;//关闭重力
+			}
+		};
+
+
 	//处理状态
 
 	if (HitChestResult.bBlockingHit && HitHeadResult.bBlockingHit)//头和胸都打到墙了,就是爬墙状态
@@ -189,7 +294,7 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 				MMORPGCharacterBase->SetActorLocation(TargetPoint);
 			}
 
-
+			//攀爬状态
 			if (ClimbState == EClimbState::CLIMB_CLIMBING)//如果当前攀爬状态已经是正在攀爬状态
 			{
 				if (HitGroundResult.bBlockingHit)//如果检测到落地了
@@ -198,6 +303,20 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 					{
 						ClimbState = EClimbState::CLIMB_GROUND;
 						ReleaseClimeb();
+					}
+					else if(HitRightResult.bBlockingHit || HitLeftResult.bBlockingHit || HitRightForwardResult.bBlockingHit || HitLeftForwardResult.bBlockingHit)
+					{//检测是否旋转攀爬
+						if (!bTurn)
+						{
+							CheckTurn();
+						}
+					}
+				}
+				else if (HitRightResult.bBlockingHit || HitLeftResult.bBlockingHit || HitRightForwardResult.bBlockingHit || HitLeftForwardResult.bBlockingHit)
+				{//检测是否旋转攀爬
+					if (!bTurn)
+					{
+						CheckTurn();
 					}
 				}
 			}
@@ -405,6 +524,11 @@ void UClimbComponent::DropClimbState()
 bool UClimbComponent::IsDropClimbState()
 {
 	return ClimbState == EClimbState::CLIMB_DROP;
+}
+
+void UClimbComponent::ResetClimbState()
+{
+	ClimbState = EClimbState::CLIMB_CLIMBING;
 }
 
 float UClimbComponent::Scanning(FHitResult& HitResult, TFunction<void(FVector&, FVector&)> TraceLocation)

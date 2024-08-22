@@ -56,6 +56,28 @@ void UMMORPGClimbAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_THROWOVER_HIGH);
 			}
 		}
+		else if (ClimbState == EClimbState::CLIMB_TURN)
+		{
+			//旋转攀爬
+			EClimbTurnState ClimbTurnState = InCharacterBase->GetClimbComponent()->GetTurnState();
+			switch (ClimbTurnState)
+			{
+			case EClimbTurnState::OUTSIDE_RIGHT:
+				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_TURN_RIGHT_OUT);
+				break;
+			case EClimbTurnState::OUTSIDE_LEFT:
+				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_TURN_LEFT_OUT);
+				break;
+			case EClimbTurnState::INSIDE_RIGHT:
+				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_TURN_RIGHT_IN);
+				break;
+			case EClimbTurnState::INSIDE_LEFT:
+				InCharacterBase->ClimbMontageChanged(EClimbMontageState::CLIMB_TURN_LEFT_IN);
+				break;
+			}
+
+			InCharacterBase->GetClimbComponent()->ResetClimbState();
+		}
 	}
 }
 

@@ -34,6 +34,7 @@ enum class EClimbState : uint8
 	CLIMB_GROUND				UMETA(DisplayName = "Ground"),//落地
 	CLIMB_TOTOP					UMETA(DisplayName = "Top"),//爬到顶部
 	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落
+	CLIMB_TURN					UMETA(DisplayName = "Turn"),//旋转攀爬
 };
 
 //攀爬蒙太奇状态
@@ -53,7 +54,22 @@ enum class EClimbMontageState : uint8
 	CLIMB_THROWOVER_R			UMETA(DisplayName = "Throw-over right"),//从右边翻越10
 	CLIMB_THROWOVER_HIGH		UMETA(DisplayName = "Throw-over high"),//双手翻越高一点的墙11
 	CLIMB_DROP					UMETA(DisplayName = "Drop"),//取消攀爬，下落动画12
+	CLIMB_TURN_RIGHT_OUT		UMETA(DisplayName = "turn right outside"),//向右外旋转攀爬动画13
+	CLIMB_TURN_LEFT_OUT			UMETA(DisplayName = "turn left outside"),//向左外旋转攀爬动画14
+	CLIMB_TURN_RIGHT_IN			UMETA(DisplayName = "turn right inside"),//向右内旋转攀爬动画15
+	CLIMB_TURN_LEFT_IN			UMETA(DisplayName = "turn left inside"),//向左内旋转攀爬动画16
 	CLIMB_JUMP_MAX				UMETA(DisplayName = "Max"),//无效值
+};
+
+//旋转攀爬状态
+UENUM(BlueprintType)
+enum class EClimbTurnState : uint8
+{
+	TURN_NONE,		//不旋转状态
+	OUTSIDE_RIGHT,	//从右面进入外旋转状态
+	OUTSIDE_LEFT,	//从左面进入外旋转状态
+	INSIDE_RIGHT,	//从右面进入内旋转状态
+	INSIDE_LEFT,	//从左面进入内旋转状态
 };
 
 struct FResetBool

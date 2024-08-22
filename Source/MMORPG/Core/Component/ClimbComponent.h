@@ -32,6 +32,9 @@ private:
 
 	FVector PendingLaunchVelocity;//施加力
 
+	EClimbTurnState TurnState;//旋转攀爬状态
+	FResetBool bTurn;//是否旋转攀爬
+
 public:
 	UClimbComponent();
 
@@ -65,11 +68,16 @@ public:
 
 	bool IsDropClimbState();
 
-	float Scanning(FHitResult& HitResult, TFunction<void(FVector&, FVector&)> TraceLocation);//射线扫描的封装方法
+	EClimbTurnState GetTurnState() { return TurnState; }
+
+	void ResetClimbState();
+
 private:
 	void TraceClimbingState(float DeltaTime);//射线检测
 
 	void SetClimbState(EMovementMode InMovementMode, ECharacterActionState InCharacterActionState, bool bOrientRotationToMovement);
 
 	void AdjustPendingLaunchVelocity(float DeltaTime);//调节力的函数
+
+	float Scanning(FHitResult& HitResult, TFunction<void(FVector&, FVector&)> TraceLocation);//射线扫描的封装方法
 };
