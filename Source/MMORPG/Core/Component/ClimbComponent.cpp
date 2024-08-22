@@ -319,6 +319,16 @@ void UClimbComponent::TraceClimbingState(float DeltaTime)
 						CheckTurn();
 					}
 				}
+
+				//修复攀爬圆顶时没有站立的BUG
+				FVector ZAxis = FVector(0.0f, 0.0f, 1.0f);
+				float CosValue = FVector::DotProduct(ZAxis, HitChestResult.ImpactNormal);
+				float CosAngle = (180.0f) / PI * FMath::Acos(CosValue);
+				if (CosAngle < 35.0f)
+				{
+					ClimbState = EClimbState::CLIMB_NONE;
+					ReleaseClimeb();
+				}
 			}
 			else if(ClimbState != EClimbState::CLIMB_GROUND && ClimbState != EClimbState::CLIMB_DROP)//如果当前攀爬状态不是落地状态且不是下落状态
 			{
